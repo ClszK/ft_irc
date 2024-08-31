@@ -13,6 +13,7 @@ class Client {
   bool mIsCertified;
 
  public:
+  void sendNumericReply(int code);
   Client(const int sockFd);
   ~Client();
 };

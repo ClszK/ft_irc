@@ -7,7 +7,7 @@
 
 class MessageHandler {
  public:
-  static std::pair<std::string, std::vector<std::string>> parseMessage(
+  static std::pair<std::string, std::vector<std::string> > parseMessage(
       const std::string& message);
 
  private:

@@ -1,11 +1,13 @@
 #include "Command.hpp"
 
-int JoinCommand::execute(Client& client, std::vector<std::string>& message) {
-  return 0;
+void JoinCommand::execute(Client& client, std::vector<std::string>& message) {}
+
+void PassCommand::execute(Client& client, std::vector<std::string>& message) {
+  if (message.size() < 1) {
+    client.sendNumericReply(ERR_NEEDMOREPARAMS);
+  }
 }
 
-int PassCommand::execute(Client& client, std::vector<std::string>& message) {}
+void NickCommand::execute(Client& client, std::vector<std::string>& message) {}
 
-int NickCommand::execute(Client& client, std::vector<std::string>& message) {}
-
-int UserCommand::execute(Client& client, std::vector<std::string>& message) {}
+void UserCommand::execute(Client& client, std::vector<std::string>& message) {}

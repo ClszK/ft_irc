@@ -63,5 +63,15 @@
 		"unordered_map": "cpp",
 		"utility": "cpp",
 		"vector": "cpp"
-	}
+	},
+	"cSpell.words": [
+		"ALREADYREGISTRED",
+		"Erroneus",
+		"ERRONEUSNICKNAME",
+		"NEEDMOREPARAMS",
+		"NICKCOLLISION",
+		"NICKNAMEINUSE",
+		"NONICKNAMEGIVEN",
+		"reregister"
+	]
 }
