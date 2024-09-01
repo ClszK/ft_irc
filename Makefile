@@ -3,7 +3,7 @@ SRCS        = main.cpp \
 							Server.cpp \
 							Client.cpp \
 							Channel.cpp \
-							Commandhandler.cpp
+							Commandhandler.cpp 
 
 OBJDIR      = build
 OBJS        = $(patsubst %.cpp, $(OBJDIR)/%.o, $(SRCS))
@@ -34,5 +34,12 @@ fclean: clean
 re: 
 	make fclean
 	make all
+
+up:
+	cd docker && docker-compose up --no-log-prefix --build
+
+down:
+	cd docker && docker-compose down
+
 
 .PHONY: all clean fclean re

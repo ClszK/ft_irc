@@ -1,5 +1,8 @@
 #include "Client.hpp"
 
-Client::Client(const int sockFd) : mSockFd(sockFd), mIsCertified(false) {}
+Client::Client() : mServerPassword(NULL) {}
+
+Client::Client(const int sockFd, std::string* serverPassword)
+    : mSockFd(sockFd), mServerPassword(serverPassword) {}
 
 Client::~Client() {}

@@ -1,7 +1,7 @@
 #include "NumericReply.hpp"
 
-NumericReply::NumericReply() {
-  mReplies[RPL_WELCOME] = "RPL_WELCOME";
+NumericReply::NumericReply() : mReplies(500) {
+  mReplies[RPL_WELCOME] = ":Welcome to the Localnet IRC Network";
   mReplies[ERR_NONICKNAMEGIVEN] = ":No nickname given";
   mReplies[ERR_ERRONEUSNICKNAME] = ":Erroneus nickname";
   mReplies[ERR_NICKNAMEINUSE] = ":Nickname is already in use";
@@ -10,6 +10,6 @@ NumericReply::NumericReply() {
   mReplies[ERR_ALREADYREGISTRED] = ":You may not reregister";
 }
 
-std::string NumericReply::getReply(int code) const { return mReplies.at(code); }
+const std::string& NumericReply::getReply(int code) { return mReplies[code]; }
 
 NumericReply::~NumericReply() {}

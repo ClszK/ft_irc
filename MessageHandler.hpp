@@ -3,12 +3,15 @@
 #include <sstream>
 #include <vector>
 
-#include "Client.hpp"
+struct Message {
+  std::string prefix;
+  std::string command;
+  std::vector<std::string> params;
+};
 
 class MessageHandler {
  public:
-  static std::pair<std::string, std::vector<std::string> > parseMessage(
-      const std::string& message);
+  static Message parseMessage(const std::string& message);
 
  private:
   MessageHandler();

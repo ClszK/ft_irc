@@ -1,0 +1,7 @@
+services:
+  inspircd:
+    build: .
+    image: inspircd_image
+    ports:
+      - "6667:6667"
+    tty: true

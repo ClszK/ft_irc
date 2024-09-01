@@ -6,14 +6,11 @@
 
 #include "Command.hpp"
 
-class Client;
-
 class CommandHandler {
  public:
   CommandHandler();
   ~CommandHandler();
-  int handleCommand(Client& client,
-                    std::pair<std::string, std::vector<std::string> >& message);
+  std::pair<int, std::string> handleCommand(Client& client, Message& message);
 
  private:
   std::map<std::string, Command*> mCommands;

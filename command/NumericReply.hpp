@@ -1,7 +1,7 @@
 #pragma once
 
-#include <map>
 #include <string>
+#include <vector>
 
 enum Reply {
   RPL_WELCOME = 1,
@@ -15,10 +15,10 @@ enum Reply {
 
 class NumericReply {
  private:
-  std::map<int, std::string> mReplies;
+  std::vector<std::string> mReplies;
 
  public:
   NumericReply();
-  std::string getReply(int code) const;
+  const std::string& getReply(int code);
   ~NumericReply();
 };

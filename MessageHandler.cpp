@@ -1,14 +1,16 @@
 #include "MessageHandler.hpp"
 
-std::pair<std::string, std::vector<std::string>> MessageHandler::parseMessage(
-    const std::string& message) {
+Message MessageHandler::parseMessage(const std::string& message) {
+  if (message.empty()) {
+    return Message();
+  }
   std::istringstream iss(message);
-  std::string command;
-  std::vector<std::string> params;
+  Message parsedMessage;
   std::string param;
 
-  // 명령어 파싱
-  iss >> command;
+  if (message[0] == ':') std::getline(iss, parsedMessage.prefix, ' ');
+
+  iss >> parsedMessage.command;
 
   // 매개변수 파싱
   while (iss >> param) {
@@ -16,15 +18,13 @@ std::pair<std::string, std::vector<std::string>> MessageHandler::parseMessage(
       // 콜론으로 시작하는 매개변수는 나머지 모든 텍스트를 포함
       param += ' ';
       std::string trailing;
-      if (std::getline(iss, trailing)) {
-        param += trailing;
-      }
+      if (std::getline(iss, trailing)) param += trailing;
     }
-    params.push_back(param);
+    parsedMessage.params.push_back(param);
   }
-
-  return {command, params};
+  return parsedMessage;
 }
+
 MessageHandler::MessageHandler() {}
 
 MessageHandler::~MessageHandler() {}

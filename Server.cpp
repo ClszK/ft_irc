@@ -1,6 +1,7 @@
 #include "Server.hpp"
 
 void Server::init() {
+  mServerName = "IRCServer";
   if ((mListenFd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
     throw std::runtime_error(std::strerror(errno));
 
@@ -24,7 +25,7 @@ void Server::handleListenEvent() {
     EV_SET(&mChangeEvent, connFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
     if (kevent(mKq, &mChangeEvent, 1, NULL, 0, NULL) == -1)
       throw std::runtime_error(std::strerror(errno));
-    mClients.insert(std::make_pair(connFd, Client(connFd)));
+    mClients.insert(std::make_pair(connFd, Client(connFd, &mPassword)));
   }
 
   if (errno != EAGAIN && errno != EWOULDBLOCK)
@@ -45,7 +46,10 @@ void Server::handleReadEvent(struct kevent event) {
       std::string message = mBuffers[event.ident].substr(0, pos);
       mBuffers[event.ident].erase(0, pos + 2);  // CRLF 제거
 
-      // 메시지 처리
+      Message parsedMessage = MessageHandler::parseMessage(message);
+      std::pair<int, std::string> reply =
+          mCommandHandler.handleCommand(mClients[event.ident], parsedMessage);
+      sendReplyToClient(mClients[event.ident], reply);
     }
 
     EV_SET(&mChangeEvent, event.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0,
@@ -64,6 +68,18 @@ void Server::handleReadEvent(struct kevent event) {
       close(event.ident);
     }
   }
+}
+
+void Server::sendReplyToClient(Client& client,
+                               std::pair<int, std::string> reply) {
+  if (reply.first == 0) return;
+
+  std::stringstream ss;
+  ss << ":" << mServerName << " " << reply.first << " " << reply.second
+     << "\r\n";
+
+  std::string message = ss.str();
+  send(client.getSockFd(), message.c_str(), message.size(), 0);
 }
 
 void Server::run() {

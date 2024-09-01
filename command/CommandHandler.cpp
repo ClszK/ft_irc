@@ -6,13 +6,13 @@ CommandHandler::CommandHandler() {
   mCommands["join"] = new JoinCommand();
   mCommands["nick"] = new NickCommand();
 }
-int CommandHandler::handleCommand(
-    Client& client,
-    std::pair<std::string, std::vector<std::string> >& message) {
-  if (mCommands.find(message.first) != mCommands.end()) {
-    return mCommands[message.first]->execute(client, message.second);
+
+std::pair<int, std::string> CommandHandler::handleCommand(Client& client,
+                                                          Message& message) {
+  if (mCommands.find(message.command) != mCommands.end()) {
+    return mCommands[message.command]->execute(client, message);
   }
-  return -1;
+  return std::make_pair(0, "");
 }
 
 CommandHandler::~CommandHandler() {
