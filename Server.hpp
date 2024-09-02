@@ -20,11 +20,9 @@
 #define BUF_SIZE 512
 #define MAX_EVENTS 1024
 
-class CommandHandler;
-
 class Server {
  public:
-  static Server& getInstance(int argc, const char* argv[]);
+  static Server* getInstance(int argc, char* argv[]);
   void run();
 
   const std::string& getPassword() const { return mPassword; }
@@ -32,7 +30,7 @@ class Server {
  private:
   int mPort, mListenFd, mKq;
   SocketAddr mServerAddr;
-  struct kevent mChangeEvent, mEvents[10];
+  struct kevent mChangeEvent, mEvents[MAX_EVENTS];
   std::string mPassword;
   std::string mServerName;
   std::map<int, Client> mClients;
@@ -41,9 +39,10 @@ class Server {
 
   void init();
   void handleListenEvent();
-  void handleReadEvent(struct kevent event);
-  void sendReplyToClient(Client& client, std::pair<int, std::string> reply);
+  void handleReadEvent(struct kevent& event);
+  void handleWriteEvent(struct kevent& event);
+  void sendReplyToClient(struct kevent& event, ReplyPair reply);
 
-  Server(int argc, const char* argv[]);
+  Server(int argc, char* argv[]);
   ~Server();
 };

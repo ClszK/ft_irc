@@ -7,8 +7,7 @@ CommandHandler::CommandHandler() {
   mCommands["nick"] = new NickCommand();
 }
 
-std::pair<int, std::string> CommandHandler::handleCommand(Client& client,
-                                                          Message& message) {
+ReplyPair CommandHandler::handleCommand(Client& client, Message& message) {
   if (mCommands.find(message.command) != mCommands.end()) {
     return mCommands[message.command]->execute(client, message);
   }

@@ -12,7 +12,6 @@ class SocketAddr {
     mAddr.sin_family = AF_INET;
     mAddr.sin_port = htons(port);
     mAddr.sin_addr.s_addr = INADDR_ANY;
-    mAddr.sin_port = port;
   }
 
   operator struct sockaddr *() { return (struct sockaddr*)&mAddr; }

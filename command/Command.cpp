@@ -1,83 +1,56 @@
 #include "Command.hpp"
 
-std::pair<int, std::string> JoinCommand::execute(Client& client,
-                                                 Message& message) {}
-
-std::pair<int, std::string> PassCommand::execute(Client& client,
-                                                 Message& message) {
+ReplyPair JoinCommand::execute(Client& client, Message& message) {
+  (void)client;
   if (message.params.size() < 1) {
-    return std::make_pair(
-        ERR_NEEDMOREPARAMS,
-        "* PASS " + mNumericReply.getReply(ERR_NEEDMOREPARAMS));
   }
+  return std::make_pair(0, "");
+}
+
+/*
+#, &, +, 또는 !로 시작해야 합니다.
+영숫자와 몇 가지 특수 문자(-, _, ., ,)를 사용할 수 있습니다.
+최대 길이는 50자입니다.
+채널명은 대소문자를 구분하지 않습니다.
+공백이나 특정 특수 문자(: 등)는 사용할 수 없습니다.
+*/
+
+ReplyPair PassCommand::execute(Client& client, Message& message) {
+  if (message.params.size() < 1)
+    return ReplyUtility::makeNeedMoreParamsReply("PASS");
+
   client.setPassword(message.params[0]);
   return std::make_pair(0, "");
 }
 
-std::pair<int, std::string> NickCommand::execute(Client& client,
-                                                 Message& message) {
-  if (message.params.size() < 1) {
-    return std::make_pair(
-        ERR_NEEDMOREPARAMS,
-        "* NICK " + mNumericReply.getReply(ERR_NEEDMOREPARAMS));
-  }
+ReplyPair NickCommand::execute(Client& client, Message& message) {
+  if (message.params.size() < 1)
+    return ReplyUtility::makeNeedMoreParamsReply("NICK");
 
-  if (!isValidNickName(message.params[0])) {
-    return std::make_pair(ERR_ERRONEUSNICKNAME,
-                          "* " + message.params[0] + " " +
-                              mNumericReply.getReply(ERR_ERRONEUSNICKNAME));
-    client.setNickName(message.params[0]);
-  }
+  if (!ReplyUtility::isValidNickName(message.params[0]))
+    return ReplyUtility::makeErrNonicknameGivenReply(message.params[0]);
 
+  client.setNickName(message.params[0]);
   if (client.getUserName() != "") {
-    if (client.isPasswordValid(client.getPassword())) {
-      return std::make_pair(
-          RPL_WELCOME,
-          "* " + message.params[0] + " " + mNumericReply.getReply(RPL_WELCOME));
-    }
-    return std::make_pair(-1,
-                          "임시 ERROR :Closing link: (123@172.29.0.1) [Access "
-                          "denied by configuration]");
+    if (client.isPasswordValid(client.getPassword()))
+      return ReplyUtility::makeWelcomeReply(message.params[0]);
+
+    return ReplyUtility::makeErrorReply();
   }
   return std::make_pair(0, "");
 }
 
-bool NickCommand::isValidNickName(const std::string& nickName) {
-  if (nickName.length() < 1 || nickName.length() > 9) return false;
-
-  if (!std::isalpha(nickName[0]) &&
-      std::string("[\\]^_{|}").find(nickName[0]) == std::string::npos)
-    return false;
-
-  for (int i = 1; i < nickName.length(); i++) {
-    if (!std::isalnum(nickName[i]) &&
-        std::string("[\\]^_{|}").find(nickName[i]) == std::string::npos) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-std::pair<int, std::string> UserCommand::execute(Client& client,
-                                                 Message& message) {
-  if (message.params.size() < 4) {
-    return std::make_pair(
-        ERR_NEEDMOREPARAMS,
-        "* USER " + mNumericReply.getReply(ERR_NEEDMOREPARAMS));
-  }
+ReplyPair UserCommand::execute(Client& client, Message& message) {
+  if (message.params.size() < 4)
+    return ReplyUtility::makeNeedMoreParamsReply("USER");
 
   client.setUserName(message.params[0]);
   client.setRealName(message.params[3]);
   if (client.getNickName() != "") {
-    if (client.isPasswordValid(client.getPassword())) {
-      return std::make_pair(
-          RPL_WELCOME,
-          "* " + message.params[0] + " " + mNumericReply.getReply(RPL_WELCOME));
-    }
-    return std::make_pair(-1,
-                          "임시 ERROR :Closing link: (123@172.29.0.1) [Access "
-                          "denied by configuration]");
+    if (client.isPasswordValid(client.getPassword()))
+      return ReplyUtility::makeWelcomeReply(message.params[0]);
+
+    return ReplyUtility::makeErrorReply();
   }
   return std::make_pair(0, "");
 }

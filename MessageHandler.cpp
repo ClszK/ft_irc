@@ -12,6 +12,8 @@ Message MessageHandler::parseMessage(const std::string& message) {
 
   iss >> parsedMessage.command;
 
+  std::transform(parsedMessage.command.begin(), parsedMessage.command.end(),
+                 parsedMessage.command.begin(), ToLower());
   // 매개변수 파싱
   while (iss >> param) {
     if (param[0] == ':') {
@@ -28,3 +30,14 @@ Message MessageHandler::parseMessage(const std::string& message) {
 MessageHandler::MessageHandler() {}
 
 MessageHandler::~MessageHandler() {}
+
+std::ostream& operator<<(std::ostream& os, const Message& message) {
+  os << "Message{prefix: " << message.prefix << ", command: " << message.command
+     << ", params: [";
+  for (std::vector<std::string>::const_iterator it = message.params.begin();
+       it != message.params.end(); ++it) {
+    os << *it << ", ";
+  }
+  os << "]}";
+  return os;
+}

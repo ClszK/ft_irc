@@ -3,11 +3,17 @@ SRCS        = main.cpp \
 							Server.cpp \
 							Client.cpp \
 							Channel.cpp \
-							Commandhandler.cpp 
+							MessageHandler.cpp \
+							command/Command.cpp \
+							command/CommandHandler.cpp \
+							command/NumericReply.cpp \
+							command/ReplyUtility.cpp
 
 OBJDIR      = build
-OBJS        = $(patsubst %.cpp, $(OBJDIR)/%.o, $(SRCS))
-DEPS        = $(patsubst %.cpp, $(OBJDIR)/%.d, $(SRCS))
+OBJS        = $(patsubst %.cpp, $(OBJDIR)/%.o, $(notdir $(SRCS)))
+DEPS        = $(patsubst %.cpp, $(OBJDIR)/%.d, $(notdir $(SRCS)))
+
+VPATH			  = command
 
 CXX         = c++
 CXXFLAGS    = -Wall -Wextra -Werror -std=c++98 -MMD -MP

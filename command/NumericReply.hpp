@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <utility>
 #include <vector>
 
 enum Reply {
@@ -13,12 +14,15 @@ enum Reply {
   ERR_ALREADYREGISTRED = 462,
 };
 
+typedef std::pair<int, std::string> ReplyPair;
+
 class NumericReply {
  private:
-  std::vector<std::string> mReplies;
+  static std::vector<std::string> mReplies;
+  NumericReply();
 
  public:
-  NumericReply();
-  const std::string& getReply(int code);
+  static void initializeReplies();
+  static const std::string& getReply(int code);
   ~NumericReply();
 };

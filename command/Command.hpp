@@ -2,39 +2,34 @@
 
 #include "../Client.hpp"
 #include "../MessageHandler.hpp"
-#include "NumericReply.hpp"
-
+#include "ReplyUtility.hpp"
 class Command {
  public:
-  virtual std::pair<int, std::string> execute(Client& client,
-                                              Message& message) = 0;
+  virtual ReplyPair execute(Client& client, Message& message) = 0;
 
   Command() {};
   virtual ~Command() {}
 
  protected:
-  NumericReply mNumericReply;
+  ReplyPair makeNeedMoreParamsReply(const std::string& command);
 };
 
 class JoinCommand : public Command {
  public:
-  virtual std::pair<int, std::string> execute(Client& client, Message& message);
+  virtual ReplyPair execute(Client& client, Message& message);
 };
 
 class PassCommand : public Command {
  public:
-  virtual std::pair<int, std::string> execute(Client& client, Message& message);
+  virtual ReplyPair execute(Client& client, Message& message);
 };
 
 class NickCommand : public Command {
  public:
-  virtual std::pair<int, std::string> execute(Client& client, Message& message);
-
- private:
-  bool isValidNickName(const std::string& nickName);
+  virtual ReplyPair execute(Client& client, Message& message);
 };
 
 class UserCommand : public Command {
  public:
-  virtual std::pair<int, std::string> execute(Client& client, Message& message);
+  virtual ReplyPair execute(Client& client, Message& message);
 };
