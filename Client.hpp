@@ -2,6 +2,8 @@
 
 #include <string>
 
+class Server;
+
 class Client {
  private:
   int mSockFd;
@@ -11,6 +13,7 @@ class Client {
   std::string mUserMode;
   std::string mPassword;
   const std::string* mServerPassword;
+  Server* mServer;
 
  public:
   void setNickName(const std::string& nickName) { mNickName = nickName; }
@@ -30,6 +33,6 @@ class Client {
   }
 
   Client();
-  Client(const int sockFd, std::string* serverPassword);
+  Client(const int sockFd, std::string* serverPassword, Server* server);
   ~Client();
 };

@@ -8,6 +8,7 @@ void NumericReply::initializeReplies() {
   mReplies[ERR_ERRONEUSNICKNAME] = ":Erroneus nickname";
   mReplies[ERR_NICKNAMEINUSE] = ":Nickname is already in use";
   mReplies[ERR_NICKCOLLISION] = ":Nickname collision KILL";
+  mReplies[ERR_NOTREGISTERED] = ":You have not registered";
   mReplies[ERR_NEEDMOREPARAMS] = ":Not enough parameters";
   mReplies[ERR_ALREADYREGISTRED] = ":You may not reregister";
 }

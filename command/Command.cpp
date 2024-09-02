@@ -7,14 +7,6 @@ ReplyPair JoinCommand::execute(Client& client, Message& message) {
   return std::make_pair(0, "");
 }
 
-/*
-#, &, +, 또는 !로 시작해야 합니다.
-영숫자와 몇 가지 특수 문자(-, _, ., ,)를 사용할 수 있습니다.
-최대 길이는 50자입니다.
-채널명은 대소문자를 구분하지 않습니다.
-공백이나 특정 특수 문자(: 등)는 사용할 수 없습니다.
-*/
-
 ReplyPair PassCommand::execute(Client& client, Message& message) {
   if (message.params.size() < 1)
     return ReplyUtility::makeNeedMoreParamsReply("PASS");

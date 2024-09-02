@@ -23,6 +23,11 @@ ReplyPair ReplyUtility::makeErrorReply() {
                         "임시 ERROR :Closing link: (123@172.29.0.1) [Access "
                         "denied by configuration]");
 }
+ReplyPair ReplyUtility::makeNotRegisteredReply(const std::string& command) {
+  return std::make_pair(
+      static_cast<int>(ERR_NOTREGISTERED),
+      "* " + command + " " + NumericReply::getReply(ERR_NOTREGISTERED));
+}
 
 bool ReplyUtility::isValidChannelName(const std::string& channelName) {
   if (channelName.length() < 2 || channelName.length() > 50) return false;

@@ -26,7 +26,7 @@ void Server::handleListenEvent() {
   EV_SET(&mChangeEvent, connFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
   if (kevent(mKq, &mChangeEvent, 1, NULL, 0, NULL) == -1)
     throw std::runtime_error(std::strerror(errno));
-  mClients.insert(std::make_pair(connFd, Client(connFd, &mPassword)));
+  mClients.insert(std::make_pair(connFd, Client(connFd, &mPassword, this)));
 
   if (errno) throw std::runtime_error(std::strerror(errno));
 }

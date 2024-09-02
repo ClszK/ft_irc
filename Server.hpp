@@ -15,6 +15,7 @@
 #include <sstream>
 
 #include "./command/CommandHandler.hpp"
+#include "Channel.hpp"
 #include "SocketAddr.hpp"
 
 #define BUF_SIZE 512
@@ -35,6 +36,7 @@ class Server {
   std::string mServerName;
   std::map<int, Client> mClients;
   std::map<int, std::string> mBuffers;
+  std::map<std::string, Channel*> mChannels;
   CommandHandler mCommandHandler;
 
   void init();
