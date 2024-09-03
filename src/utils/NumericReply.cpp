@@ -1,4 +1,4 @@
-#include "NumericReply.hpp"
+#include "utils/NumericReply.hpp"
 
 std::vector<std::string> NumericReply::mReplies(500);
 
@@ -11,6 +11,7 @@ void NumericReply::initializeReplies() {
   mReplies[ERR_NOTREGISTERED] = ":You have not registered";
   mReplies[ERR_NEEDMOREPARAMS] = ":Not enough parameters";
   mReplies[ERR_ALREADYREGISTRED] = ":You may not reregister";
+  mReplies[ERR_INVALIDUSERNAME] = ":Your username is not valid";
 }
 
 NumericReply::NumericReply() {}

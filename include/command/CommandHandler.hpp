@@ -10,7 +10,7 @@ class CommandHandler {
  public:
   CommandHandler();
   ~CommandHandler();
-  ReplyPair handleCommand(Client& client, Message& message);
+  std::string handleCommand(Client& client, Message& message);
 
  private:
   std::map<std::string, Command*> mCommands;

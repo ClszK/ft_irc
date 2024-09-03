@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "utils/StringUtility.hpp"
+
 class Server;
 
 class Client {
@@ -12,12 +14,11 @@ class Client {
   std::string mRealName;
   std::string mUserMode;
   std::string mPassword;
-  const std::string* mServerPassword;
   Server* mServer;
 
  public:
-  void setNickName(const std::string& nickName) { mNickName = nickName; }
-  void setUserName(const std::string& userName) { mUserName = userName; }
+  bool setNickName(const std::string& nickName);
+  bool setUserName(const std::string& userName);
   void setRealName(const std::string& realName) { mRealName = realName; }
   void setUserMode(const std::string& userMode) { mUserMode = userMode; }
   void setPassword(const std::string& password) { mPassword = password; }
@@ -27,12 +28,12 @@ class Client {
   const std::string& getRealName() const { return mRealName; }
   const std::string& getUserMode() const { return mUserMode; }
   const std::string& getPassword() const { return mPassword; }
+  const std::string& getServerName() const;
+  const std::string& getHostName() const;
 
-  bool isPasswordValid(const std::string& password) const {
-    return password == *mServerPassword;
-  }
+  bool isPasswordValid() const;
 
   Client();
-  Client(const int sockFd, std::string* serverPassword, Server* server);
+  Client(const int sockFd, Server* server);
   ~Client();
 };

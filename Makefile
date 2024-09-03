@@ -4,19 +4,25 @@ SRCS        = main.cpp \
 							Client.cpp \
 							Channel.cpp \
 							MessageHandler.cpp \
-							command/Command.cpp \
-							command/CommandHandler.cpp \
-							command/NumericReply.cpp \
-							command/ReplyUtility.cpp
+							Command.cpp \
+							CommandHandler.cpp \
+							NumericReply.cpp \
+							ReplyUtility.cpp \
+							StringUtility.cpp 
 
+SRCDIR			= src
 OBJDIR      = build
-OBJS        = $(patsubst %.cpp, $(OBJDIR)/%.o, $(notdir $(SRCS)))
-DEPS        = $(patsubst %.cpp, $(OBJDIR)/%.d, $(notdir $(SRCS)))
 
-VPATH			  = command
+OBJS        = $(patsubst %.cpp, $(OBJDIR)/%.o, $(SRCS))
+DEPS        = $(patsubst %.cpp, $(OBJDIR)/%.d, $(SRCS))
+
+VPATH       = $(SRCDIR):$(SRCDIR)/server:$(SRCDIR)/client:$(SRCDIR)/channel:$(SRCDIR)/command:$(SRCDIR)/utils
 
 CXX         = c++
-CXXFLAGS    = -Wall -Wextra -Werror -std=c++98 -MMD -MP
+CXXFLAGS    = -Wall -Wextra -Werror -Iinclude -std=c++98 -MMD -MP
+
+INTERFACE		= en0
+IRC_SERVER	= $(shell ifconfig $(INTERFACE) | grep 'inet ' | grep -v 'inet6' | awk '{print $$2}')
 
 all:    $(NAME)
 
@@ -42,10 +48,18 @@ re:
 	make all
 
 up:
-	cd docker && docker-compose up --no-log-prefix --build
+	cd docker && docker compose up --no-log-prefix --build 
 
 down:
-	cd docker && docker-compose down
+	cd docker && docker compose down 
+	docker stop $$(docker ps -qa)
+	docker rm $$(docker ps -qa)
 
+irssi:
+	@if [ -z "$(PASS)" ]; then \
+		docker run -it irssi irssi -c $(IRC_SERVER); \
+	else \
+		docker run -it irssi irssi -c $(IRC_SERVER) -w $(PASS); \
+	fi
 
 .PHONY: all clean fclean re

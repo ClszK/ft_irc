@@ -13,6 +13,7 @@ enum Reply {
   ERR_NOTREGISTERED = 451,
   ERR_NEEDMOREPARAMS = 461,
   ERR_ALREADYREGISTRED = 462,
+  ERR_INVALIDUSERNAME = 468
 };
 
 typedef std::pair<int, std::string> ReplyPair;

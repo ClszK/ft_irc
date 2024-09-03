@@ -1,4 +1,4 @@
-#include "CommandHandler.hpp"
+#include "command/CommandHandler.hpp"
 
 CommandHandler::CommandHandler() {
   mCommands["user"] = new UserCommand();
@@ -7,11 +7,11 @@ CommandHandler::CommandHandler() {
   mCommands["nick"] = new NickCommand();
 }
 
-ReplyPair CommandHandler::handleCommand(Client& client, Message& message) {
+std::string CommandHandler::handleCommand(Client& client, Message& message) {
   if (mCommands.find(message.command) != mCommands.end()) {
     return mCommands[message.command]->execute(client, message);
   }
-  return std::make_pair(0, "");
+  return "";
 }
 
 CommandHandler::~CommandHandler() {

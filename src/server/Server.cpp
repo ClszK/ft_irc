@@ -1,4 +1,4 @@
-#include "Server.hpp"
+#include "server/Server.hpp"
 
 void Server::init() {
   NumericReply::initializeReplies();
@@ -26,7 +26,7 @@ void Server::handleListenEvent() {
   EV_SET(&mChangeEvent, connFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
   if (kevent(mKq, &mChangeEvent, 1, NULL, 0, NULL) == -1)
     throw std::runtime_error(std::strerror(errno));
-  mClients.insert(std::make_pair(connFd, Client(connFd, &mPassword, this)));
+  mClients.insert(std::make_pair(connFd, Client(connFd, this)));
 
   if (errno) throw std::runtime_error(std::strerror(errno));
 }
@@ -77,9 +77,12 @@ void Server::handleWriteEvent(struct kevent& event) {
                               itPos + 1);  // CRLF 제거
   std::cout << parsedMessage << std::endl;
 
-  ReplyPair reply =
-      mCommandHandler.handleCommand(mClients[event.ident], parsedMessage);
-  sendReplyToClient(event, reply);
+  std::string replyStr =
+      mCommandHandler.handleCommand(mClients[event.ident], parsedMessage)
+          .c_str();
+  if (replyStr.empty()) return;
+
+  send(event.ident, replyStr.c_str(), replyStr.size(), 0);
 }
 
 void Server::sendReplyToClient(struct kevent& event, ReplyPair reply) {
@@ -137,6 +140,12 @@ Server::Server(int argc, char* argv[]) : mPassword(argv[2]) {
     throw std::runtime_error("Invalid port number");
 
   mPort = port;
+
+  char hostBuffer[256];
+  if (gethostname(hostBuffer, sizeof(hostBuffer)) == -1)
+    throw std::runtime_error(std::strerror(errno));
+
+  mHostName = std::string(hostBuffer);
 
   init();
 }

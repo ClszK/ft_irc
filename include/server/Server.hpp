@@ -14,9 +14,9 @@
 #include <map>
 #include <sstream>
 
-#include "./command/CommandHandler.hpp"
-#include "Channel.hpp"
-#include "SocketAddr.hpp"
+#include "channel/Channel.hpp"
+#include "command/CommandHandler.hpp"
+#include "utils/SocketAddr.hpp"
 
 #define BUF_SIZE 512
 #define MAX_EVENTS 1024
@@ -27,6 +27,8 @@ class Server {
   void run();
 
   const std::string& getPassword() const { return mPassword; }
+  const std::string& getServerName() const { return mServerName; }
+  const std::string& getHostName() const { return mHostName; }
 
  private:
   int mPort, mListenFd, mKq;
@@ -34,6 +36,7 @@ class Server {
   struct kevent mChangeEvent, mEvents[MAX_EVENTS];
   std::string mPassword;
   std::string mServerName;
+  std::string mHostName;
   std::map<int, Client> mClients;
   std::map<int, std::string> mBuffers;
   std::map<std::string, Channel*> mChannels;

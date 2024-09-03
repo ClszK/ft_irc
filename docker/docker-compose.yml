@@ -4,8 +4,3 @@ services:
     image: inspircd_image
     ports:
       - "6667:6667"
-    tty: true
-  irssi:
-    build: ./irssi
-    image: irssi_image
-    tty: true
