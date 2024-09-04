@@ -78,7 +78,7 @@ std::string ReplyUtility::makeServerSupportedReply(Client& client) {
 
   ss << ":" << client.getServerName() << " " << std::setw(3)
      << std::setfill('0') << RPL_SUPPORT << " "
-     << "CASEMAPPING=" << CASEMAPPING << " "
+     << "CASEATING=" << CASEATING << " "
      << "CHANLIMIT=" << CHANLIMIT << " "
      << "CHANMODES=" << CHANMODES << " "
      << "CHANNELLEN=" << CHANNELLEN << " "

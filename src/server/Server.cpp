@@ -1,5 +1,13 @@
 #include "server/Server.hpp"
 
+const Channel* Server::findChannel(const std::string& channelName) const {
+  std::map<std::string, Channel>::const_iterator it =
+      mChannels.find(channelName);
+  if (it == mChannels.end()) return NULL;
+
+  return &it->second;
+}
+
 void Server::init() {
   NumericReply::initializeReplies();
   if ((mListenFd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
@@ -55,7 +63,7 @@ void Server::initServerInfo(char* argv[]) {
    * l: limit on number of users that can join
    * o: operator
    */
-  mServerConf.availableChannelMode = "itkol";
+  mServerConf.availableChannelMode = "itknol";
 }
 
 void Server::handleListenEvent() {
@@ -67,7 +75,7 @@ void Server::handleListenEvent() {
   EV_SET(&mChangeEvent, connFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
   if (kevent(mKq, &mChangeEvent, 1, NULL, 0, NULL) == -1)
     throw std::runtime_error(std::strerror(errno));
-  mClients.insert(std::make_pair(connFd, Client(connFd, this)));
+  mClients.insert(std::make_pair(connFd, Client(connFd)));
 
   if (errno) throw std::runtime_error(std::strerror(errno));
 }

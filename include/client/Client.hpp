@@ -1,9 +1,11 @@
 #pragma once
 
+#include <map>
 #include <string>
 
 #include "utils/StringUtility.hpp"
 
+class Channel;
 class Server;
 
 class Client {
@@ -14,7 +16,7 @@ class Client {
   std::string mRealName;
   std::string mUserMode;
   std::string mPassword;
-  Server* mServer;
+  std::map<std::string, Channel*> mConnectedChannels;
 
  public:
   bool setNickName(const std::string& nickName);
@@ -38,7 +40,7 @@ class Client {
 
   bool isPasswordValid() const;
 
-  Client();
-  Client(const int sockFd, Server* server);
-  ~Client();
+  Client() {};
+  Client(const int sockFd) : mSockFd(sockFd) {};
+  ~Client() {};
 };

@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <algorithm>
 #include <cerrno>
 #include <ctime>
 #include <iostream>
@@ -33,10 +34,11 @@ struct ServerConf {
 
 class Server {
  public:
-  static Server* getInstance(int argc, char* argv[]);
+  static Server* getInstance(int argc = 0, char* argv[] = NULL);
   void run();
 
   const ServerConf& getServerConf() const { return mServerConf; }
+  const Channel* findChannel(const std::string& channelName) const;
 
  private:
   int mListenFd, mKq;

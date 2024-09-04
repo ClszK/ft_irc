@@ -13,38 +13,33 @@ bool Client::setUserName(const std::string& userName) {
 }
 
 const std::string& Client::getServerName() const {
-  return mServer->getServerConf().serverName;
+  return Server::getInstance()->getServerConf().serverName;
 }
 
 const std::string& Client::getHostName() const {
-  return mServer->getServerConf().hostName;
+  return Server::getInstance()->getServerConf().hostName;
 }
 
 const std::string& Client::getVersion() const {
-  return mServer->getServerConf().version;
+  return Server::getInstance()->getServerConf().version;
 }
 
 const std::string& Client::getCreatedTime() const {
-  return mServer->getServerConf().createdTime;
+  return Server::getInstance()->getServerConf().createdTime;
 }
 
 const std::string& Client::getAvailableUserMode() const {
-  return mServer->getServerConf().availableUserMode;
+  return Server::getInstance()->getServerConf().availableUserMode;
 }
 
 const std::string& Client::getAvailableChannelMode() const {
-  return mServer->getServerConf().availableChannelMode;
+  return Server::getInstance()->getServerConf().availableChannelMode;
 }
 
-int Client::getPort() const { return mServer->getServerConf().port; }
+int Client::getPort() const {
+  return Server::getInstance()->getServerConf().port;
+}
 
 bool Client::isPasswordValid() const {
-  return mPassword == mServer->getServerConf().password;
+  return mPassword == Server::getInstance()->getServerConf().password;
 }
-
-Client::Client() : mServer(NULL) {}
-
-Client::Client(const int sockFd, Server* server)
-    : mSockFd(sockFd), mServer(server) {}
-
-Client::~Client() {}
