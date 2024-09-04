@@ -8,6 +8,7 @@ struct ToLower {
     return std::tolower(static_cast<unsigned char>(c));
   }
 };
+
 struct Message {
   std::string prefix;
   std::string command;

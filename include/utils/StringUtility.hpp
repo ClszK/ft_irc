@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "server/IRCConstants.hpp"
+
 class StringUtility {
  private:
   static bool isSpecial(char c);

@@ -13,7 +13,7 @@ bool StringUtility::isSpecial(char c) {
  * ( letter / special ) *8( letter / digit / special / "-" )
  */
 bool StringUtility::isValidNickName(const std::string& nickName) {
-  if (nickName.length() < 1 || nickName.length() > 9) return false;
+  if (nickName.length() < 1 || nickName.length() > NICKLEN) return false;
 
   if (!(std::isalpha(nickName[0]) || isSpecial(nickName[0]))) return false;
 
@@ -36,7 +36,7 @@ bool StringUtility::isValidNickName(const std::string& nickName) {
  * At (@): ASCII 0x40 (앳 기호)
  */
 bool StringUtility::isValidUserName(const std::string& userName) {
-  if (userName.length() < 1 || userName.length() > 9) return false;
+  if (userName.length() < 1 || userName.length() > USERLEN) return false;
 
   for (size_t i = 0; i < userName.length(); i++) {
     if (std::string(" \0\r\n@").find(userName[i]) != std::string::npos)
@@ -58,7 +58,8 @@ bool StringUtility::isValidUserName(const std::string& userName) {
  * [:chanstring]은 고급 IRC 서버 기능으로 구현 안함.
  */
 bool StringUtility::isValidChannelName(const std::string& channelName) {
-  if (channelName.length() < 3 || channelName.length() > 50) return false;
+  if (channelName.length() < 3 || channelName.length() > CHANNELLEN)
+    return false;
 
   if (std::string("#&+!").find(channelName[0]) != std::string::npos)
     return false;
@@ -76,7 +77,7 @@ bool StringUtility::isValidChannelName(const std::string& channelName) {
                   ; except NUL, CR, LF, FF, h/v TABs, and " "
  */
 bool StringUtility::isValidKey(const std::string& key) {
-  if (key.length() < 1 || key.length() > 23) return false;
+  if (key.length() < 1 || key.length() > KEYLEN) return false;
 
   for (size_t i = 0; i < key.length(); i++) {
     if (std::string("\0\r\n\a\f\t\v ").find(key[i]) != std::string::npos)

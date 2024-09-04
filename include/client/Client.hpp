@@ -30,6 +30,11 @@ class Client {
   const std::string& getPassword() const { return mPassword; }
   const std::string& getServerName() const;
   const std::string& getHostName() const;
+  const std::string& getVersion() const;
+  const std::string& getCreatedTime() const;
+  const std::string& getAvailableUserMode() const;
+  const std::string& getAvailableChannelMode() const;
+  int getPort() const;
 
   bool isPasswordValid() const;
 

@@ -2,11 +2,10 @@
 
 void Server::init() {
   NumericReply::initializeReplies();
-  mServerName = "IRCServer";
   if ((mListenFd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
     throw std::runtime_error(std::strerror(errno));
 
-  mServerAddr = SocketAddr(mPort);
+  mServerAddr = SocketAddr(mServerConf.port);
 
   if (bind(mListenFd, mServerAddr, sizeof(struct sockaddr)) == -1 ||
       listen(mListenFd, MAX_EVENTS) == -1 || (mKq = kqueue()) == -1)
@@ -15,6 +14,48 @@ void Server::init() {
   EV_SET(&mChangeEvent, mListenFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
   if (kevent(mKq, &mChangeEvent, 1, NULL, 0, NULL) == -1)
     throw std::runtime_error(std::strerror(errno));
+}
+
+void Server::initServerInfo(char* argv[]) {
+  char* end;
+  long port = std::strtol(argv[1], &end, 10);
+  if (errno == ERANGE || *end != '\0' || port < 0 || port > 65535)
+    throw std::runtime_error("Invalid port number");
+
+  mServerConf.port = port;
+  char hostBuffer[256];
+  if (gethostname(hostBuffer, sizeof(hostBuffer)) == -1)
+    throw std::runtime_error(std::strerror(errno));
+
+  std::time_t rawTime;
+  std::tm* timeInfo;
+  char buffer[80];
+
+  std::time(&rawTime);
+  timeInfo = std::localtime(&rawTime);
+
+  std::strftime(buffer, sizeof(buffer), "%H:%M:%S %b %d %Y", timeInfo);
+
+  mServerConf.password = argv[2];
+  mServerConf.hostName = std::string(hostBuffer);
+  mServerConf.version = "ircserv-1.0";
+  mServerConf.serverName = "IRCServer";
+  mServerConf.createdTime = std::string(buffer);
+  /**
+   * i: 클라이언트가 다른 사용자에게 보이지 않도록 하여 프라이버시를 보호.
+   * o: 운영자가 서버를 관리하고, 문제를 해결할 수 있는 권한 부여.
+   * s: 서버의 중요한 이벤트나 메시지를 운영자에게 전달.
+   * w: 서버 전체에 중요한 메시지를 브로드캐스트하기 위해 사용.
+   */
+  mServerConf.availableUserMode = "iosw";
+  /**
+   * i: invite only
+   * t: topic settable by channel operator only
+   * k: channel key required to join
+   * l: limit on number of users that can join
+   * o: operator
+   */
+  mServerConf.availableChannelMode = "itkol";
 }
 
 void Server::handleListenEvent() {
@@ -32,7 +73,7 @@ void Server::handleListenEvent() {
 }
 
 void Server::handleReadEvent(struct kevent& event) {
-  char buffer[BUF_SIZE];
+  char buffer[LINELEN];
 
   int n = recv(event.ident, buffer, sizeof(buffer) - 1, 0);
   buffer[n] = '\0';
@@ -40,6 +81,7 @@ void Server::handleReadEvent(struct kevent& event) {
     mBuffers[event.ident] += buffer;
 
     std::cout << "Recv: " << mBuffers[event.ident] << std::endl;
+
     if (std::find(mBuffers[event.ident].begin(), mBuffers[event.ident].end(),
                   '\n') != mBuffers[event.ident].end()) {
       EV_SET(&mChangeEvent, event.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0,
@@ -66,47 +108,24 @@ void Server::handleWriteEvent(struct kevent& event) {
   EV_SET(&mChangeEvent, event.ident, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
   if (kevent(mKq, &mChangeEvent, 1, NULL, 0, NULL) == -1)
     throw std::runtime_error(std::strerror(errno));
+  std::string::iterator itPos;
+  while ((itPos = std::find(mBuffers[event.ident].begin(),
+                            mBuffers[event.ident].end(), '\n')) !=
+         mBuffers[event.ident].end()) {
+    Message parsedMessage = MessageHandler::parseMessage(
+        mBuffers[event.ident].substr(0, itPos - mBuffers[event.ident].begin()));
 
-  std::string::iterator itPos = std::find(mBuffers[event.ident].begin(),
-                                          mBuffers[event.ident].end(), '\n');
+    mBuffers[event.ident].erase(mBuffers[event.ident].begin(),
+                                itPos + 1);  // CRLF 제거
+    std::cout << parsedMessage << std::endl;
 
-  Message parsedMessage = MessageHandler::parseMessage(
-      mBuffers[event.ident].substr(0, itPos - mBuffers[event.ident].begin()));
+    std::string replyStr =
+        mCommandHandler.handleCommand(mClients[event.ident], parsedMessage)
+            .c_str();
+    if (replyStr.empty()) return;
 
-  mBuffers[event.ident].erase(mBuffers[event.ident].begin(),
-                              itPos + 1);  // CRLF 제거
-  std::cout << parsedMessage << std::endl;
-
-  std::string replyStr =
-      mCommandHandler.handleCommand(mClients[event.ident], parsedMessage)
-          .c_str();
-  if (replyStr.empty()) return;
-
-  send(event.ident, replyStr.c_str(), replyStr.size(), 0);
-}
-
-void Server::sendReplyToClient(struct kevent& event, ReplyPair reply) {
-  std::cout << "Reply: " << reply.first << " " << reply.second << std::endl;
-  std::stringstream ss;
-  std::string message;
-  if (reply.first == 0 && reply.second.empty())
-    return;
-  else if (reply.first < 0) {
-    ss << reply.second << "\n";
-    message = ss.str();
-    send(event.ident, message.c_str(), message.size(), 0);
-    mClients.erase(event.ident);
-    close(event.ident);
-    return;
+    send(event.ident, replyStr.c_str(), replyStr.size(), 0);
   }
-
-  ss << ":" << mServerName;
-  if (reply.first > 0) ss << " " << reply.first;
-  ss << " " << reply.first << " " << reply.second << "\n";
-
-  message = ss.str();
-  std::cout << "Send: " << message;
-  send(event.ident, message.c_str(), message.size(), 0);
 }
 
 void Server::run() {
@@ -127,26 +146,14 @@ void Server::run() {
   }
 }
 
-Server::Server(int argc, char* argv[]) : mPassword(argv[2]) {
-  char* end;
-
+Server::Server(int argc, char* argv[]) {
   errno = 0;
 
   if (argc != 3)
     throw std::runtime_error("Usage: " + std::string(argv[0]) +
                              " <port> <password>");
-  long port = std::strtol(argv[1], &end, 10);
-  if (errno == ERANGE || *end != '\0' || port < 0 || port > 65535)
-    throw std::runtime_error("Invalid port number");
 
-  mPort = port;
-
-  char hostBuffer[256];
-  if (gethostname(hostBuffer, sizeof(hostBuffer)) == -1)
-    throw std::runtime_error(std::strerror(errno));
-
-  mHostName = std::string(hostBuffer);
-
+  initServerInfo(argv);
   init();
 }
 

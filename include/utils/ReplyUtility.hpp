@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iomanip>
 #include <sstream>
 #include <string>
 
@@ -8,12 +9,22 @@
 
 class ReplyUtility {
  public:
-  static std::string makeWelcomeReply(const std::string& nickName);
-  static std::string makeNeedMoreParamsReply(const std::string& command);
-  static std::string makeErrNonicknameGivenReply(const std::string& str);
-  static std::string makeErrorReply();
-  static std::string makeNotRegisteredReply(Client& client,
-                                            const std::string& command);
-  static std::string makeInvalidUserNameReply(Client& client,
-                                              const std::string& command);
+  static std::string makeSuccessConnectReply(Client& client);
+  static std::string makeWelcomeReply(Client& client);
+  static std::string makeYourHostReply(Client& client);
+  static std::string makeCreatedReply(Client& client);
+  static std::string makeMyInfoReply(Client& client);
+  static std::string makeServerSupportedReply(Client& client);
+
+  static std::string makeErrNeedMoreParamsReply(Client& client,
+                                                const std::string& command);
+  static std::string makeErrNonicknameGivenReply(Client& client,
+                                                 const std::string& str);
+  static std::string makeErrorReply(Client& client);
+  static std::string makeErrNotRegisteredReply(Client& client,
+                                               const std::string& command);
+  static std::string makeErrInvalidUserNameReply(Client& client,
+                                                 const std::string& command);
+  static std::string makeErrInvalidChannelNameReply(Client& client,
+                                                    const std::string& str);
 };

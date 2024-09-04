@@ -13,15 +13,33 @@ bool Client::setUserName(const std::string& userName) {
 }
 
 const std::string& Client::getServerName() const {
-  return mServer->getServerName();
+  return mServer->getServerConf().serverName;
 }
 
 const std::string& Client::getHostName() const {
-  return mServer->getHostName();
+  return mServer->getServerConf().hostName;
 }
 
+const std::string& Client::getVersion() const {
+  return mServer->getServerConf().version;
+}
+
+const std::string& Client::getCreatedTime() const {
+  return mServer->getServerConf().createdTime;
+}
+
+const std::string& Client::getAvailableUserMode() const {
+  return mServer->getServerConf().availableUserMode;
+}
+
+const std::string& Client::getAvailableChannelMode() const {
+  return mServer->getServerConf().availableChannelMode;
+}
+
+int Client::getPort() const { return mServer->getServerConf().port; }
+
 bool Client::isPasswordValid() const {
-  return mPassword == mServer->getPassword();
+  return mPassword == mServer->getServerConf().password;
 }
 
 Client::Client() : mServer(NULL) {}

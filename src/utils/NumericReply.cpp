@@ -3,7 +3,10 @@
 std::vector<std::string> NumericReply::mReplies(500);
 
 void NumericReply::initializeReplies() {
-  mReplies[RPL_WELCOME] = ":Welcome to the Localnet IRC Network";
+  mReplies[RPL_WELCOME] = ":Welcome to the Internet Relay Network";
+  mReplies[RPL_YOURHOST] = ":Your host is <servername>, running version <ver>";
+  mReplies[RPL_CREATED] = ":This server was created";
+  mReplies[RPL_SUPPORT] = ":are supported by this server";
   mReplies[ERR_NONICKNAMEGIVEN] = ":No nickname given";
   mReplies[ERR_ERRONEUSNICKNAME] = ":Erroneus nickname";
   mReplies[ERR_NICKNAMEINUSE] = ":Nickname is already in use";
@@ -12,6 +15,7 @@ void NumericReply::initializeReplies() {
   mReplies[ERR_NEEDMOREPARAMS] = ":Not enough parameters";
   mReplies[ERR_ALREADYREGISTRED] = ":You may not reregister";
   mReplies[ERR_INVALIDUSERNAME] = ":Your username is not valid";
+  mReplies[ERR_INVALIDCHANNELNAME] = ":Invalid channel name";
 }
 
 NumericReply::NumericReply() {}

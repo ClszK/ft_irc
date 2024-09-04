@@ -67,19 +67,26 @@
 		"charconv": "cpp",
 		"clocale": "cpp",
 		"execution": "cpp",
-		"variant": "cpp"
+		"variant": "cpp",
+		"set": "cpp",
+		"iomanip": "cpp"
 	},
 	"cSpell.words": [
 		"ALREADYREGISTRED",
 		"Clientlist",
 		"Erroneus",
 		"ERRONEUSNICKNAME",
+		"INVALIDCHANNELNAME",
 		"INVALIDUSERNAME",
+		"ircserv",
+		"MYINFO",
 		"NEEDMOREPARAMS",
 		"NICKCOLLISION",
 		"NICKNAMEINUSE",
 		"NONICKNAMEGIVEN",
 		"NOTREGISTERED",
-		"reregister"
+		"reregister",
+		"servername",
+		"YOURHOST"
 	]
 }

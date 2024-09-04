@@ -1,4 +1,4 @@
-#include "MessageHandler.hpp"
+#include "command/MessageHandler.hpp"
 
 Message MessageHandler::parseMessage(const std::string& message) {
   if (message.empty()) {

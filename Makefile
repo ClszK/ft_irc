@@ -10,7 +10,7 @@ SRCS        = main.cpp \
 							ReplyUtility.cpp \
 							StringUtility.cpp 
 
-SRCDIR			= src
+SRCDIR		= src
 OBJDIR      = build
 
 OBJS        = $(patsubst %.cpp, $(OBJDIR)/%.o, $(SRCS))
@@ -21,8 +21,10 @@ VPATH       = $(SRCDIR):$(SRCDIR)/server:$(SRCDIR)/client:$(SRCDIR)/channel:$(SR
 CXX         = c++
 CXXFLAGS    = -Wall -Wextra -Werror -Iinclude -std=c++98 -MMD -MP
 
-INTERFACE		= en0
+INTERFACE	= en0
 IRC_SERVER	= $(shell ifconfig $(INTERFACE) | grep 'inet ' | grep -v 'inet6' | awk '{print $$2}')
+NICK		= test
+PORT		= 6667
 
 all:    $(NAME)
 
@@ -57,9 +59,10 @@ down:
 
 irssi:
 	@if [ -z "$(PASS)" ]; then \
-		docker run -it irssi irssi -c $(IRC_SERVER); \
+		docker run -it irssi irssi -c $(IRC_SERVER) -n $(NICK) -p $(PORT); \
 	else \
-		docker run -it irssi irssi -c $(IRC_SERVER) -w $(PASS); \
+		docker run -it irssi irssi -c $(IRC_SERVER) -w $(PASS) -n $(NICK) -p $(PORT); \
 	fi
 
 .PHONY: all clean fclean re
+
