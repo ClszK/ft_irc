@@ -16,10 +16,12 @@
 #include <map>
 #include <sstream>
 
-#include "channel/Channel.hpp"
 #include "command/CommandHandler.hpp"
 #include "server/IRCConstants.hpp"
 #include "utils/SocketAddr.hpp"
+
+class Client;
+class Channel;
 
 struct ServerConf {
   std::string serverName;
@@ -38,16 +40,22 @@ class Server {
   void run();
 
   const ServerConf& getServerConf() const { return mServerConf; }
-  const Channel* findChannel(const std::string& channelName) const;
+  const std::map<int, Client*>& getClients() const { return mClients; }
+  const std::map<std::string, Channel*>& getChannels() const {
+    return mChannels;
+  }
+
+  void setChannel(const std::string& channelName, Channel* channel);
+  void setClient(const int sockFd, Client* client);
 
  private:
   int mListenFd, mKq;
   SocketAddr mServerAddr;
   struct kevent mChangeEvent, mEvents[MAX_EVENTS];
   ServerConf mServerConf;
-  std::map<int, Client> mClients;
   std::map<int, std::string> mBuffers;
-  std::map<std::string, Channel> mChannels;
+  std::map<int, Client*> mClients;
+  std::map<std::string, Channel*> mChannels;
   CommandHandler mCommandHandler;
 
   void init();

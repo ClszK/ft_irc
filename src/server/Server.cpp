@@ -1,11 +1,22 @@
 #include "server/Server.hpp"
 
-const Channel* Server::findChannel(const std::string& channelName) const {
-  std::map<std::string, Channel>::const_iterator it =
-      mChannels.find(channelName);
-  if (it == mChannels.end()) return NULL;
+#include "channel/Channel.hpp"
+#include "client/Client.hpp"
 
-  return &it->second;
+void Server::setChannel(const std::string& channelName, Channel* channel) {
+  if (channel == NULL) {
+    delete mChannels[channelName];
+    mChannels.erase(channelName);
+  } else
+    mChannels[channelName] = channel;
+}
+
+void Server::setClient(const int sockFd, Client* client) {
+  if (client == NULL) {
+    delete mClients[sockFd];
+    mClients.erase(sockFd);
+  } else
+    mClients[sockFd] = client;
 }
 
 void Server::init() {
@@ -75,7 +86,7 @@ void Server::handleListenEvent() {
   EV_SET(&mChangeEvent, connFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
   if (kevent(mKq, &mChangeEvent, 1, NULL, 0, NULL) == -1)
     throw std::runtime_error(std::strerror(errno));
-  mClients.insert(std::make_pair(connFd, Client(connFd)));
+  Client::createClient(connFd);
 
   if (errno) throw std::runtime_error(std::strerror(errno));
 }
@@ -102,7 +113,7 @@ void Server::handleReadEvent(struct kevent& event) {
 
   } else if (n == 0) {
     std::cout << "Connection closed: " << event.ident << std::endl;
-    mClients.erase(event.ident);
+    Client::deleteClient(event.ident);
     close(event.ident);
   }
   if (errno) {
@@ -128,7 +139,7 @@ void Server::handleWriteEvent(struct kevent& event) {
     std::cout << parsedMessage << std::endl;
 
     std::string replyStr =
-        mCommandHandler.handleCommand(mClients[event.ident], parsedMessage)
+        mCommandHandler.handleCommand(*mClients[event.ident], parsedMessage)
             .c_str();
     if (replyStr.empty()) return;
 
@@ -171,4 +182,17 @@ Server* Server::getInstance(int argc, char* argv[]) {
   return &instance;
 }
 
-Server::~Server() {}
+Server::~Server() {
+  for (std::map<int, Client*>::iterator it = mClients.begin();
+       it != mClients.end(); ++it) {
+    close(it->first);
+    delete it->second;
+  }
+
+  for (std::map<std::string, Channel*>::iterator it = mChannels.begin();
+       it != mChannels.end(); ++it)
+    delete it->second;
+
+  close(mListenFd);
+  close(mKq);
+}

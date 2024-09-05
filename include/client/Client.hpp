@@ -40,6 +40,9 @@ class Client {
 
   bool isPasswordValid() const;
 
+  static void createClient(const int sockFd);
+  static void deleteClient(const int sockFd);
+
   Client() {};
   Client(const int sockFd) : mSockFd(sockFd) {};
   ~Client() {};

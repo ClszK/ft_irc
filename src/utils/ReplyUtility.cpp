@@ -4,10 +4,10 @@ std::string ReplyUtility::makeSuccessConnectReply(Client& client) {
   std::string result;
 
   result += makeWelcomeReply(client);
-  result += makeYourHostReply(client);
-  result += makeCreatedReply(client);
-  result += makeMyInfoReply(client);
-  result += makeServerSupportedReply(client);
+  // result += makeYourHostReply(client);
+  // result += makeCreatedReply(client);
+  // result += makeMyInfoReply(client);
+  // result += makeServerSupportedReply(client);
   return result;
 }
 
@@ -78,7 +78,7 @@ std::string ReplyUtility::makeServerSupportedReply(Client& client) {
 
   ss << ":" << client.getServerName() << " " << std::setw(3)
      << std::setfill('0') << RPL_SUPPORT << " "
-     << "CASEATING=" << CASEATING << " "
+     << "CASEMAPPING=" << CASEMAPPING << " "
      << "CHANLIMIT=" << CHANLIMIT << " "
      << "CHANMODES=" << CHANMODES << " "
      << "CHANNELLEN=" << CHANNELLEN << " "
