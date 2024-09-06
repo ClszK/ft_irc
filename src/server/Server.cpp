@@ -14,6 +14,7 @@ void Server::setChannel(const std::string& channelName, Channel* channel) {
 void Server::setClient(const int sockFd, Client* client) {
   if (client == NULL) {
     delete mClients[sockFd];
+    close(sockFd);
     mClients.erase(sockFd);
   } else
     mClients[sockFd] = client;
@@ -139,9 +140,13 @@ void Server::handleWriteEvent(struct kevent& event) {
     std::string replyStr =
         mCommandHandler.handleCommand(*mClients[event.ident], parsedMessage)
             .c_str();
-    if (replyStr.empty()) continue;
-
+    if (replyStr.empty()) {
+      continue;
+    }
+    std::cout << "Reply: " << replyStr << std::endl;
     send(event.ident, replyStr.c_str(), replyStr.size(), 0);
+    if (replyStr == ReplyUtility::makeErrorReply(*mClients[event.ident]))
+      Client::deleteClient(event.ident);
   }
 }
 

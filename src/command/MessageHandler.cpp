@@ -1,16 +1,20 @@
 #include "command/MessageHandler.hpp"
 
-#include <iostream>
-
 Message MessageHandler::parseMessage(const std::string& message) {
   if (message.empty()) {
     return Message();
   }
-  std::istringstream iss(message);
+  std::string messageCopy = message;
+
+  size_t pos = messageCopy.find('\r');
+
+  if (pos != std::string::npos) messageCopy.erase(pos, 1);
+
+  std::istringstream iss(messageCopy);
   Message parsedMessage;
   std::string param;
 
-  if (message[0] == ':') std::getline(iss, parsedMessage.prefix, ' ');
+  if (messageCopy[0] == ':') std::getline(iss, parsedMessage.prefix, ' ');
 
   iss >> parsedMessage.command;
 
@@ -24,7 +28,6 @@ Message MessageHandler::parseMessage(const std::string& message) {
       if (std::getline(iss, trailing)) {
         param += " " + trailing;  // 나머지 텍스트를 공백 포함하여 추가
       }
-      std::cout << "param: " << param << "!" << std::endl;
       parsedMessage.params.push_back(param);
       break;  // 나머지 텍스트를 모두 읽었으므로 루프 종료
     }

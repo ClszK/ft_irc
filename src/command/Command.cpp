@@ -42,6 +42,7 @@ std::string NickCommand::execute(Client& client, Message& message) {
   return "";
 }
 
+#include <iostream>
 std::string UserCommand::execute(Client& client, Message& message) {
   if (message.params.size() < 4)
     return ReplyUtility::makeErrNeedMoreParamsReply(client, "USER");

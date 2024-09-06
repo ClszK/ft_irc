@@ -18,10 +18,10 @@ std::string ReplyUtility::makeSuccessConnectReply(Client& client) {
 std::string ReplyUtility::makeWelcomeReply(Client& client) {
   std::stringstream ss;
 
-  ss << ":" << client.getServerName() << " " << RPL_WELCOME << " "
-     << client.getNickName() << " " << NumericReply::getReply(RPL_WELCOME)
-     << " " << client.getNickName() << "!" << client.getUserName() << "@"
-     << client.getHostName() << "\n";
+  ss << ":" << client.getServerName() << " " << std::setw(3)
+     << std::setfill('0') << RPL_WELCOME << " " << client.getNickName() << " "
+     << NumericReply::getReply(RPL_WELCOME) << " " << client.getNickName()
+     << "!" << client.getUserName() << "@" << client.getHostName() << "\n";
 
   return ss.str();
 }
@@ -124,6 +124,7 @@ std::string ReplyUtility::makeErrorReply(Client& client) {
   return "ERROR :Closing link: (" + client.getNickName() + "@" +
          client.getHostName() + ") [Access denied by configuration]";
 }
+
 std::string ReplyUtility::makeErrNotRegisteredReply(
     Client& client, const std::string& command) {
   std::stringstream ss;
