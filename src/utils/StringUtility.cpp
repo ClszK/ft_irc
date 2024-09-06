@@ -76,7 +76,7 @@ bool StringUtility::isValidChannelName(const std::string& channelName) {
                   ; any 7-bit US_ASCII character,
                   ; except NUL, CR, LF, FF, h/v TABs, and " "
  */
-bool StringUtility::isValidKey(const std::string& key) {
+bool StringUtility::isValidChannelKey(const std::string& key) {
   if (key.length() < 1 || key.length() > KEYLEN) return false;
 
   for (size_t i = 0; i < key.length(); i++) {

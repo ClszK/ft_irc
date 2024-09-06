@@ -43,3 +43,11 @@ int Client::getPort() const {
 bool Client::isPasswordValid() const {
   return mPassword == Server::getInstance()->getServerConf().password;
 }
+
+void Client::createClient(const int sockFd) {
+  Server::getInstance()->setClient(sockFd, new Client(sockFd));
+}
+
+void Client::deleteClient(const int sockFd) {
+  Server::getInstance()->setClient(sockFd, NULL);
+}

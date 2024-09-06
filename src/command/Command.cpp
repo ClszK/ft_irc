@@ -8,10 +8,14 @@ std::string JoinCommand::execute(Client& client, Message& message) {
   if (message.params.size() < 1)
     return ReplyUtility::makeErrNeedMoreParamsReply(client, "JOIN");
 
-  if (StringUtility::isValidChannelName(message.params[0]))
-    // return ReplyUtility::makeErr
+  if (client.getNickName() == "" || client.getUserName() == "")
+    return ReplyUtility::makeErrNotRegisteredReply(client, "JOIN");
 
-    return "";
+  if (StringUtility::isValidChannelName(message.params[0]))
+    return ReplyUtility::makeErrInvalidChannelNameReply(client,
+                                                        message.params[0]);
+
+  return "";
 }
 
 std::string PassCommand::execute(Client& client, Message& message) {

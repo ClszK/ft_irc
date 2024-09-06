@@ -16,40 +16,32 @@ class Channel {
   std::string mChannelName;
   std::string mTopic;
   std::string mChannelMode;
+  std::string mChannelKey;
   bool mTopicLocked;
   int mMaxUser;
-  std::set<std::string> mClientlist;
-  std::set<std::string> mInvitedList;
-  std::set<std::string> mGMList;
+  std::set<Client*> mUserlist;
+  std::set<Client*> mInvitedList;
+  std::set<Client*> mGMList;
 
  public:
   Channel();
+  Channel(const std::string& channelName);
   ~Channel();
 
-  int setChannelName(const std::string& channelName);
   int setTopic(const std::string& topic);
-  int setTopicLocked(const std::string& nickName);
+  int setTopicLocked(Client& client);
+  int setChannelKey(Client& client, const std::string& key);
   void setMaxUser(int maxUser) { mMaxUser = maxUser; }
-  void setClientList(const std::string& nickName) {
-    mClientlist.insert(nickName);
-  }
-  int setChannelMode(Client& client, const std::string& channelName,
-                     const std::string& mode);
-  int setChannelKey(Client& client, const std::string& channelName,
-                    const std::string& key);
-  int setChannelUserLimit(const std::string& channelName, int userLimit);
-  int setChannelTopic(Client& client, const std::string& channelName,
-                      const std::string& topic);
-  void setInvitedList(const std::string& nickName) {
-    mInvitedList.insert(nickName);
-  }
-  void setGMList(const std::string& nickName) { mGMList.insert(nickName); }
+  void setUserList(Client& client) { mUserlist.insert(&client); }
+  int setChannelMode(Client& client, const std::string& mode);
+  int setChannelUserLimit(Client& client, int userLimit);
+  int setChannelTopic(Client& client, const std::string& topic);
+  void setInvitedList(Client& client) { mInvitedList.insert(&client); }
+  void setGMList(Client& client) { mGMList.insert(&client); }
 
   const std::string& getChannelName() const { return mChannelName; }
   const std::string& getTopic() const { return mTopic; }
   int getMaxUser() const { return mMaxUser; }
-
-  bool isOperator(Client& client) const;
 
   static bool findChannel(const std::string& channelName);
   static void createChannel(Client& client, const std::string& channelName);

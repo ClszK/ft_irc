@@ -151,8 +151,8 @@ std::string ReplyUtility::makeErrInvalidChannelNameReply(
     Client& client, const std::string& str) {
   std::stringstream ss;
 
-  ss << ":" << client.getServerName() << " " << std::setw(3)
-     << std::setfill('0') << ERR_INVALIDCHANNELNAME << " "
+  ss << ":" << client.getServerName() << " " << ERR_INVALIDCHANNELNAME << " "
      << client.getNickName() << " " << str << " "
      << NumericReply::getReply(ERR_INVALIDCHANNELNAME) << "\n";
+  return ss.str();
 }

@@ -1,9 +1,8 @@
 #include "channel/Channel.hpp"
 
-int Channel::setChannelName(const std::string& channelName) {
-  if (!StringUtility::isValidChannelName(channelName))
-    return ERR_INVALIDCHANNELNAME;
-  mChannelName = channelName;
+int Channel::setChannelKey(Client& client, const std::string& key) {
+  if (mGMList.find(&client) == mGMList.end()) return ERR_CHANOPRIVSNEEDED;
+  mChannelKey = key;
   return 0;
 }
 
@@ -17,13 +16,16 @@ int Channel::setTopic(const std::string& topic) {
 
 int Channel::setTopicLocked(Client& client) {
   if (mChannelMode.find('t') == std::string::npos) return ERR_CHANOPRIVSNEEDED;
-  if (isOperator(client)) return ERR_CHANOPRIVSNEEDED;
+  if (mGMList.find(&client) == mGMList.end()) return ERR_CHANOPRIVSNEEDED;
   mTopicLocked = !mTopicLocked;
   return 0;
 }
 
-bool Channel::isOperator(Client& client) const {
-  return mGMList.find(&client) != mGMList.end();
+int Channel::setChannelMode(Client& client, const std::string& mode) {
+  if (mGMList.find(&client) == mGMList.end()) return ERR_CHANOPRIVSNEEDED;
+
+  mChannelMode = mode;
+  return 0;
 }
 
 bool Channel::findChannel(const std::string& channelName) {
@@ -37,10 +39,9 @@ bool Channel::findChannel(const std::string& channelName) {
 void Channel::createChannel(Client& client, const std::string& channelName) {
   if (findChannel(channelName)) return;
 
-  Channel* channel = new Channel();
+  Channel* channel = new Channel(channelName);
 
-  channel->setChannelName(channelName);
-  channel->setClientList(client);
+  channel->setUserList(client);
   channel->setGMList(client);
 
   Server::getInstance()->setChannel(channelName, channel);
@@ -54,5 +55,12 @@ void Channel::deleteChannel(Client& client, const std::string& channelName) {
 
 Channel::Channel()
     : mTopic(""), mChannelMode("tn"), mTopicLocked(true), mMaxUser(5000) {}
+
+Channel::Channel(const std::string& channelName)
+    : mChannelName(channelName),
+      mTopic(""),
+      mChannelMode("tn"),
+      mTopicLocked(true),
+      mMaxUser(5000) {}
 
 Channel::~Channel() {}

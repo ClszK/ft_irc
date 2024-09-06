@@ -99,8 +99,6 @@ void Server::handleReadEvent(struct kevent& event) {
   if (n > 0) {
     mBuffers[event.ident] += buffer;
 
-    std::cout << "Recv: " << mBuffers[event.ident] << std::endl;
-
     if (std::find(mBuffers[event.ident].begin(), mBuffers[event.ident].end(),
                   '\n') != mBuffers[event.ident].end()) {
       EV_SET(&mChangeEvent, event.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0,
@@ -141,7 +139,7 @@ void Server::handleWriteEvent(struct kevent& event) {
     std::string replyStr =
         mCommandHandler.handleCommand(*mClients[event.ident], parsedMessage)
             .c_str();
-    if (replyStr.empty()) return;
+    if (replyStr.empty()) continue;
 
     send(event.ident, replyStr.c_str(), replyStr.size(), 0);
   }
