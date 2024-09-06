@@ -14,7 +14,6 @@ void Server::setChannel(const std::string& channelName, Channel* channel) {
 void Server::setClient(const int sockFd, Client* client) {
   if (client == NULL) {
     delete mClients[sockFd];
-    close(sockFd);
     mClients.erase(sockFd);
   } else
     mClients[sockFd] = client;
@@ -112,8 +111,9 @@ void Server::handleReadEvent(struct kevent& event) {
 
   } else if (n == 0) {
     std::cout << "Connection closed: " << event.ident << std::endl;
+    if (mClients[event.ident])
+      close(event.ident);
     Client::deleteClient(event.ident);
-    close(event.ident);
   }
   if (errno) {
     std::cerr << std::strerror(errno) << std::endl;
