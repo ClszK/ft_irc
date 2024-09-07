@@ -2,6 +2,7 @@
 
 #include "channel/Channel.hpp"
 #include "client/Client.hpp"
+#include "command/CommandHandler.hpp"
 
 void Server::setChannel(const std::string& channelName, Channel* channel) {
   if (channel == NULL) {
@@ -111,8 +112,7 @@ void Server::handleReadEvent(struct kevent& event) {
 
   } else if (n == 0) {
     std::cout << "Connection closed: " << event.ident << std::endl;
-    if (mClients[event.ident])
-      close(event.ident);
+    if (mClients[event.ident]) close(event.ident);
     Client::deleteClient(event.ident);
   }
   if (errno) {
@@ -138,7 +138,8 @@ void Server::handleWriteEvent(struct kevent& event) {
     std::cout << parsedMessage << std::endl;
 
     std::string replyStr =
-        mCommandHandler.handleCommand(*mClients[event.ident], parsedMessage)
+        CommandHandler::getInstance()
+            ->handleCommand(*mClients[event.ident], parsedMessage)
             .c_str();
     if (replyStr.empty()) {
       continue;

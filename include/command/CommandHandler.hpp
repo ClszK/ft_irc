@@ -6,15 +6,18 @@
 
 #include "command/Command.hpp"
 
-class Client;
-class Message;
-
 class CommandHandler {
  public:
-  CommandHandler();
-  ~CommandHandler();
   std::string handleCommand(Client& client, Message& message);
+
+  static CommandHandler* getInstance() {
+    static CommandHandler instance;
+    return &instance;
+  }
 
  private:
   std::map<std::string, Command*> mCommands;
+
+  CommandHandler();
+  ~CommandHandler();
 };

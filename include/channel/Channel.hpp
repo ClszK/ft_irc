@@ -45,5 +45,5 @@ class Channel {
 
   static Channel* findChannel(const std::string& channelName);
   static void createChannel(Client& client, const std::string& channelName);
-  static void deleteChannel(Client& client, const std::string& channelName);
+  static void deleteChannel(const std::string& channelName);
 };

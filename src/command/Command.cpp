@@ -34,6 +34,10 @@ std::string JoinCommand::execute(Client& client, Message& message) {
  :irc.local 353 test = #123 :@test
  :irc.local 366 test #123 :End of /NAMES list.
 
+ :test_!root@192.168.65.1 JOIN :#123
+:irc.local 353 test_ = #123 :@test test_
+:irc.local 366 test_ #123 :End of /NAMES list.
+
  "( "=" / "*" / "@" ) <channel>
                :[ "@" / "+" ] <nick> *( " " [ "@" / "+" ] <nick> )
 

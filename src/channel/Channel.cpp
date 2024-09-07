@@ -50,7 +50,7 @@ void Channel::createChannel(Client& client, const std::string& channelName) {
   Server::getInstance()->setChannel(channelName, channel);
 }
 
-void Channel::deleteChannel(Client& client, const std::string& channelName) {
+void Channel::deleteChannel(const std::string& channelName) {
   if (!findChannel(channelName)) return;
 
   Server::getInstance()->setChannel(channelName, NULL);

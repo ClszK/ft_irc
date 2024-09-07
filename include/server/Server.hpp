@@ -16,7 +16,6 @@
 #include <map>
 #include <sstream>
 
-#include "command/CommandHandler.hpp"
 #include "server/IRCConstants.hpp"
 #include "utils/SocketAddr.hpp"
 
@@ -56,7 +55,6 @@ class Server {
   std::map<int, std::string> mBuffers;
   std::map<int, Client*> mClients;
   std::map<std::string, Channel*> mChannels;
-  CommandHandler mCommandHandler;
 
   void init();
   void initServerInfo(char* argv[]);
