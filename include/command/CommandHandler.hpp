@@ -4,15 +4,14 @@
 #include <string>
 #include <vector>
 
-#include "Command.hpp"
+#include "command/Command.hpp"
+
+class Client;
+class Message;
 
 class CommandHandler {
  public:
   CommandHandler();
   ~CommandHandler();
   std::string handleCommand(Client& client, Message& message);
-
- private:
-  std::map<std::string, Command*> mCommands;
-  std::string mPassword;
 };

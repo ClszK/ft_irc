@@ -7,6 +7,13 @@ void NumericReply::initializeReplies() {
   mReplies[RPL_YOURHOST] = ":Your host is <servername>, running version <ver>";
   mReplies[RPL_CREATED] = ":This server was created";
   mReplies[RPL_SUPPORT] = ":are supported by this server";
+  mReplies[RPL_NAMREPLY] =
+      ":<channel> :[ "
+     @" / " +
+      " ] <nick> *( "
+      " [ "
+     @" / " +
+      " ] <nick> )";
   mReplies[ERR_NONICKNAMEGIVEN] = ":No nickname given";
   mReplies[ERR_ERRONEUSNICKNAME] = ":Erroneus nickname";
   mReplies[ERR_NICKNAMEINUSE] = ":Nickname is already in use";

@@ -15,8 +15,30 @@ std::string JoinCommand::execute(Client& client, Message& message) {
     return ReplyUtility::makeErrInvalidChannelNameReply(client,
                                                         message.params[0]);
 
+  while (message.params[0].find(',') != std::string::npos) {
+    std::string channelName =
+        message.params[0].substr(0, message.params[0].find(','));
+    Channel* channel = Channel::findChannel(channelName);
+
+    if (channel == NULL) {
+      Channel::createChannel(client, channelName);
+    }
+
+    message.params[0] =
+        message.params[0].substr(message.params[0].find(',') + 1);
+  }
   return "";
 }
+/**
+  :test!root@192.168.65.1 JOIN :#123
+ :irc.local 353 test = #123 :@test
+ :irc.local 366 test #123 :End of /NAMES list.
+
+ "( "=" / "*" / "@" ) <channel>
+               :[ "@" / "+" ] <nick> *( " " [ "@" / "+" ] <nick> )
+
+ RPL_NAMREPLY
+ */
 
 std::string PassCommand::execute(Client& client, Message& message) {
   if (message.params.size() < 1)

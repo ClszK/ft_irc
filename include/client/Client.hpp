@@ -6,7 +6,6 @@
 #include "utils/StringUtility.hpp"
 
 class Channel;
-class Server;
 
 class Client {
  private:

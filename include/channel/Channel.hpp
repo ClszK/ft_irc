@@ -43,7 +43,7 @@ class Channel {
   const std::string& getTopic() const { return mTopic; }
   int getMaxUser() const { return mMaxUser; }
 
-  static bool findChannel(const std::string& channelName);
+  static Channel* findChannel(const std::string& channelName);
   static void createChannel(Client& client, const std::string& channelName);
   static void deleteChannel(Client& client, const std::string& channelName);
 };

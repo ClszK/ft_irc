@@ -28,17 +28,17 @@ int Channel::setChannelMode(Client& client, const std::string& mode) {
   return 0;
 }
 
-bool Channel::findChannel(const std::string& channelName) {
+Channel* Channel::findChannel(const std::string& channelName) {
   const std::map<std::string, Channel*>& channelList =
       Server::getInstance()->getChannels();
 
-  if (channelList.find(channelName) == channelList.end()) return false;
-  return true;
+  std::map<std::string, Channel*>::const_iterator it;
+  it = channelList.find(channelName);
+  if (it == channelList.end()) return NULL;
+  return it->second;
 }
 
 void Channel::createChannel(Client& client, const std::string& channelName) {
-  if (findChannel(channelName)) return;
-
   Channel* channel = new Channel(channelName);
 
   channel->setUserList(client);
