@@ -1,7 +1,7 @@
 #pragma once
 
+#include <algorithm>
 #include <map>
-#include <set>
 #include <string>
 
 #include "server/IRCConstants.hpp"
@@ -19,9 +19,9 @@ class Channel {
   std::string mChannelKey;
   bool mTopicLocked;
   int mMaxUser;
-  std::set<Client*> mUserlist;
-  std::set<Client*> mInvitedList;
-  std::set<Client*> mGMList;
+  std::vector<Client*> mUserlist;
+  std::vector<Client*> mInvitedList;
+  std::vector<Client*> mGMList;
 
  public:
   Channel();
@@ -32,12 +32,12 @@ class Channel {
   int setTopicLocked(Client& client);
   int setChannelKey(Client& client, const std::string& key);
   void setMaxUser(int maxUser) { mMaxUser = maxUser; }
-  void setUserList(Client& client) { mUserlist.insert(&client); }
+  void setUserList(Client& client) { mUserlist.push_back(&client); }
   int setChannelMode(Client& client, const std::string& mode);
   int setChannelUserLimit(Client& client, int userLimit);
   int setChannelTopic(Client& client, const std::string& topic);
-  void setInvitedList(Client& client) { mInvitedList.insert(&client); }
-  void setGMList(Client& client) { mGMList.insert(&client); }
+  void setInvitedList(Client& client) { mInvitedList.push_back(&client); }
+  void setGMList(Client& client) { mGMList.push_back(&client); }
 
   const std::string& getChannelName() const { return mChannelName; }
   const std::string& getTopic() const { return mTopic; }

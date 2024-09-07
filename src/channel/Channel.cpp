@@ -1,7 +1,8 @@
 #include "channel/Channel.hpp"
 
 int Channel::setChannelKey(Client& client, const std::string& key) {
-  if (mGMList.find(&client) == mGMList.end()) return ERR_CHANOPRIVSNEEDED;
+  if (std::find(mGMList.begin(), mGMList.end(), &client) == mGMList.end())
+    return ERR_CHANOPRIVSNEEDED;
   mChannelKey = key;
   return 0;
 }
@@ -16,13 +17,15 @@ int Channel::setTopic(const std::string& topic) {
 
 int Channel::setTopicLocked(Client& client) {
   if (mChannelMode.find('t') == std::string::npos) return ERR_CHANOPRIVSNEEDED;
-  if (mGMList.find(&client) == mGMList.end()) return ERR_CHANOPRIVSNEEDED;
+  if (std::find(mGMList.begin(), mGMList.end(), &client) == mGMList.end())
+    return ERR_CHANOPRIVSNEEDED;
   mTopicLocked = !mTopicLocked;
   return 0;
 }
 
 int Channel::setChannelMode(Client& client, const std::string& mode) {
-  if (mGMList.find(&client) == mGMList.end()) return ERR_CHANOPRIVSNEEDED;
+  if (std::find(mGMList.begin(), mGMList.end(), &client) == mGMList.end())
+    return ERR_CHANOPRIVSNEEDED;
 
   mChannelMode = mode;
   return 0;

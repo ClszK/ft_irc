@@ -14,4 +14,7 @@ class CommandHandler {
   CommandHandler();
   ~CommandHandler();
   std::string handleCommand(Client& client, Message& message);
+
+ private:
+  std::map<std::string, Command*> mCommands;
 };
