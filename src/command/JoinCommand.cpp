@@ -16,8 +16,6 @@ std::string JoinCommand::execute(Client& client, Message& message) {
 
   std::string replyStr = "";
   while (message.params[0].size()) {
-    replyStr += ":" + client.getNickName() + "!" + client.getUserName() + "@" +
-                client.getHostName() + " JOIN :" + message.params[0] + "\r\n";
     size_t pos = message.params[0].find(",");
     if (pos == std::string::npos) pos = message.params[0].size();
 
@@ -25,9 +23,12 @@ std::string JoinCommand::execute(Client& client, Message& message) {
     message.params[0].erase(0, pos + (pos != message.params[0].size()));
     Channel* channel = Channel::findChannel(channelName);
 
-    if (channel == NULL) Channel::createChannel(client, channelName);
+    if (channel == NULL) channel = Channel::createChannel(client, channelName);
+
+    replyStr += ":" + client.getNickName() + "!" + client.getUserName() + "@" +
+                client.getHostName() + " JOIN :" + message.params[0] + "\r\n";
   }
-  return "";
+  return replyStr;
 }
 /**
   :test!root@192.168.65.1 JOIN :#123

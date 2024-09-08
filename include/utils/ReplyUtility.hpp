@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 
+#include "channel/Channel.hpp"
 #include "client/Client.hpp"
 #include "utils/NumericReply.hpp"
 
@@ -15,6 +16,7 @@ class ReplyUtility {
   static std::string makeCreatedReply(Client& client);
   static std::string makeMyInfoReply(Client& client);
   static std::string makeServerSupportedReply(Client& client);
+  static std::string makeNamReply(Client& client, Channel& channel);
 
   static std::string makeErrNeedMoreParamsReply(Client& client,
                                                 const std::string& command);

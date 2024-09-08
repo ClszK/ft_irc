@@ -100,6 +100,29 @@ std::string ReplyUtility::makeServerSupportedReply(Client& client) {
   return ss.str();
 }
 
+/**
+ :irc.local 353 test = #123 :@test
+ */
+std::string makeNamReply(Client& client, Channel& channel) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << std::setw(3)
+     << std::setfill('0') << RPL_NAMREPLY << " " << client.getNickName()
+     << " = " << channel.getChannelName() << " :";
+
+  std::vector<Client*>& userList = channel.getUserList();
+  std::vector<Client*>& gmList = channel.getGMList();
+
+  size_t i;
+  for (i = 0; i < gmList.size(); i++)
+    ss << "@" << gmList[i]->getNickName() << " ";
+
+  for (i = 0; i < userList.size(); i++) ss << userList[i]->getNickName() << " ";
+
+  ss << "\r\n";
+  return ss.str();
+}
+
 std::string ReplyUtility::makeErrNeedMoreParamsReply(
     Client& client, const std::string& command) {
   std::stringstream ss;

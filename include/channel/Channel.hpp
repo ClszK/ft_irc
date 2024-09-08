@@ -42,8 +42,11 @@ class Channel {
   const std::string& getChannelName() const { return mChannelName; }
   const std::string& getTopic() const { return mTopic; }
   int getMaxUser() const { return mMaxUser; }
+  std::vector<Client*>& getUserList() { return mUserlist; }
+  std::vector<Client*>& getInvitedList() { return mInvitedList; }
+  std::vector<Client*>& getGMList() { return mGMList; }
 
   static Channel* findChannel(const std::string& channelName);
-  static void createChannel(Client& client, const std::string& channelName);
+  static Channel* createChannel(Client& client, const std::string& channelName);
   static void deleteChannel(const std::string& channelName);
 };

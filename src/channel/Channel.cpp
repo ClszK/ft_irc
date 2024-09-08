@@ -41,13 +41,15 @@ Channel* Channel::findChannel(const std::string& channelName) {
   return it->second;
 }
 
-void Channel::createChannel(Client& client, const std::string& channelName) {
+Channel* Channel::createChannel(Client& client,
+                                const std::string& channelName) {
   Channel* channel = new Channel(channelName);
 
   channel->setUserList(client);
   channel->setGMList(client);
 
   Server::getInstance()->setChannel(channelName, channel);
+  return channel;
 }
 
 void Channel::deleteChannel(const std::string& channelName) {
