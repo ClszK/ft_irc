@@ -21,7 +21,7 @@ std::string ReplyUtility::makeWelcomeReply(Client& client) {
   ss << ":" << client.getServerName() << " " << std::setw(3)
      << std::setfill('0') << RPL_WELCOME << " " << client.getNickName() << " "
      << NumericReply::getReply(RPL_WELCOME) << " " << client.getNickName()
-     << "!" << client.getUserName() << "@" << client.getHostName() << "\n";
+     << "!" << client.getUserName() << "@" << client.getHostName() << "\r\n";
 
   return ss.str();
 }
@@ -40,7 +40,7 @@ std::string ReplyUtility::makeYourHostReply(Client& client) {
 
   ss << ":" << client.getServerName() << " " << std::setw(3)
      << std::setfill('0') << RPL_YOURHOST << " " << client.getNickName() << " "
-     << str << "\n";
+     << str << "\r\n";
 
   return ss.str();
 }
@@ -54,7 +54,7 @@ std::string ReplyUtility::makeCreatedReply(Client& client) {
   ss << ":" << client.getServerName() << " " << std::setw(3)
      << std::setfill('0') << RPL_CREATED << " " << client.getNickName() << " "
      << NumericReply::getReply(RPL_CREATED) << " " << client.getCreatedTime()
-     << "\n";
+     << "\r\n";
 
   return ss.str();
 }
@@ -69,7 +69,7 @@ std::string ReplyUtility::makeMyInfoReply(Client& client) {
   ss << ":" << client.getServerName() << " " << std::setw(3)
      << std::setfill('0') << RPL_MYINFO << " " << client.getServerName() << " "
      << client.getVersion() << " " << client.getAvailableUserMode() << " "
-     << client.getAvailableChannelMode() << "\n";
+     << client.getAvailableChannelMode() << "\r\n";
   return ss.str();
 }
 
@@ -95,7 +95,7 @@ std::string ReplyUtility::makeServerSupportedReply(Client& client) {
      << "TOPICLEN=" << TOPICLEN << " "
      << "USERLEN=" << USERLEN << " "
      << "USERMODES=" << USERMODES << " " << NumericReply::getReply(RPL_SUPPORT)
-     << "\n";
+     << "\r\n";
 
   return ss.str();
 }
@@ -106,7 +106,7 @@ std::string ReplyUtility::makeErrNeedMoreParamsReply(
 
   ss << ":" << client.getServerName() << " " << std::setw(3)
      << std::setfill('0') << ERR_NEEDMOREPARAMS << " * " << command << " "
-     << NumericReply::getReply(ERR_NEEDMOREPARAMS) << "\n";
+     << NumericReply::getReply(ERR_NEEDMOREPARAMS) << "\r\n";
   return ss.str();
 }
 
@@ -116,7 +116,7 @@ std::string ReplyUtility::makeErrNonicknameGivenReply(Client& client,
 
   ss << ":" << client.getServerName() << " " << std::setw(3)
      << std::setfill('0') << ERR_NONICKNAMEGIVEN << " * " << str << " "
-     << NumericReply::getReply(ERR_NONICKNAMEGIVEN) << "\n";
+     << NumericReply::getReply(ERR_NONICKNAMEGIVEN) << "\r\n";
   return ss.str();
 }
 
@@ -131,7 +131,7 @@ std::string ReplyUtility::makeErrNotRegisteredReply(
 
   ss << ":" << client.getServerName() << " " << std::setw(3)
      << std::setfill('0') << ERR_NOTREGISTERED << " * " << command << " "
-     << NumericReply::getReply(ERR_NOTREGISTERED) << "\n";
+     << NumericReply::getReply(ERR_NOTREGISTERED) << "\r\n";
 
   return ss.str();
 }
@@ -143,7 +143,7 @@ std::string ReplyUtility::makeErrInvalidUserNameReply(
   ss << ":" << client.getServerName() << " " << std::setw(3)
      << std::setfill('0') << ERR_INVALIDUSERNAME << " " << client.getNickName()
      << " " << command << " " << NumericReply::getReply(ERR_INVALIDUSERNAME)
-     << "\n";
+     << "\r\n";
 
   return ss.str();
 }
@@ -154,6 +154,6 @@ std::string ReplyUtility::makeErrInvalidChannelNameReply(
 
   ss << ":" << client.getServerName() << " " << ERR_INVALIDCHANNELNAME << " "
      << client.getNickName() << " " << str << " "
-     << NumericReply::getReply(ERR_INVALIDCHANNELNAME) << "\n";
+     << NumericReply::getReply(ERR_INVALIDCHANNELNAME) << "\r\n";
   return ss.str();
 }

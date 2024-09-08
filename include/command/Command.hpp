@@ -14,23 +14,3 @@ class Command {
   Command() {};
   virtual ~Command() {}
 };
-
-class JoinCommand : public Command {
- public:
-  virtual std::string execute(Client& client, Message& message);
-};
-
-class PassCommand : public Command {
- public:
-  virtual std::string execute(Client& client, Message& message);
-};
-
-class NickCommand : public Command {
- public:
-  virtual std::string execute(Client& client, Message& message);
-};
-
-class UserCommand : public Command {
- public:
-  virtual std::string execute(Client& client, Message& message);
-};

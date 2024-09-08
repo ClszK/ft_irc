@@ -4,7 +4,10 @@ SRCS        = main.cpp \
 							Client.cpp \
 							Channel.cpp \
 							MessageHandler.cpp \
-							Command.cpp \
+							JoinCommand.cpp \
+							NickCommand.cpp \
+							PassCommand.cpp \
+							UserCommand.cpp \
 							CommandHandler.cpp \
 							NumericReply.cpp \
 							ReplyUtility.cpp \

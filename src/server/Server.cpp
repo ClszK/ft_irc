@@ -141,9 +141,8 @@ void Server::handleWriteEvent(struct kevent& event) {
         CommandHandler::getInstance()
             ->handleCommand(*mClients[event.ident], parsedMessage)
             .c_str();
-    if (replyStr.empty()) {
-      continue;
-    }
+    if (replyStr.empty()) continue;
+
     std::cout << "Reply: " << replyStr << std::endl;
     send(event.ident, replyStr.c_str(), replyStr.size(), 0);
     if (replyStr == ReplyUtility::makeErrorReply(*mClients[event.ident]))

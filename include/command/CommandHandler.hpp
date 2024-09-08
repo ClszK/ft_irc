@@ -4,7 +4,10 @@
 #include <string>
 #include <vector>
 
-#include "command/Command.hpp"
+#include "command/JoinCommand.hpp"
+#include "command/NickCommand.hpp"
+#include "command/PassCommand.hpp"
+#include "command/UserCommand.hpp"
 
 class CommandHandler {
  public:
