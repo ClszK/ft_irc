@@ -19,7 +19,7 @@ class CommandHandler {
   }
 
  private:
-  std::map<std::string, Command*> mCommands;
+  std::map<std::string, ICommand*> mCommands;
 
   CommandHandler();
   ~CommandHandler();

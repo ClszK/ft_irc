@@ -7,10 +7,10 @@
 #include "command/MessageHandler.hpp"
 #include "utils/ReplyUtility.hpp"
 
-class Command {
+class ICommand {
  public:
   virtual std::string execute(Client& client, Message& message) = 0;
 
-  Command() {};
-  virtual ~Command() {}
+  ICommand() {};
+  virtual ~ICommand() {}
 };

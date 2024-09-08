@@ -15,7 +15,7 @@ std::string CommandHandler::handleCommand(Client& client, Message& message) {
 }
 
 CommandHandler::~CommandHandler() {
-  for (std::map<std::string, Command*>::iterator it = mCommands.begin();
+  for (std::map<std::string, ICommand*>::iterator it = mCommands.begin();
        it != mCommands.end(); ++it)
     delete it->second;
 }

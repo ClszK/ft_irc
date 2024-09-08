@@ -1,8 +1,8 @@
 #pragma once
 
-#include "command/Command.hpp"
+#include "command/ICommand.hpp"
 
-class NickCommand : public Command {
+class NickCommand : public ICommand {
  public:
   virtual std::string execute(Client& client, Message& message);
 };
