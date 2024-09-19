@@ -13,6 +13,7 @@ const std::set<char> ModeCommand::createAllowedModeSet() {
 
 const std::set<char> ModeCommand::allowedMode =
     ModeCommand::createAllowedModeSet();
+
 /**
  * - i : 초대 전용 채널 설정 / 제거
  * - t : 채널 운영자에 대한 TOPIC 명령 제한 설정 / 제거

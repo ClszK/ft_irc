@@ -36,7 +36,7 @@ Channel* Channel::createChannel(Client& client,
   Channel* channel = new Channel(channelName);
 
   channel->setUserList(client);
-  channel->setGMList(client);
+  channel->setGMListAdd(client);
 
   Server::getInstance()->setChannel(channelName, channel);
   return channel;
