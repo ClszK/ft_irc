@@ -1,5 +1,6 @@
 #pragma once
 
+#include <set>
 #include <string>
 
 #include "server/IRCConstants.hpp"
@@ -13,4 +14,5 @@ class StringUtility {
   static bool isValidUserName(const std::string& userName);
   static bool isValidChannelName(const std::string& channelName);
   static bool isValidChannelKey(const std::string& key);
+  static std::string removeDuplicateChars(const std::string& input);
 };

@@ -86,3 +86,16 @@ bool StringUtility::isValidChannelKey(const std::string& key) {
 
   return true;
 }
+
+std::string StringUtility::removeDuplicateChars(const std::string& input) {
+  std::set<char> seen;
+  std::string result;
+  for (std::string::const_iterator it = input.begin(); it != input.end();
+       ++it) {
+    if (seen.find(*it) == seen.end()) {
+      seen.insert(*it);
+      result += *it;
+    }
+  }
+  return result;
+}

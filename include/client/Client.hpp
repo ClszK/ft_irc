@@ -41,6 +41,7 @@ class Client {
 
   static void createClient(const int sockFd);
   static void deleteClient(const int sockFd);
+  static Client* findClient(const std::string& nickName);
 
   Client() {};
   Client(const int sockFd) : mSockFd(sockFd) {};

@@ -1,11 +1,6 @@
 #include "channel/Channel.hpp"
 
-int Channel::setChannelKey(Client& client, const std::string& key) {
-  if (std::find(mGMList.begin(), mGMList.end(), &client) == mGMList.end())
-    return ERR_CHANOPRIVSNEEDED;
-  mChannelKey = key;
-  return 0;
-}
+void Channel::setChannelKey(const std::string& key) { mChannelKey = key; }
 
 int Channel::setTopic(const std::string& topic) {
   if (mTopicLocked) return ERR_CHANOPRIVSNEEDED;
@@ -15,20 +10,15 @@ int Channel::setTopic(const std::string& topic) {
   return 0;
 }
 
-int Channel::setTopicLocked(Client& client) {
-  if (mChannelMode.find('t') == std::string::npos) return ERR_CHANOPRIVSNEEDED;
-  if (std::find(mGMList.begin(), mGMList.end(), &client) == mGMList.end())
-    return ERR_CHANOPRIVSNEEDED;
-  mTopicLocked = !mTopicLocked;
-  return 0;
+void Channel::setTopicLocked(bool lock) { mTopicLocked = lock; }
+
+void Channel::setChannelModeAdd(const char c) {
+  if (mChannelMode.find(c) == std::string::npos) mChannelMode += c;
 }
 
-int Channel::setChannelMode(Client& client, const std::string& mode) {
-  if (std::find(mGMList.begin(), mGMList.end(), &client) == mGMList.end())
-    return ERR_CHANOPRIVSNEEDED;
-
-  mChannelMode = mode;
-  return 0;
+void Channel::setChannelModeSub(const char c) {
+  mChannelMode.erase(std::remove(mChannelMode.begin(), mChannelMode.end(), c),
+                     mChannelMode.end());
 }
 
 Channel* Channel::findChannel(const std::string& channelName) {

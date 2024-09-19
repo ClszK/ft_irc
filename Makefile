@@ -8,6 +8,7 @@ SRCS        = main.cpp \
 							NickCommand.cpp \
 							PassCommand.cpp \
 							UserCommand.cpp \
+							ModeCommand.cpp \
 							CommandHandler.cpp \
 							NumericReply.cpp \
 							ReplyUtility.cpp \

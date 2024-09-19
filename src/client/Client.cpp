@@ -51,3 +51,12 @@ void Client::createClient(const int sockFd) {
 void Client::deleteClient(const int sockFd) {
   Server::getInstance()->setClient(sockFd, NULL);
 }
+
+Client* Client::findClient(const std::string& nickName) {
+  std::map<int, Client*> clients = Server::getInstance()->getClients();
+  for (std::map<int, Client*>::iterator it = clients.begin();
+       it != clients.end(); ++it) {
+    if (it->second->getNickName() == nickName) return it->second;
+  }
+  return NULL;
+}

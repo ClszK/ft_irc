@@ -92,6 +92,10 @@ void Server::handleListenEvent() {
   if (errno) throw std::runtime_error(std::strerror(errno));
 }
 
+/**
+ * TODO : irssi에서 종료할 때 connection close가 무한 반복함.
+ * 나중에 고쳐야함.
+ */
 void Server::handleReadEvent(struct kevent& event) {
   char buffer[LINELEN];
 
@@ -137,10 +141,8 @@ void Server::handleWriteEvent(struct kevent& event) {
                                 itPos + 1);  // CRLF 제거
     std::cout << parsedMessage << std::endl;
 
-    std::string replyStr =
-        CommandHandler::getInstance()
-            ->handleCommand(*mClients[event.ident], parsedMessage)
-            .c_str();
+    std::string replyStr = CommandHandler::getInstance()->handleCommand(
+        *mClients[event.ident], parsedMessage);
     if (replyStr.empty()) continue;
 
     std::cout << "Reply: " << replyStr << std::endl;

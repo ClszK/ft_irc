@@ -11,6 +11,5 @@ class ICommand {
  public:
   virtual std::string execute(Client& client, Message& message) = 0;
 
-  ICommand() {};
   virtual ~ICommand() {}
 };

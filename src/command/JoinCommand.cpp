@@ -1,5 +1,29 @@
 #include "command/JoinCommand.hpp"
 
+std::string JoinCommand::parseComma(std::string& str) {
+  std::string result = "";
+
+  size_t pos = str.find(",");
+  if (pos == std::string::npos) pos = str.size();
+  result = str.substr(0, pos);
+  str.erase(0, pos + (pos != str.size()));
+  return result;
+}
+
+std::string JoinCommand::joinKeyMode(Client& client, Channel& channel,
+                                     const std::string& channelName,
+                                     Message& message) {
+  std::string replyStr = "";
+
+  if (message.params.size() < 2)
+    replyStr += ReplyUtility::makeErrNeedMoreParamsReply(client, "JOIN");
+
+  std::string key = parseComma(message.params[1]);
+
+  if (key != channel.getChannelKey())
+    replyStr += ReplyUtility::makeErrBadChannelKeyReply(client, channelName);
+  return replyStr;
+}
 /**
  * :irc.local 461 test1 JOIN :Not enough parameters.
  */
@@ -10,23 +34,49 @@ std::string JoinCommand::execute(Client& client, Message& message) {
   if (client.getNickName() == "" || client.getUserName() == "")
     return ReplyUtility::makeErrNotRegisteredReply(client, "JOIN");
 
-  if (StringUtility::isValidChannelName(message.params[0]))
-    return ReplyUtility::makeErrInvalidChannelNameReply(client,
-                                                        message.params[0]);
-
   std::string replyStr = "";
   while (message.params[0].size()) {
-    size_t pos = message.params[0].find(",");
-    if (pos == std::string::npos) pos = message.params[0].size();
+    std::string channelName = parseComma(message.params[0]);
 
-    std::string channelName = message.params[0].substr(0, pos);
-    message.params[0].erase(0, pos + (pos != message.params[0].size()));
+    if (StringUtility::isValidChannelName(channelName)) {
+      replyStr +=
+          ReplyUtility::makeErrInvalidChannelNameReply(client, channelName);
+      continue;
+    }
     Channel* channel = Channel::findChannel(channelName);
 
-    if (channel == NULL) channel = Channel::createChannel(client, channelName);
-
+    if (channel == NULL)
+      channel = Channel::createChannel(client, channelName);
+    else {
+      if (channel->getChannelMode().find('k') != std::string::npos) {
+        std::string tempReply =
+            joinKeyMode(client, *channel, channelName, message);
+        replyStr += tempReply;
+        if (tempReply != "") continue;
+      }
+      if (channel->getChannelMode().find('l') != std::string::npos) {
+        if (channel->getUserList().size() >= channel->getMaxUser()) {
+          replyStr +=
+              ReplyUtility::makeErrChannelIsFullReply(client, channelName);
+          continue;
+        }
+      }
+      if (channel->getChannelMode().find('i') != std::string::npos) {
+        if (std::find(channel->getInvitedList().begin(),
+                      channel->getInvitedList().end(),
+                      &client) == channel->getInvitedList().end()) {
+          replyStr +=
+              ReplyUtility::makeErrInviteOnlyChanReply(client, channelName);
+          continue;
+        }
+      }
+    }
+    if (channel->getTopic() != "")
+      replyStr += ReplyUtility::makeTopicReply(client, *channel);
     replyStr += ":" + client.getNickName() + "!" + client.getUserName() + "@" +
                 client.getHostName() + " JOIN :" + message.params[0] + "\r\n";
+    replyStr += ReplyUtility::makeNamReply(client, *channel);
+    replyStr += ReplyUtility::makeEndOfNamesReply(client, *channel);
   }
   return replyStr;
 }

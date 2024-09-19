@@ -101,17 +101,29 @@ std::string ReplyUtility::makeServerSupportedReply(Client& client) {
 }
 
 /**
- :irc.local 353 test = #123 :@test
+ * "<channel> :<topic>"
  */
-std::string makeNamReply(Client& client, Channel& channel) {
+std::string ReplyUtility::makeTopicReply(Client& client, Channel& channel) {
   std::stringstream ss;
 
-  ss << ":" << client.getServerName() << " " << std::setw(3)
-     << std::setfill('0') << RPL_NAMREPLY << " " << client.getNickName()
-     << " = " << channel.getChannelName() << " :";
+  ss << ":" << client.getServerName() << " " << RPL_TOPIC << " "
+     << client.getNickName() << " " << channel.getChannelName() << " :"
+     << channel.getTopic() << "\r\n";
 
-  std::vector<Client*>& userList = channel.getUserList();
-  std::vector<Client*>& gmList = channel.getGMList();
+  return ss.str();
+}
+
+/**
+ :irc.local 353 test = #123 :@test
+ */
+std::string ReplyUtility::makeNamReply(Client& client, Channel& channel) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << RPL_NAMREPLY << " "
+     << client.getNickName() << " = " << channel.getChannelName() << " :";
+
+  const std::vector<Client*>& userList = channel.getUserList();
+  const std::vector<Client*>& gmList = channel.getGMList();
 
   size_t i;
   for (i = 0; i < gmList.size(); i++)
@@ -120,6 +132,50 @@ std::string makeNamReply(Client& client, Channel& channel) {
   for (i = 0; i < userList.size(); i++) ss << userList[i]->getNickName() << " ";
 
   ss << "\r\n";
+  return ss.str();
+}
+
+/**
+ :irc.local 366 test #123 :End of /NAMES list.
+ */
+std::string ReplyUtility::makeEndOfNamesReply(Client& client,
+                                              Channel& channel) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << RPL_ENDOFNAMES << " "
+     << client.getNickName() << " " << channel.getChannelName() << " "
+     << NumericReply::getReply(RPL_ENDOFNAMES) << "\r\n";
+
+  return ss.str();
+}
+
+/**
+ * :irc.local 324 t #123 +iklst test :10
+ * :irc.local 324 t #123 :+t
+ */
+std::string ReplyUtility::makeChannelModeIsReply(Client& client,
+                                                 Channel& channel) {
+  std::stringstream ss;
+  const std::string& channelMode = channel.getChannelMode();
+  size_t kPos = channelMode.find('k');
+  size_t lPos = channelMode.find('l');
+  size_t paramCnt = (kPos != std::string::npos) + (lPos != std::string::npos);
+
+  ss << ":" << client.getServerName() << " " << RPL_CHANNELMODEIS << " "
+     << client.getNickName() << " " << channel.getChannelName();
+
+  if (paramCnt == 2) {
+    ss << " +" << channelMode << " " << channel.getChannelKey() << " :"
+       << channel.getMaxUser() << "\r\n";
+  } else if (paramCnt == 1) {
+    ss << " +" << channelMode << " :";
+    if (kPos != std::string::npos)
+      ss << channel.getChannelKey() << "\r\n";
+    else
+      ss << channel.getMaxUser() << "\r\n";
+  } else
+    ss << " :+" << channelMode << "\r\n ";
+
   return ss.str();
 }
 
@@ -171,6 +227,16 @@ std::string ReplyUtility::makeErrInvalidUserNameReply(
   return ss.str();
 }
 
+std::string ReplyUtility::makeErrBadChannelKeyReply(
+    Client& client, const std::string& channelName) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_BADCHANNELKEY << " "
+     << client.getNickName() << " " << channelName << " "
+     << NumericReply::getReply(ERR_BADCHANNELKEY) << "\r\n";
+  return ss.str();
+}
+
 std::string ReplyUtility::makeErrInvalidChannelNameReply(
     Client& client, const std::string& str) {
   std::stringstream ss;
@@ -178,5 +244,73 @@ std::string ReplyUtility::makeErrInvalidChannelNameReply(
   ss << ":" << client.getServerName() << " " << ERR_INVALIDCHANNELNAME << " "
      << client.getNickName() << " " << str << " "
      << NumericReply::getReply(ERR_INVALIDCHANNELNAME) << "\r\n";
+  return ss.str();
+}
+
+std::string ReplyUtility::makeErrChannelIsFullReply(
+    Client& client, const std::string& channelName) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_CHANNELISFULL << " "
+     << client.getNickName() << " " << channelName << " "
+     << NumericReply::getReply(ERR_CHANNELISFULL) << "\r\n";
+  return ss.str();
+}
+
+/**
+ * :server_name 473 <nickname> <channel> :Cannot join channel (+i)
+ */
+std::string ReplyUtility::makeErrInviteOnlyChanReply(
+    Client& client, const std::string& channelName) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_INVITEONLYCHAN << " "
+     << client.getNickName() << " " << channelName << " "
+     << NumericReply::getReply(ERR_INVITEONLYCHAN) << "\r\n";
+  return ss.str();
+}
+
+std::string ReplyUtility::makeErrNoSuchChannelReply(
+    Client& client, const std::string& channelName) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_NOSUCHCHANNEL << " "
+     << client.getNickName() << " " << channelName << " "
+     << NumericReply::getReply(ERR_NOSUCHCHANNEL) << "\r\n";
+  return ss.str();
+}
+
+/**
+ * :irc.local 696 test #test k * :You must specify a parameter for the key mode.
+ * Syntax: <key>.
+ */
+std::string ReplyUtility::makeErrNotExistReply(Client& client,
+                                               const std::string& channelName,
+                                               char mode) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_NOTEXIST << " "
+     << client.getNickName() << " " << channelName << " " << mode << " * "
+     << NumericReply::getReply(ERR_NOTEXIST);
+
+  if (mode == 'k')
+    ss << "Syntax: <key>.\r\n";
+  else
+    ss << "Syntax: <nick>.\r\n";
+
+  return ss.str();
+}
+
+/**
+ * :irc.local 401 t 123 :No such nick
+ */
+std::string ReplyUtility::makeErrNoSuchNickReply(Client& client,
+                                                 const std::string& nickName) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_NOSUCHNICK << " "
+     << client.getNickName() << " " << nickName << " "
+     << NumericReply::getReply(ERR_NOSUCHNICK) << "\r\n";
+
   return ss.str();
 }

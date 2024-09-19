@@ -5,6 +5,7 @@ CommandHandler::CommandHandler() {
   mCommands["pass"] = new PassCommand();
   mCommands["join"] = new JoinCommand();
   mCommands["nick"] = new NickCommand();
+  mCommands["mode"] = new ModeCommand();
 }
 
 std::string CommandHandler::handleCommand(Client& client, Message& message) {
