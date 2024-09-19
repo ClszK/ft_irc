@@ -3,7 +3,6 @@
 #include <set>
 
 #include "command/ICommand.hpp"
-#include "utils/StringUtility.hpp"
 
 class ModeCommand : public ICommand {
  public:
