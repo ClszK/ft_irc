@@ -6,6 +6,7 @@
 #include "client/Client.hpp"
 #include "command/MessageHandler.hpp"
 #include "utils/ReplyUtility.hpp"
+#include "utils/StringUtility.hpp"
 
 class ICommand {
  public:

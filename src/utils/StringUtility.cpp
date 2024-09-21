@@ -58,12 +58,10 @@ bool StringUtility::isValidUserName(const std::string& userName) {
  * [:chanstring]은 고급 IRC 서버 기능으로 구현 안함.
  */
 bool StringUtility::isValidChannelName(const std::string& channelName) {
-  if (channelName.length() < 3 || channelName.length() > CHANNELLEN)
+  if (channelName.length() < 2 || channelName.length() > CHANNELLEN)
     return false;
 
-  if (std::string("#&+!").find(channelName[0]) != std::string::npos)
-    return false;
-
+  if (channelName[0] != '#') return false;
   for (size_t i = 1; i < channelName.length(); i++) {
     if (std::string(" ,:\r\n\0\a").find(channelName[i]) != std::string::npos)
       return false;
