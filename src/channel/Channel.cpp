@@ -35,7 +35,7 @@ Channel* Channel::createChannel(Client& client,
                                 const std::string& channelName) {
   Channel* channel = new Channel(channelName);
 
-  channel->setUserList(client);
+  channel->setUserListAdd(client);
   channel->setGMListAdd(client);
 
   Server::getInstance()->setChannel(channelName, channel);
