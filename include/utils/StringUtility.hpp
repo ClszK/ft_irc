@@ -15,4 +15,5 @@ class StringUtility {
   static bool isValidChannelName(const std::string& channelName);
   static bool isValidChannelKey(const std::string& key);
   static std::string removeDuplicateChars(const std::string& input);
+  static std::string parseComma(std::string& str);
 };

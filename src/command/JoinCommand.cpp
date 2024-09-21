@@ -1,15 +1,5 @@
 #include "command/JoinCommand.hpp"
 
-std::string JoinCommand::parseComma(std::string& str) {
-  std::string result = "";
-
-  size_t pos = str.find(",");
-  if (pos == std::string::npos) pos = str.size();
-  result = str.substr(0, pos);
-  str.erase(0, pos + (pos != str.size()));
-  return result;
-}
-
 std::string JoinCommand::joinKeyMode(Client& client, Channel& channel,
                                      const std::string& channelName,
                                      Message& message) {
@@ -18,7 +8,7 @@ std::string JoinCommand::joinKeyMode(Client& client, Channel& channel,
   if (message.params.size() < 2)
     replyStr += ReplyUtility::makeErrNeedMoreParamsReply(client, "JOIN");
 
-  std::string key = parseComma(message.params[1]);
+  std::string key = StringUtility::parseComma(message.params[1]);
 
   if (key != channel.getChannelKey())
     replyStr += ReplyUtility::makeErrBadChannelKeyReply(client, channelName);
@@ -36,7 +26,7 @@ std::string JoinCommand::execute(Client& client, Message& message) {
 
   std::string replyStr = "";
   while (message.params[0].size()) {
-    std::string channelName = parseComma(message.params[0]);
+    std::string channelName = StringUtility::parseComma(message.params[0]);
 
     if (!StringUtility::isValidChannelName(channelName)) {
       replyStr +=
