@@ -62,6 +62,7 @@ bool StringUtility::isValidChannelName(const std::string& channelName) {
     return false;
 
   if (channelName[0] != '#') return false;
+
   for (size_t i = 1; i < channelName.length(); i++) {
     if (std::string(" ,:\r\n\0\a").find(channelName[i]) != std::string::npos)
       return false;
