@@ -64,8 +64,7 @@ std::string JoinCommand::execute(Client& client, Message& message) {
     }
     if (channel->getTopic() != "")
       replyStr += ReplyUtility::makeTopicReply(client, *channel);
-    replyStr += ":" + client.getNickName() + "!" + client.getUserName() + "@" +
-                client.getHostName() + " JOIN :" + message.params[0] + "\r\n";
+    replyStr += ReplyUtility::makeCommandReply(client, "JOIN", "", channelName);
     replyStr += ReplyUtility::makeNamReply(client, *channel);
     replyStr += ReplyUtility::makeEndOfNamesReply(client, *channel);
   }

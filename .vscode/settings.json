@@ -74,6 +74,7 @@
 	"cSpell.words": [
 		"ALREADYREGISTRED",
 		"BADCHANNELKEY",
+		"CANNOTSENDTOCHAN",
 		"CASEMAPPING",
 		"CHANLIMIT",
 		"CHANMODES",
@@ -106,10 +107,12 @@
 		"NOTEXIST",
 		"NOTEXISTKEY",
 		"NOTREGISTERED",
+		"Privmsg",
 		"reregister",
 		"servername",
 		"TOPICLEN",
 		"TOPICTOOLONG",
+		"UNKNOWNMODE",
 		"Userlist",
 		"USERMODES",
 		"YOURHOST"

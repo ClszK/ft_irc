@@ -20,6 +20,10 @@ class ReplyUtility {
   static std::string makeNamReply(Client& client, Channel& channel);
   static std::string makeEndOfNamesReply(Client& client, Channel& channel);
   static std::string makeChannelModeIsReply(Client& client, Channel& channel);
+  static std::string makeCommandReply(Client& client,
+                                      const std::string& command,
+                                      const std::string& paramFirst,
+                                      const std::string& paramSecond);
 
   static std::string makeErrNeedMoreParamsReply(Client& client,
                                                 const std::string& command);
@@ -50,4 +54,7 @@ class ReplyUtility {
                                       const std::string& message);
   static std::string makeErrCannotSendToChanReply(
       Client& client, const std::string& channelName);
+  static std::string makeErrUnknownModeReply(Client& client, char mode);
+  static std::string makeErrKeyAlreadySetReply(Client& client,
+                                               const std::string& channelName);
 };

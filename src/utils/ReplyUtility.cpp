@@ -295,8 +295,10 @@ std::string ReplyUtility::makeErrNotExistReply(Client& client,
 
   if (mode == 'k')
     ss << "Syntax: <key>.\r\n";
-  else
+  else if (mode == 'o')
     ss << "Syntax: <nick>.\r\n";
+  else if (mode == 'l')
+    ss << "Syntax: <limit>.\r\n";
 
   return ss.str();
 }
@@ -349,6 +351,44 @@ std::string ReplyUtility::makeErrCannotSendToChanReply(
   ss << ":" << client.getServerName() << " " << ERR_CANNOTSENDTOCHAN << " "
      << client.getNickName() << " " << channelName << " "
      << NumericReply::getReply(ERR_CANNOTSENDTOCHAN) << "\r\n";
+
+  return ss.str();
+}
+
+std::string ReplyUtility::makeErrUnknownModeReply(Client& client, char mode) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_UNKNOWNMODE << " "
+     << client.getNickName() << " " << mode << " "
+     << NumericReply::getReply(ERR_UNKNOWNMODE) << "\r\n";
+
+  return ss.str();
+}
+
+/**
+ * :irc.local 467 gi #1234 :Channel key already set
+ */
+
+std::string ReplyUtility::makeErrKeyAlreadySetReply(
+    Client& client, const std::string& channelName) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_KEYSET << " "
+     << client.getNickName() << " " << channelName << " "
+     << NumericReply::getReply(ERR_KEYSET) << "\r\n";
+
+  return ss.str();
+}
+
+std::string ReplyUtility::makeCommandReply(Client& client,
+                                           const std::string& command,
+                                           const std::string& paramFirst,
+                                           const std::string& paramSecond) {
+  std::stringstream ss;
+
+  ss << ":" << client.getNickName() << "!" << client.getUserName() << "@"
+     << client.getHostName() << " " << command << " " << paramFirst << " :"
+     << paramSecond << "\r\n";
 
   return ss.str();
 }
