@@ -32,7 +32,11 @@ class Channel {
   void setTopicLocked(bool lock);
   void setChannelKey(const std::string& key);
   void setMaxUser(int maxUser) { mMaxUser = maxUser; }
-  void setUserList(Client& client) { mUserlist.push_back(&client); }
+  void setUserListAdd(Client& client) { mUserlist.push_back(&client); }
+  void setUserListSub(Client& client) {
+    mUserlist.erase(std::remove(mUserlist.begin(), mUserlist.end(), &client),
+                    mUserlist.end());
+  }
   void setChannelModeAdd(const char c);
   void setChannelModeSub(const char c);
   int setChannelUserLimit(Client& client, int userLimit);
