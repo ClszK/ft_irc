@@ -70,8 +70,8 @@ std::string JoinCommand::execute(Client& client, Message& message) {
           continue;
         }
       }
+      channel->setUserListAdd(client);
     }
-    channel->setUserListAdd(client);
     if (channel->getTopic() != "")
       replyStr += ReplyUtility::makeTopicReply(client, *channel);
     replyStr += ":" + client.getNickName() + "!" + client.getUserName() + "@" +
