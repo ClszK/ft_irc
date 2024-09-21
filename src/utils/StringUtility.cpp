@@ -37,7 +37,6 @@ bool StringUtility::isValidNickName(const std::string& nickName) {
  */
 bool StringUtility::isValidUserName(const std::string& userName) {
   if (userName.length() < 1 || userName.length() > USERLEN) return false;
-
   for (size_t i = 0; i < userName.length(); i++) {
     if (std::string(" \0\r\n@").find(userName[i]) != std::string::npos)
       return false;
@@ -96,5 +95,15 @@ std::string StringUtility::removeDuplicateChars(const std::string& input) {
       result += *it;
     }
   }
+  return result;
+}
+
+std::string StringUtility::parseComma(std::string& str) {
+  std::string result = "";
+
+  size_t pos = str.find(",");
+  if (pos == std::string::npos) pos = str.size();
+  result = str.substr(0, pos);
+  str.erase(0, pos + (pos != str.size()));
   return result;
 }
