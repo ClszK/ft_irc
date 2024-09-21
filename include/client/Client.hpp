@@ -43,6 +43,8 @@ class Client {
   static void deleteClient(const int sockFd);
   static Client* findClient(const std::string& nickName);
 
+  void sendPrivmsg(const std::string& message);
+
   Client() {};
   Client(const int sockFd) : mSockFd(sockFd) {};
   ~Client() {};

@@ -56,4 +56,7 @@ class Channel {
   static Channel* findChannel(const std::string& channelName);
   static Channel* createChannel(Client& client, const std::string& channelName);
   static void deleteChannel(const std::string& channelName);
+
+  bool isUserInChannel(std::string nickName);
+  void sendPrivmsg(Client& client, const std::string& message);
 };

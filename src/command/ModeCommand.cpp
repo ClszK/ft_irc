@@ -36,50 +36,52 @@ std::string ModeCommand::execute(Client& client, Message& message) {
   if (message.params.size() == 1)
     return ReplyUtility::makeChannelModeIsReply(client, *channel);
 
-  size_t paramIdx = 2, addMode;
+  // size_t paramIdx = 2, addMode;
 
-  for (size_t i = 0; i < channelSetMode.size(); i++) {
-    if (channelSetMode[i] == '+')
-      addMode = 1;
-    else if (channelSetMode[i] == '-')
-      addMode = 0;
+  // for (size_t i = 0; i < channelSetMode.size(); i++) {
+  //   if (channelSetMode[i] == '+')
+  //     addMode = 1;
+  //   else if (channelSetMode[i] == '-')
+  //     addMode = 0;
 
-    char mode = channelSetMode[i];
+  //   char mode = channelSetMode[i];
 
-    switch (mode) {
-      case 'i':
-      case 't':
-        if (addMode)
-          channel->setChannelModeAdd(mode);
-        else
-          channel->setChannelModeSub(mode);
-        break;
-      case 'k':
-        if (addMode) {
-          if (message.params.size() <= paramIdx)
-            return ReplyUtility::makeErrNotExistReply(client, channelName,
-                                                      mode);
-          channel->setChannelKey(message.params[paramIdx++]);
-          channel->setChannelModeAdd(mode);
-        } else {
-          channel->setChannelKey("");
-          channel->setChannelModeSub(mode);
-        }
-        break;
-      case 'o':
-        if (message.params.size() <= paramIdx)
-          return ReplyUtility::makeErrNotExistReply(client, channelName, mode);
-        std::string nickName = message.params[paramIdx++];
-        Client* target = Client::findClient(nickName);
+  //   switch (mode) {
+  //     case 'i':
+  //     case 't':
+  //       if (addMode)
+  //         channel->setChannelModeAdd(mode);
+  //       else
+  //         channel->setChannelModeSub(mode);
+  //       break;
+  //     case 'k':
+  //       if (addMode) {
+  //         if (message.params.size() <= paramIdx)
+  //           return ReplyUtility::makeErrNotExistReply(client, channelName,
+  //                                                     mode);
+  //         channel->setChannelKey(message.params[paramIdx++]);
+  //         channel->setChannelModeAdd(mode);
+  //       } else {
+  //         channel->setChannelKey("");
+  //         channel->setChannelModeSub(mode);
+  //       }
+  //       break;
+  //     case 'o':
+  //       if (message.params.size() <= paramIdx)
+  //         return ReplyUtility::makeErrNotExistReply(client, channelName,
+  //         mode);
+  //       std::string nickName = message.params[paramIdx++];
+  //       Client* target = Client::findClient(nickName);
 
-        if (addMode) {
-          if (target == NULL)
-            return ReplyUtility::makeErrNoSuchNickReply(client, nickName);
-          channel->setGMListAdd(*target);
-        } else
-          channel->setGMListSub(*target);
+  //       if (addMode) {
+  //         if (target == NULL)
+  //           return ReplyUtility::makeErrNoSuchNickReply(client, nickName);
+  //         channel->setGMListAdd(*target);
+  //       } else
+  //         channel->setGMListSub(*target);
 
-        break;
-    }
-  }
+  //       break;
+  //   }
+  // }
+  return "";
 }

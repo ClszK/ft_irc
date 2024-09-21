@@ -314,3 +314,41 @@ std::string ReplyUtility::makeErrNoSuchNickReply(Client& client,
 
   return ss.str();
 }
+
+/****  privmsg reply ****/
+/* 192.168.065.001.33675-172.018.000.002.06667: privmsg #1 hi
+
+   172.018.000.002.06667-192.168.065.001.33557: :gi!123@192.168.65.1 PRIVMSG #1
+   :hi
+*/
+/* 192.168.065.001.33557-172.018.000.002.06667: PRIVMSG gi :hi
+
+   172.018.000.002.06667-192.168.065.001.57344: :test!user@192.168.65.1 PRIVMSG
+   gi :hi
+*/
+std::string ReplyUtility::makePrivmsgReply(Client& client,
+                                           const std::string& target,
+                                           const std::string& message) {
+  std::stringstream ss;
+
+  ss << ":" << client.getNickName() << "!" << client.getUserName() << "@"
+     << client.getHostName() << " PRIVMSG " << target << " :" << message
+     << "\r\n";
+
+  return ss.str();
+}
+
+/*
+172.018.000.002.06667-192.168.065.001.33059: :irc.local 404 a #123 :You cannot
+send external messages to this channel whilst the +n (noextmsg) mode is set.
+*/
+std::string ReplyUtility::makeErrCannotSendToChanReply(
+    Client& client, const std::string& channelName) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_CANNOTSENDTOCHAN << " "
+     << client.getNickName() << " " << channelName << " "
+     << NumericReply::getReply(ERR_CANNOTSENDTOCHAN) << "\r\n";
+
+  return ss.str();
+}
