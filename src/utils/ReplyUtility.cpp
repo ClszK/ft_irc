@@ -316,16 +316,9 @@ std::string ReplyUtility::makeErrNoSuchNickReply(Client& client,
 }
 
 /****  privmsg reply ****/
-/* 192.168.065.001.33675-172.018.000.002.06667: privmsg #1 hi
-
-   172.018.000.002.06667-192.168.065.001.33557: :gi!123@192.168.65.1 PRIVMSG #1
-   :hi
-*/
-/* 192.168.065.001.33557-172.018.000.002.06667: PRIVMSG gi :hi
-
-   172.018.000.002.06667-192.168.065.001.57344: :test!user@192.168.65.1 PRIVMSG
-   gi :hi
-*/
+/* :gi!123@192.168.65.1 PRIVMSG #1 :hi
+ * :test!user@192.168.65.1 PRIVMSG gi :hi
+ */
 std::string ReplyUtility::makePrivmsgReply(Client& client,
                                            const std::string& target,
                                            const std::string& message) {
