@@ -201,3 +201,11 @@ Server::~Server() {
   close(mListenFd);
   close(mKq);
 }
+
+void Server::removeChannel(const std::string& channelName) {
+  std::map<std::string, Channel*>::iterator it = mChannels.find(channelName);
+  if (it != mChannels.end()) {
+    delete it->second;    // 동적 할당된 채널 삭제
+    mChannels.erase(it);  // 채널 목록에서 제거
+  }
+}

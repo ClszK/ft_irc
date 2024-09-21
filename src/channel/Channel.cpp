@@ -63,6 +63,27 @@ void Channel::sendPrivmsg(Client& client, const std::string& message) {
   }
 }
 
+void Channel::sendPart(Client& client, std::string message) {
+  for (size_t i = 0; i < mUserlist.size(); i++) {
+    mUserlist[i]->sendPart(message);
+  }
+}
+
+void Channel::removeUser(Client& client) {
+  std::vector<Client*>::iterator it =
+      std::find(mUserlist.begin(), mUserlist.end(), &client);
+  if (it != mUserlist.end()) {
+    mUserlist.erase(it);
+  }
+}
+
+bool Channel::isEmpty() { return mUserlist.empty(); }
+
+bool Channel::hasChannel(Client& client) {
+  return std::find(mUserlist.begin(), mUserlist.end(), &client) !=
+         mUserlist.end();
+}
+
 Channel::Channel()
     : mTopic(""), mChannelMode("tn"), mTopicLocked(true), mMaxUser(5000) {}
 

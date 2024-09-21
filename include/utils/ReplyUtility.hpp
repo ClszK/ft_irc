@@ -20,6 +20,8 @@ class ReplyUtility {
   static std::string makeNamReply(Client& client, Channel& channel);
   static std::string makeEndOfNamesReply(Client& client, Channel& channel);
   static std::string makeChannelModeIsReply(Client& client, Channel& channel);
+  static std::string makePrivmsgReply(Client& client, const std::string& target,
+                                      const std::string& message);
   static std::string makeCommandReply(Client& client,
                                       const std::string& command,
                                       const std::string& paramFirst,
@@ -49,11 +51,13 @@ class ReplyUtility {
                                           char mode);
   static std::string makeErrNoSuchNickReply(Client& client,
                                             const std::string& nickName);
-  /* privmsg reply */
-  static std::string makePrivmsgReply(Client& client, const std::string& target,
-                                      const std::string& message);
   static std::string makeErrCannotSendToChanReply(
       Client& client, const std::string& channelName);
+  static std::string makeErrNotInChannelReply(Client& client,
+                                              const std::string& channelName);
+  static std::string makePartReply(Client& client,
+                                   const std::string& channelName,
+                                   const std::string& partMessage);
   static std::string makeErrUnknownModeReply(Client& client, char mode);
   static std::string makeErrKeyAlreadySetReply(Client& client,
                                                const std::string& channelName);

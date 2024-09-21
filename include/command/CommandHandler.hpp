@@ -7,6 +7,7 @@
 #include "command/JoinCommand.hpp"
 #include "command/ModeCommand.hpp"
 #include "command/NickCommand.hpp"
+#include "command/PartCommand.hpp"
 #include "command/PassCommand.hpp"
 #include "command/PrivmsgCommand.hpp"
 #include "command/UserCommand.hpp"

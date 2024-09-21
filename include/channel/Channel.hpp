@@ -63,4 +63,8 @@ class Channel {
 
   bool isUserInChannel(std::string nickName);
   void sendPrivmsg(Client& client, const std::string& message);
+  void sendPart(Client& client, std::string message);
+  void removeUser(Client& client);
+  bool isEmpty();
+  bool hasChannel(Client& client);
 };
