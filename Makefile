@@ -9,10 +9,12 @@ SRCS        = main.cpp \
 							PassCommand.cpp \
 							UserCommand.cpp \
 							ModeCommand.cpp \
+							PrivmsgCommand.cpp \
 							CommandHandler.cpp \
 							NumericReply.cpp \
 							ReplyUtility.cpp \
-							StringUtility.cpp 
+							StringUtility.cpp \
+
 
 SRCDIR		= src
 OBJDIR      = build
@@ -23,7 +25,7 @@ DEPS        = $(patsubst %.cpp, $(OBJDIR)/%.d, $(SRCS))
 VPATH       = $(SRCDIR):$(SRCDIR)/server:$(SRCDIR)/client:$(SRCDIR)/channel:$(SRCDIR)/command:$(SRCDIR)/utils
 
 CXX         = c++
-CXXFLAGS    = -Wall -Wextra -Werror -Iinclude -std=c++98 -MMD -MP
+CXXFLAGS    = -Iinclude -std=c++98 -MMD -MP
 
 INTERFACE	= en0
 IRC_SERVER	= $(shell ifconfig $(INTERFACE) | grep 'inet ' | grep -v 'inet6' | awk '{print $$2}')

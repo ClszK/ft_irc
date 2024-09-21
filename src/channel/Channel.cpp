@@ -1,5 +1,7 @@
 #include "channel/Channel.hpp"
 
+#include "client/Client.hpp"
+
 void Channel::setChannelKey(const std::string& key) { mChannelKey = key; }
 
 int Channel::setTopic(const std::string& topic) {
@@ -46,6 +48,19 @@ void Channel::deleteChannel(const std::string& channelName) {
   if (!findChannel(channelName)) return;
 
   Server::getInstance()->setChannel(channelName, NULL);
+}
+
+bool Channel::isUserInChannel(std::string nickName) {
+  for (size_t i = 0; i < mUserlist.size(); i++) {
+    if (mUserlist[i]->getNickName() == nickName) return true;
+  }
+  return false;
+}
+
+void Channel::sendPrivmsg(Client& client, const std::string& message) {
+  for (size_t i = 0; i < mUserlist.size(); i++) {
+    if (mUserlist[i] != &client) mUserlist[i]->sendPrivmsg(message);
+  }
 }
 
 Channel::Channel()

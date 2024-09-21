@@ -20,9 +20,13 @@ void NumericReply::initializeReplies() {
   mReplies[ERR_BADCHANNELKEY] = ":Cannot join channel (incorrect channel key)";
   mReplies[ERR_INVALIDCHANNELNAME] = ":Invalid channel name";
   mReplies[ERR_INVITEONLYCHAN] = ":Cannot join channel (invite only)";
+  mReplies[ERR_NOSUCHNICK] = ":No such nick/channel";
   mReplies[ERR_NOSUCHCHANNEL] = ":No such channel";
   mReplies[ERR_NOTEXIST] =
       ":You must specify a parameter for the key mode. Syntax: ";
+  mReplies[ERR_CANNOTSENDTOCHAN] =
+      ":You cannot send external messages to this channel whilst the "
+      "+n(noextmsg) mode is set.";
 }
 
 NumericReply::NumericReply() {}

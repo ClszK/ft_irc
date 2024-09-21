@@ -6,6 +6,7 @@ CommandHandler::CommandHandler() {
   mCommands["join"] = new JoinCommand();
   mCommands["nick"] = new NickCommand();
   mCommands["mode"] = new ModeCommand();
+  mCommands["privmsg"] = new PrivmsgCommand();
 }
 
 std::string CommandHandler::handleCommand(Client& client, Message& message) {

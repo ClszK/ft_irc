@@ -45,4 +45,9 @@ class ReplyUtility {
                                           char mode);
   static std::string makeErrNoSuchNickReply(Client& client,
                                             const std::string& nickName);
+  /* privmsg reply */
+  static std::string makePrivmsgReply(Client& client, const std::string& target,
+                                      const std::string& message);
+  static std::string makeErrCannotSendToChanReply(
+      Client& client, const std::string& channelName);
 };

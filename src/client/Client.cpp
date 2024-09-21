@@ -60,3 +60,8 @@ Client* Client::findClient(const std::string& nickName) {
   }
   return NULL;
 }
+
+void Client::sendPrivmsg(const std::string& message) {
+  if (mSockFd == -1) return;
+  send(mSockFd, message.c_str(), message.size(), 0);
+}
