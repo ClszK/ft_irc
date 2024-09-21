@@ -29,22 +29,5 @@ std::string PrivmsgCommand::execute(Client& client, Message& message) {
     target->sendPrivmsg(response);
   }
 
-  //   AChannel* target;
-
-  //   if (StringUtility::isValidChannelName(msgTarget)) {
-  //     target = Channel::findChannel(msgTarget);
-  //     if (target == NULL)
-  //       return ReplyUtility::makeErrNoSuchChannelReply(client, msgTarget);
-
-  //   } else {
-  //     target = Client::findClient(msgTarget);
-  //     if (target == NULL)
-  //       return ReplyUtility::makeErrNoSuchNickReply(client, msgTarget);
-  //   }
-
-  //   std::string response =
-  //       ReplyUtility::makePrivmsgReply(client, targetName, messageContent);
-  //   target->send(response);
-
   return "";
 }
