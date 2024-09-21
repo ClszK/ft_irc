@@ -345,3 +345,38 @@ std::string ReplyUtility::makeErrCannotSendToChanReply(
 
   return ss.str();
 }
+
+/* part message */
+/*
+ * :irc.local 442 hi #123 :You're not on that channel
+ */
+std::string ReplyUtility::makeErrNotInChannelReply(
+    Client& client, const std::string& channelName) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_NOTINCHANNEL << " "
+     << client.getNickName() << " " << channelName << " "
+     << NumericReply::getReply(ERR_NOTINCHANNEL) << "\r\n";
+
+  return ss.str();
+}
+
+std::string ReplyUtility::makePartReply(Client& client,
+                                        const std::string& channelName,
+                                        const std::string& partMessage) {
+  std::stringstream ss;
+
+  if (partMessage == "") {
+    ss << ":" << client.getNickName() << "!" << client.getUserName() << "@"
+       << client.getHostName() << " PART :" << channelName << "\r\n";
+  } else {
+    ss << ":" << client.getNickName() << "!" << client.getUserName() << "@"
+       << client.getHostName() << " PART " << channelName << " :" << partMessage
+       << "\r\n";
+  }
+
+  return ss.str();
+}
+
+// test!user@192.168.65.1 PART :#123
+// test!user@192.168.65.1 PART #123 :byebye

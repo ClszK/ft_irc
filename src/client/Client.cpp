@@ -65,3 +65,12 @@ void Client::sendPrivmsg(const std::string& message) {
   if (mSockFd == -1) return;
   send(mSockFd, message.c_str(), message.size(), 0);
 }
+
+void Client::sendPart(const std::string& message) {
+  if (mSockFd == -1) return;
+  send(mSockFd, message.c_str(), message.size(), 0);
+}
+
+void Client::removeChannel(const std::string& channelName) {
+  mConnectedChannels.erase(channelName);
+}

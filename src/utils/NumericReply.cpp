@@ -27,6 +27,7 @@ void NumericReply::initializeReplies() {
   mReplies[ERR_CANNOTSENDTOCHAN] =
       ":You cannot send external messages to this channel whilst the "
       "+n(noextmsg) mode is set.";
+  mReplies[ERR_NOTINCHANNEL] = ":You're not on that channel";
 }
 
 NumericReply::NumericReply() {}

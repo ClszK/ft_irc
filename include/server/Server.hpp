@@ -47,6 +47,8 @@ class Server {
   void setChannel(const std::string& channelName, Channel* channel);
   void setClient(const int sockFd, Client* client);
 
+  void removeChannel(const std::string& channelName);
+
  private:
   int mListenFd, mKq;
   SocketAddr mServerAddr;

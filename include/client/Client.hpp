@@ -44,6 +44,8 @@ class Client {
   static Client* findClient(const std::string& nickName);
 
   void sendPrivmsg(const std::string& message);
+  void sendPart(const std::string& message);
+  void removeChannel(const std::string& channelName);
 
   Client() {};
   Client(const int sockFd) : mSockFd(sockFd) {};
