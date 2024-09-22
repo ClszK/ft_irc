@@ -74,6 +74,10 @@ void Channel::removeUser(Client& client) {
       std::find(mUserlist.begin(), mUserlist.end(), &client);
   if (it != mUserlist.end()) {
     mUserlist.erase(it);
+    if (mGMList.size() > 0) {
+      it = std::find(mGMList.begin(), mGMList.end(), &client);
+      if (it != mGMList.end()) mGMList.erase(it);
+    }
   }
 }
 
