@@ -59,7 +59,7 @@ void Server::initServerInfo(char* argv[]) {
   mServerConf.password = argv[2];
   mServerConf.hostName = std::string(hostBuffer);
   mServerConf.version = "ircserv-1.0";
-  mServerConf.serverName = "IRCServer";
+  mServerConf.serverName = "irc.local";
   mServerConf.createdTime = std::string(buffer);
   /**
    * i: 클라이언트가 다른 사용자에게 보이지 않도록 하여 프라이버시를 보호.
@@ -146,7 +146,7 @@ void Server::handleWriteEvent(struct kevent& event) {
 
     std::string replyStr = CommandHandler::getInstance()->handleCommand(
         *mClients[event.ident], parsedMessage);
-    if (replyStr.empty()) continue;
+    if (replyStr == "") continue;
 
     std::cout << "Reply: " << replyStr << "!" << std::endl;
     send(event.ident, replyStr.c_str(), replyStr.size(), 0);

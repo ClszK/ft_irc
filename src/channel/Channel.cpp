@@ -92,6 +92,12 @@ Channel::Channel(const std::string& channelName)
       mTopic(""),
       mChannelMode("tn"),
       mTopicLocked(true),
-      mMaxUser(5000) {}
+      mMaxUser(5000) {
+  mTimeStamp = std::time(NULL);
+  std::time_t now = std::time(NULL);
+  std::stringstream ss;
+  ss << now;
+  mTimeStamp = ss.str();
+}
 
 Channel::~Channel() {}

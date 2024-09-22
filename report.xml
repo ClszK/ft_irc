@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dfxml xmloutputversion='1.0'>
+  <metadata 
+  xmlns='http://afflib.org/tcpflow/' 
+  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' 
+  xmlns:dc='http://purl.org/dc/elements/1.1/'>
+    <dc:type>Feature Extraction</dc:type>
+  </metadata>
+  <creator version='1.0'>
+    <program>TCPFLOW</program>
+    <version>1.6.1</version>
+    <build_environment>
+      <compiler>4.2.1 (Apple LLVM 15.0.0 (clang-1500.0.40.1))</compiler>
+      <CPPFLAGS> -DUTC_OFFSET=+0000</CPPFLAGS>
+      <CFLAGS>-g -g -O3 -MD -Wpointer-arith -Wmissing-declarations -Wmissing-prototypes -Wshadow -Wwrite-strings -Wcast-align -Waggregate-return -Wbad-function-cast -Wcast-qual -Wundef -Wredundant-decls -Wdisabled-optimization -Wfloat-equal -Wmultichar -Wc++-compat -Wmissing-noreturn -Wall -Wstrict-prototypes -MD -D_FORTIFY_SOURCE=2 -Wpointer-arith -Wmissing-declarations -Wmissing-prototypes -Wshadow -Wwrite-strings -Wcast-align -Waggregate-return -Wbad-function-cast -Wcast-qual -Wundef -Wredundant-decls -Wdisabled-optimization -Wfloat-equal -Wmultichar -Wc++-compat -Wmissing-noreturn -Wall -Wstrict-prototypes</CFLAGS>
+      <CXXFLAGS>-g -g -O3 -Wall -MD -D_FORTIFY_SOURCE=2 -Wpointer-arith -Wshadow -Wwrite-strings -Wcast-align -Wredundant-decls -Wdisabled-optimization -Wfloat-equal -Wmultichar -Wmissing-noreturn -Woverloaded-virtual -Wsign-promo -funit-at-a-time -Weffc++ -Wno-address-of-packed-member</CXXFLAGS>
+      <LDFLAGS />
+      <LIBS>-lpcap -lbz2 -lexpat -lcrypto -lsqlite3 -lssl -lmd -lcrypto -ldl -lz </LIBS>
+      <compilation_date>2021-02-19T02:53:03</compilation_date>
+      <library name="boost" version="108200"/>
+      <library name="sqlite" version="3.39.5" source_id="2022-10-14 20:58:05 554764a6e721fab307c63a4f98cd958c8428a5d9d8edfde951858d6fd02daapl"/>
+    </build_environment>
+    <execution_environment>
+      <os_sysname>Darwin</os_sysname>
+      <os_release>23.6.0</os_release>
+      <os_version>Darwin Kernel Version 23.6.0: Mon Jul 29 21:16:46 PDT 2024; root:xnu-10063.141.2~1/RELEASE_ARM64_T8112</os_version>
+      <host>ijehun-ui-MacBookAir.local</host>
+      <arch>arm64</arch>
+      <command_line>command line to be provided</command_line>
+      <uid>0</uid>
+      <username>root</username>
+      <start_time>2024-09-22T01:06:29Z</start_time>
+    </execution_environment>
+  </creator>
+  <configuration>
+  </configuration>
+  <tdelta>0</tdelta>
+  <configuration>
+    <fileobject>
+      <filename>010.018.225.031.06667-010.018.225.031.50962</filename>
+      <filesize>38</filesize>
+      <tcpflow startime='2024-09-22T01:06:36.983733Z' endtime='2024-09-22T01:06:51.984819Z' mac_daddr='02:00:00:00:45:00' mac_saddr='00:5a:00:00:40:00' family='2' src_ipn='10.18.225.31' dst_ipn='10.18.225.31' srcport='6667' dstport='50962' packets='3' len='194' />
+    </fileobject>
+    <fileobject>
+      <filename>010.018.225.031.50962-010.018.225.031.06667</filename>
+      <filesize>16</filesize>
+      <tcpflow startime='2024-09-22T01:06:36.983021Z' endtime='2024-09-22T01:06:51.984796Z' mac_daddr='02:00:00:00:45:00' mac_saddr='00:44:00:00:40:00' family='2' src_ipn='10.18.225.31' dst_ipn='10.18.225.31' srcport='50962' dstport='6667' packets='4' len='228' />
+    </fileobject>
+    <fileobject>
+      <filename>010.018.225.031.06667-010.018.225.031.51850</filename>
+      <filesize>38</filesize>
+      <tcpflow startime='2024-09-22T01:06:33.709683Z' endtime='2024-09-22T01:06:48.710685Z' mac_daddr='02:00:00:00:45:00' mac_saddr='00:5a:00:00:40:00' family='2' src_ipn='10.18.225.31' dst_ipn='10.18.225.31' srcport='6667' dstport='51850' packets='3' len='194' />
+    </fileobject>
+    <fileobject>
+      <filename>010.018.225.031.51850-010.018.225.031.06667</filename>
+      <filesize>16</filesize>
+      <tcpflow startime='2024-09-22T01:06:33.708787Z' endtime='2024-09-22T01:06:48.710665Z' mac_daddr='02:00:00:00:45:00' mac_saddr='00:44:00:00:40:00' family='2' src_ipn='10.18.225.31' dst_ipn='10.18.225.31' srcport='51850' dstport='6667' packets='4' len='228' />
+    </fileobject>
+  </configuration>
+  <summary />
+  <open_fds_at_end>0</open_fds_at_end>
+  <max_open_flows>0</max_open_flows>
+  <total_flows>4</total_flows>
+  <flow_map_size>4</flow_map_size>
+  <total_packets>14</total_packets>
+  <rusage>
+    <utime>0.005835</utime>
+    <stime>0.035535</stime>
+    <maxrss>2703360</maxrss>
+    <minflt>332</minflt>
+    <majflt>9</majflt>
+    <nswap>0</nswap>
+    <inblock>0</inblock>
+    <oublock>0</oublock>
+    <clocktime>33.520197</clocktime>
+  </rusage>
+</dfxml>

@@ -18,16 +18,20 @@ std::string ModeCommand::execute(Client& client, Message& message) {
     return ReplyUtility::makeErrNeedMoreParamsReply(client, "MODE");
 
   std::string channelName = message.params[0];
+  std::string replyStr = "";
 
   Channel* channel = Channel::findChannel(channelName);
   if (channel == NULL)
     return ReplyUtility::makeErrNoSuchChannelReply(client, channelName);
-  if (message.params.size() == 1)
-    return ReplyUtility::makeChannelModeIsReply(client, *channel);
+  if (message.params.size() == 1) {
+    replyStr += ReplyUtility::makeChannelModeIsReply(client, *channel);
+    replyStr += ReplyUtility::makeChannelTimeStampReply(client, *channel);
+    return replyStr;
+  }
 
   size_t paramIdx = 2, addMode = 1;
   std::string channelSetMode = message.params[1];
-  std::string replyStr = "", nickName;
+  std::string nickName = "";
   Client* target = NULL;
   std::string plusMode = "";
   std::string removeMode = "";

@@ -12,6 +12,7 @@
 #include "command/PingCommand.hpp"
 #include "command/PrivmsgCommand.hpp"
 #include "command/UserCommand.hpp"
+#include "command/WhoCommand.hpp"
 
 class CommandHandler {
  public:

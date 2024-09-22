@@ -8,6 +8,7 @@ void NumericReply::initializeReplies() {
   mReplies[RPL_CREATED] = ":This server was created";
   mReplies[RPL_SUPPORT] = ":are supported by this server";
   mReplies[RPL_ENDOFNAMES] = ":End of /NAMES list";
+  mReplies[RPL_ENDOFWHO] = ":End of /WHO list";
   mReplies[ERR_NONICKNAMEGIVEN] = ":No nickname given";
   mReplies[ERR_ERRONEUSNICKNAME] = ":Erroneus nickname";
   mReplies[ERR_NICKNAMEINUSE] = ":Nickname is already in use";
@@ -30,6 +31,7 @@ void NumericReply::initializeReplies() {
   mReplies[ERR_NOTINCHANNEL] = ":You're not on that channel";
   mReplies[ERR_UNKNOWNMODE] = ":is not a recognised channel mode.";
   mReplies[ERR_KEYSET] = ":Channel key already set";
+  mReplies[ERR_UNKNOWNCOMMAND] = ":Unknown command";
 }
 
 NumericReply::NumericReply() {}
