@@ -14,6 +14,7 @@ std::string JoinCommand::joinKeyMode(Client& client, Channel& channel,
     replyStr += ReplyUtility::makeErrBadChannelKeyReply(client, channelName);
   return replyStr;
 }
+
 /**
  * :irc.local 461 test1 JOIN :Not enough parameters.
  */
@@ -64,7 +65,10 @@ std::string JoinCommand::execute(Client& client, Message& message) {
     }
     if (channel->getTopic() != "")
       replyStr += ReplyUtility::makeTopicReply(client, *channel);
-    replyStr += ReplyUtility::makeCommandReply(client, "JOIN", "", channelName);
+    std::vector<std::string> params;
+
+    params.push_back(channelName);
+    replyStr += ReplyUtility::makeCommandReply(client, "JOIN", params);
     replyStr += ReplyUtility::makeNamReply(client, *channel);
     replyStr += ReplyUtility::makeEndOfNamesReply(client, *channel);
   }

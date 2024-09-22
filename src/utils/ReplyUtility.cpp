@@ -21,7 +21,7 @@ std::string ReplyUtility::makeWelcomeReply(Client& client) {
   ss << ":" << client.getServerName() << " " << std::setw(3)
      << std::setfill('0') << RPL_WELCOME << " " << client.getNickName() << " "
      << NumericReply::getReply(RPL_WELCOME) << " " << client.getNickName()
-     << "!" << client.getUserName() << "@" << client.getHostName() << "\r\n";
+     << "!" << client.getUserName() << "@" << client.getClientIp() << "\r\n";
 
   return ss.str();
 }
@@ -129,7 +129,10 @@ std::string ReplyUtility::makeNamReply(Client& client, Channel& channel) {
   for (i = 0; i < gmList.size(); i++)
     ss << "@" << gmList[i]->getNickName() << " ";
 
-  for (i = 0; i < userList.size(); i++) ss << userList[i]->getNickName() << " ";
+  for (i = 0; i < userList.size(); i++) {
+    if (std::find(gmList.begin(), gmList.end(), userList[i]) == gmList.end())
+      ss << userList[i]->getNickName() << " ";
+  }
 
   ss << "\r\n";
   return ss.str();
@@ -201,7 +204,7 @@ std::string ReplyUtility::makeErrNonicknameGivenReply(Client& client,
 
 std::string ReplyUtility::makeErrorReply(Client& client) {
   return "ERROR :Closing link: (" + client.getNickName() + "@" +
-         client.getHostName() + ") [Access denied by configuration]";
+         client.getClientIp() + ") [Access denied by configuration]";
 }
 
 std::string ReplyUtility::makeErrNotRegisteredReply(
@@ -327,7 +330,7 @@ std::string ReplyUtility::makePrivmsgReply(Client& client,
   std::stringstream ss;
 
   ss << ":" << client.getNickName() << "!" << client.getUserName() << "@"
-     << client.getHostName() << " PRIVMSG " << target << " :" << message
+     << client.getClientIp() << " PRIVMSG " << target << " :" << message
      << "\r\n";
 
   return ss.str();
@@ -387,18 +390,21 @@ std::string ReplyUtility::makeErrNotInChannelReply(
   return ss.str();
 }
 
-std::string ReplyUtility::makeCommandReply(Client& client,
-                                           const std::string& command,
-                                           const std::string& paramFirst,
-                                           const std::string& paramSecond) {
+std::string ReplyUtility::makeCommandReply(
+    Client& client, const std::string& command,
+    const std::vector<std::string>& params) {
   std::stringstream ss;
 
   ss << ":" << client.getNickName() << "!" << client.getUserName() << "@"
-     << client.getHostName() << " " << command << " " << paramFirst << " :"
-     << paramSecond << "\r\n";
+     << client.getClientIp() << " " << command << " ";
+
+  for (size_t i = 0; i < params.size() - 1; i++) ss << params[i] << " ";
+
+  ss << ":" << params[params.size() - 1] << "\r\n";
 
   return ss.str();
 }
+
 std::string ReplyUtility::makePartReply(Client& client,
                                         const std::string& channelName,
                                         const std::string& partMessage) {
@@ -406,10 +412,10 @@ std::string ReplyUtility::makePartReply(Client& client,
 
   if (partMessage == "") {
     ss << ":" << client.getNickName() << "!" << client.getUserName() << "@"
-       << client.getHostName() << " PART :" << channelName << "\r\n";
+       << client.getClientIp() << " PART :" << channelName << "\r\n";
   } else {
     ss << ":" << client.getNickName() << "!" << client.getUserName() << "@"
-       << client.getHostName() << " PART " << channelName << " :" << partMessage
+       << client.getClientIp() << " PART " << channelName << " :" << partMessage
        << "\r\n";
   }
 
@@ -418,3 +424,41 @@ std::string ReplyUtility::makePartReply(Client& client,
 
 // test!user@192.168.65.1 PART :#123
 // test!user@192.168.65.1 PART #123 :byebye
+
+/**
+ * :irc.local 433 test t5 :Nickname is already in use.
+ */
+std::string ReplyUtility::makeErrAlreadyNickUseReply(
+    Client& client, const std::string& nickName) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_NICKNAMEINUSE << " "
+     << (client.getNickName() == "" ? "*" : client.getNickName()) << " "
+     << nickName << " " << NumericReply::getReply(ERR_NICKNAMEINUSE) << "\r\n";
+
+  return ss.str();
+}
+
+/**
+ * :irc.local 432 * 123 :Erroneous Nickname
+ */
+std::string ReplyUtility::makeErrErroneusNickNameReply(
+    Client& client, const std::string& nickName) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_ERRONEUSNICKNAME << " * "
+     << nickName << " " << NumericReply::getReply(ERR_ERRONEUSNICKNAME)
+     << "\r\n";
+
+  return ss.str();
+}
+
+std::string ReplyUtility::makePongReply(Client& client,
+                                        const std::string& message) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " PONG " << client.getServerName()
+     << " :" << message << "\r\n";
+
+  return ss.str();
+}

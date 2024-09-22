@@ -41,8 +41,8 @@ MessageHandler::MessageHandler() {}
 MessageHandler::~MessageHandler() {}
 
 std::ostream& operator<<(std::ostream& os, const Message& message) {
-  os << "Message {prefix: " << message.prefix
-     << ", command: " << message.command << ", params: [";
+  os << "{prefix: " << message.prefix << ", command: " << message.command
+     << ", params: [";
   for (std::vector<std::string>::const_iterator it = message.params.begin();
        it != message.params.end(); ++it) {
     os << *it << ", ";

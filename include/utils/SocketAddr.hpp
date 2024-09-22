@@ -14,10 +14,12 @@ class SocketAddr {
     mAddr.sin_addr.s_addr = INADDR_ANY;
   }
 
-  operator struct sockaddr *() { return (struct sockaddr*)&mAddr; }
-  operator const struct sockaddr *() const { return (struct sockaddr*)&mAddr; }
+  operator struct sockaddr *() { return (struct sockaddr *)&mAddr; }
+  operator const struct sockaddr *() const { return (struct sockaddr *)&mAddr; }
   operator struct sockaddr_in *() { return &mAddr; }
   operator const struct sockaddr_in *() const { return &mAddr; }
+
+  struct sockaddr_in *getAddr() { return &mAddr; }
 
  private:
   struct sockaddr_in mAddr;

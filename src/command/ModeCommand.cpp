@@ -31,6 +31,7 @@ std::string ModeCommand::execute(Client& client, Message& message) {
   Client* target = NULL;
   std::string plusMode = "";
   std::string removeMode = "";
+  std::vector<std::string> params;
 
   for (size_t i = 0; i < channelSetMode.size(); i++) {
     if (channelSetMode[i] == '+') {
@@ -48,6 +49,7 @@ std::string ModeCommand::execute(Client& client, Message& message) {
                                          std::string::npos)))
       continue;
     switch (mode) {
+      case 'n':
       case 'i':
       case 't':
         if (addMode) {
@@ -59,12 +61,13 @@ std::string ModeCommand::execute(Client& client, Message& message) {
         }
         break;
       case 'k':
-        if (message.params.size() <= paramIdx) {
-          replyStr +=
-              ReplyUtility::makeErrNotExistReply(client, channelName, mode);
-          break;
-        }
         if (addMode) {
+          if (message.params.size() <= paramIdx) {
+            replyStr +=
+                ReplyUtility::makeErrNotExistReply(client, channelName, mode);
+            break;
+          }
+          params.push_back(message.params[paramIdx]);
           channel->setChannelKey(message.params[paramIdx++]);
           channel->setChannelModeAdd(mode);
           plusMode += mode;
@@ -74,6 +77,7 @@ std::string ModeCommand::execute(Client& client, Message& message) {
                 ReplyUtility::makeErrKeyAlreadySetReply(client, channelName);
             break;
           }
+          params.push_back(message.params[paramIdx]);
           channel->setChannelKey("");
           channel->setChannelModeSub(mode);
           removeMode += mode;
@@ -87,12 +91,13 @@ std::string ModeCommand::execute(Client& client, Message& message) {
         }
         nickName = message.params[paramIdx++];
         target = Client::findClient(nickName);
+        if (target == NULL) {
+          replyStr += ReplyUtility::makeErrNoSuchNickReply(client, nickName);
+          break;
+        }
 
+        params.push_back(nickName);
         if (addMode) {
-          if (target == NULL) {
-            replyStr += ReplyUtility::makeErrNoSuchNickReply(client, nickName);
-            break;
-          }
           channel->setGMListAdd(*target);
           plusMode += mode;
         } else {
@@ -107,6 +112,7 @@ std::string ModeCommand::execute(Client& client, Message& message) {
                 ReplyUtility::makeErrNotExistReply(client, channelName, mode);
             break;
           }
+          params.push_back(message.params[paramIdx]);
           channel->setChannelModeAdd(mode);
           channel->setMaxUser(
               std::strtol(message.params[paramIdx++].c_str(), NULL, 10));
@@ -121,5 +127,23 @@ std::string ModeCommand::execute(Client& client, Message& message) {
         replyStr += ReplyUtility::makeErrUnknownModeReply(client, mode);
     }
   }
+  if (plusMode.size() > 0 || removeMode.size() > 0) {
+    std::string responseMode;
+    if (plusMode.size() > 0) responseMode += "+" + plusMode;
+    if (removeMode.size() > 0) responseMode += "-" + removeMode;
+
+    params.insert(params.begin(), responseMode);
+    params.insert(params.begin(), channelName);
+    std::string response =
+        ReplyUtility::makeCommandReply(client, "MODE", params);
+    std::cout << response << "!" << std::endl;
+    channel->sendPart(client, response);
+  }
   return replyStr;
 }
+
+/**
+ * :t5!root@192.168.65.1 MODE #1234 :+i-nt
+ * :t5!root@10.18.225.31 MODE #123 :+i-nt
+ * :t4!root@192.168.65.1 MODE #test :+i-nt
+ */

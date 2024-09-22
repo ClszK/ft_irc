@@ -2,11 +2,6 @@
 
 #include "server/Server.hpp"
 
-bool Client::setNickName(const std::string& nickName) {
-  if (!StringUtility::isValidNickName(nickName)) return false;
-  return mNickName = nickName, true;
-}
-
 bool Client::setUserName(const std::string& userName) {
   if (!StringUtility::isValidUserName(userName)) return false;
   return mUserName = userName, true;
@@ -44,8 +39,8 @@ bool Client::isPasswordValid() const {
   return mPassword == Server::getInstance()->getServerConf().password;
 }
 
-void Client::createClient(const int sockFd) {
-  Server::getInstance()->setClient(sockFd, new Client(sockFd));
+void Client::createClient(const int sockFd, char* clientIp) {
+  Server::getInstance()->setClient(sockFd, new Client(sockFd, clientIp));
 }
 
 void Client::deleteClient(const int sockFd) {

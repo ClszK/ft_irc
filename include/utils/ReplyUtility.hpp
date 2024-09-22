@@ -24,8 +24,8 @@ class ReplyUtility {
                                       const std::string& message);
   static std::string makeCommandReply(Client& client,
                                       const std::string& command,
-                                      const std::string& paramFirst,
-                                      const std::string& paramSecond);
+                                      const std::vector<std::string>& params);
+  static std::string makePongReply(Client& client, const std::string& message);
 
   static std::string makeErrNeedMoreParamsReply(Client& client,
                                                 const std::string& command);
@@ -61,4 +61,8 @@ class ReplyUtility {
   static std::string makeErrUnknownModeReply(Client& client, char mode);
   static std::string makeErrKeyAlreadySetReply(Client& client,
                                                const std::string& channelName);
+  static std::string makeErrAlreadyNickUseReply(Client& client,
+                                                const std::string& nickName);
+  static std::string makeErrErroneusNickNameReply(Client& client,
+                                                  const std::string& nickName);
 };

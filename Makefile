@@ -11,6 +11,7 @@ SRCS        = main.cpp \
 							ModeCommand.cpp \
 							PrivmsgCommand.cpp \
 							PartCommand.cpp \
+							PingCommand.cpp \
 							CommandHandler.cpp \
 							NumericReply.cpp \
 							ReplyUtility.cpp \

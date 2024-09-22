@@ -15,10 +15,11 @@ class Client {
   std::string mRealName;
   std::string mUserMode;
   std::string mPassword;
+  std::string mClientIp;
   std::map<std::string, Channel*> mConnectedChannels;
 
  public:
-  bool setNickName(const std::string& nickName);
+  void setNickName(const std::string& nickName) { mNickName = nickName; }
   bool setUserName(const std::string& userName);
   void setRealName(const std::string& realName) { mRealName = realName; }
   void setUserMode(const std::string& userMode) { mUserMode = userMode; }
@@ -29,6 +30,7 @@ class Client {
   const std::string& getRealName() const { return mRealName; }
   const std::string& getUserMode() const { return mUserMode; }
   const std::string& getPassword() const { return mPassword; }
+  const std::string& getClientIp() const { return mClientIp; }
   const std::string& getServerName() const;
   const std::string& getHostName() const;
   const std::string& getVersion() const;
@@ -39,7 +41,7 @@ class Client {
 
   bool isPasswordValid() const;
 
-  static void createClient(const int sockFd);
+  static void createClient(const int sockFd, char* clientIp);
   static void deleteClient(const int sockFd);
   static Client* findClient(const std::string& nickName);
 
@@ -48,6 +50,7 @@ class Client {
   void removeChannel(const std::string& channelName);
 
   Client() {};
-  Client(const int sockFd) : mSockFd(sockFd) {};
+  Client(const int sockFd, char* clientIp)
+      : mSockFd(sockFd), mClientIp(clientIp) {};
   ~Client() {};
 };

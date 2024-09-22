@@ -80,14 +80,17 @@ void Server::initServerInfo(char* argv[]) {
 
 void Server::handleListenEvent() {
   int connFd;
-  if ((connFd = accept(mListenFd, NULL, NULL)) == -1 ||
+  SocketAddr clientAddr;
+  socklen_t sin_size;
+
+  if ((connFd = accept(mListenFd, clientAddr, &sin_size)) == -1 ||
       fcntl(connFd, F_SETFL, O_NONBLOCK) == -1)
     throw std::runtime_error(std::strerror(errno));
 
   EV_SET(&mChangeEvent, connFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
   if (kevent(mKq, &mChangeEvent, 1, NULL, 0, NULL) == -1)
     throw std::runtime_error(std::strerror(errno));
-  Client::createClient(connFd);
+  Client::createClient(connFd, inet_ntoa(clientAddr.getAddr()->sin_addr));
 
   if (errno) throw std::runtime_error(std::strerror(errno));
 }
@@ -145,7 +148,7 @@ void Server::handleWriteEvent(struct kevent& event) {
         *mClients[event.ident], parsedMessage);
     if (replyStr.empty()) continue;
 
-    std::cout << "Reply: " << replyStr << std::endl;
+    std::cout << "Reply: " << replyStr << "!" << std::endl;
     send(event.ident, replyStr.c_str(), replyStr.size(), 0);
     if (replyStr == ReplyUtility::makeErrorReply(*mClients[event.ident]))
       Client::deleteClient(event.ident);
@@ -167,6 +170,7 @@ void Server::run() {
       else if (mEvents[i].filter == EVFILT_WRITE)
         handleWriteEvent(mEvents[i]);
     }
+    std::cout << "run" << std::endl;
   }
 }
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "command/ICommand.hpp"
 
 class JoinCommand : public ICommand {

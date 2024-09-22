@@ -8,6 +8,7 @@ CommandHandler::CommandHandler() {
   mCommands["mode"] = new ModeCommand();
   mCommands["privmsg"] = new PrivmsgCommand();
   mCommands["part"] = new PartCommand();
+  mCommands["ping"] = new PingCommand();
 }
 
 std::string CommandHandler::handleCommand(Client& client, Message& message) {

@@ -9,6 +9,7 @@
 #include "command/NickCommand.hpp"
 #include "command/PartCommand.hpp"
 #include "command/PassCommand.hpp"
+#include "command/PingCommand.hpp"
 #include "command/PrivmsgCommand.hpp"
 #include "command/UserCommand.hpp"
 
