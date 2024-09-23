@@ -26,6 +26,9 @@ void Server::init() {
     throw std::runtime_error(std::strerror(errno));
 
   mServerAddr = SocketAddr(mServerConf.port);
+  int yes = 1;
+  if (setsockopt(mListenFd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
+    throw std::runtime_error(std::strerror(errno));
 
   if (bind(mListenFd, mServerAddr, sizeof(struct sockaddr)) == -1 ||
       listen(mListenFd, MAX_EVENTS) == -1 || (mKq = kqueue()) == -1)

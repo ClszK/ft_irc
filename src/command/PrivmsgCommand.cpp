@@ -1,5 +1,9 @@
 #include "command/PrivmsgCommand.hpp"
 
+/**
+ * @TODO: PRIVMSG 명령어를 처리하는 함수
+ * - 채널 모드가 -n이면 외부에서도 채널에 메시지를 보낼 수 있게 변경해야함.
+ */
 std::string PrivmsgCommand::execute(Client& client, Message& message) {
   if (message.params.size() < 2)
     return ReplyUtility::makeErrNeedMoreParamsReply(client, "PRIVMSG");

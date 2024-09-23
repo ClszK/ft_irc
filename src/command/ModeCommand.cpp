@@ -31,11 +31,11 @@ std::string ModeCommand::execute(Client& client, Message& message) {
 
   size_t paramIdx = 2, addMode = 1;
   std::string channelSetMode = message.params[1];
-  std::string nickName = "";
+  std::string nickName = "", plusMode = "", removeMode = "";
   Client* target = NULL;
-  std::string plusMode = "";
-  std::string removeMode = "";
   std::vector<std::string> params;
+  std::vector<Client*> GMList = channel->getGMList();
+  int paramSize = message.params.size() - 2;
 
   for (size_t i = 0; i < channelSetMode.size(); i++) {
     if (channelSetMode[i] == '+') {
@@ -46,6 +46,16 @@ std::string ModeCommand::execute(Client& client, Message& message) {
       continue;
     }
     char mode = channelSetMode[i];
+
+    if (std::find(GMList.begin(), GMList.end(), &client) == GMList.end()) {
+      if ((mode == 'o' || mode == 'k' || mode == 'l') && paramSize-- <= 0)
+        replyStr +=
+            ReplyUtility::makeErrNotExistReply(client, channelName, mode);
+      else
+        replyStr += ReplyUtility::makeErrChanOPrivsNeededReply(
+            client, channelName, mode);
+      continue;
+    }
 
     if (mode != 'o' && ((addMode && channel->getChannelMode().find(mode) !=
                                         std::string::npos) ||

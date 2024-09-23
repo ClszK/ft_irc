@@ -73,4 +73,6 @@ class ReplyUtility {
                                                   const std::string& nickName);
   static std::string makeErrUnknownCommandReply(Client& client,
                                                 const std::string& command);
+  static std::string makeErrChanOPrivsNeededReply(
+      Client& client, const std::string& channelName, char mode);
 };

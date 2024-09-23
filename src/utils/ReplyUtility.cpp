@@ -297,11 +297,11 @@ std::string ReplyUtility::makeErrNotExistReply(Client& client,
      << NumericReply::getReply(ERR_NOTEXIST);
 
   if (mode == 'k')
-    ss << "Syntax: <key>.\r\n";
+    ss << "key mode. Syntax: <key>.\r\n";
   else if (mode == 'o')
-    ss << "Syntax: <nick>.\r\n";
+    ss << "op mode. Syntax: <nick>.\r\n";
   else if (mode == 'l')
-    ss << "Syntax: <limit>.\r\n";
+    ss << "limit mode. Syntax: <limit>.\r\n";
 
   return ss.str();
 }
@@ -514,6 +514,28 @@ std::string ReplyUtility::makeChannelTimeStampReply(Client& client,
   ss << ":" << client.getServerName() << " " << RPL_CHANNELTIMESTAMP << " "
      << client.getNickName() << " " << channel.getChannelName() << " :"
      << channel.getTimeStamp() << "\r\n";
+
+  return ss.str();
+}
+
+std::string ReplyUtility::makeErrChanOPrivsNeededReply(
+    Client& client, const std::string& channelName, char mode) {
+  static std::map<char, std::string> replyMap;
+  if (replyMap.empty()) {
+    replyMap['i'] = "i (inviteonly).";
+    replyMap['t'] = "t (topiclock).";
+    replyMap['k'] = "k (key).";
+    replyMap['o'] = "o (op).";
+    replyMap['l'] = "l (limit).";
+    replyMap['n'] = "n (noextmsg).";
+  }
+
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_CHANOPRIVSNEEDED << " "
+     << client.getNickName() << " " << channelName << " "
+     << NumericReply::getReply(ERR_CHANOPRIVSNEEDED) << replyMap[mode]
+     << "\r\n";
 
   return ss.str();
 }
