@@ -3,16 +3,14 @@
 std::string JoinCommand::joinKeyMode(Client& client, Channel& channel,
                                      const std::string& channelName,
                                      Message& message) {
-  std::string replyStr = "";
-
   if (message.params.size() < 2)
-    replyStr += ReplyUtility::makeErrNeedMoreParamsReply(client, "JOIN");
+    return ReplyUtility::makeErrBadChannelKeyReply(client, channelName);
 
   std::string key = StringUtility::parseComma(message.params[1]);
 
   if (key != channel.getChannelKey())
-    replyStr += ReplyUtility::makeErrBadChannelKeyReply(client, channelName);
-  return replyStr;
+    return ReplyUtility::makeErrBadChannelKeyReply(client, channelName);
+  return "";
 }
 
 /**
@@ -68,7 +66,10 @@ std::string JoinCommand::execute(Client& client, Message& message) {
     std::vector<std::string> params;
 
     params.push_back(channelName);
-    replyStr += ReplyUtility::makeCommandReply(client, "JOIN", params);
+    std::string successJoinReply =
+        ReplyUtility::makeCommandReply(client, "JOIN", params);
+    channel->sendPrivmsg(client, successJoinReply);
+    replyStr += successJoinReply;
     replyStr += ReplyUtility::makeNamReply(client, *channel);
     replyStr += ReplyUtility::makeEndOfNamesReply(client, *channel);
   }

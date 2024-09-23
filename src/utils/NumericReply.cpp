@@ -1,6 +1,6 @@
 #include "utils/NumericReply.hpp"
 
-std::vector<std::string> NumericReply::mReplies(500);
+std::vector<std::string> NumericReply::mReplies(1000);
 
 void NumericReply::initializeReplies() {
   mReplies[RPL_WELCOME] = ":Welcome to the Internet Relay Network";
@@ -8,6 +8,7 @@ void NumericReply::initializeReplies() {
   mReplies[RPL_CREATED] = ":This server was created";
   mReplies[RPL_SUPPORT] = ":are supported by this server";
   mReplies[RPL_ENDOFNAMES] = ":End of /NAMES list";
+  mReplies[RPL_ENDOFWHO] = ":End of /WHO list";
   mReplies[ERR_NONICKNAMEGIVEN] = ":No nickname given";
   mReplies[ERR_ERRONEUSNICKNAME] = ":Erroneus nickname";
   mReplies[ERR_NICKNAMEINUSE] = ":Nickname is already in use";
@@ -22,14 +23,16 @@ void NumericReply::initializeReplies() {
   mReplies[ERR_INVITEONLYCHAN] = ":Cannot join channel (invite only)";
   mReplies[ERR_NOSUCHNICK] = ":No such nick/channel";
   mReplies[ERR_NOSUCHCHANNEL] = ":No such channel";
-  mReplies[ERR_NOTEXIST] =
-      ":You must specify a parameter for the key mode. Syntax: ";
+  mReplies[ERR_NOTEXIST] = ":You must specify a parameter for the ";
   mReplies[ERR_CANNOTSENDTOCHAN] =
       ":You cannot send external messages to this channel whilst the "
       "+n(noextmsg) mode is set.";
   mReplies[ERR_NOTINCHANNEL] = ":You're not on that channel";
   mReplies[ERR_UNKNOWNMODE] = ":is not a recognised channel mode.";
   mReplies[ERR_KEYSET] = ":Channel key already set";
+  mReplies[ERR_UNKNOWNCOMMAND] = ":Unknown command";
+  mReplies[ERR_CHANOPRIVSNEEDED] =
+      ":You must be a channel op or higher to set channel mode ";
 }
 
 NumericReply::NumericReply() {}

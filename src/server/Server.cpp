@@ -26,6 +26,9 @@ void Server::init() {
     throw std::runtime_error(std::strerror(errno));
 
   mServerAddr = SocketAddr(mServerConf.port);
+  int yes = 1;
+  if (setsockopt(mListenFd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
+    throw std::runtime_error(std::strerror(errno));
 
   if (bind(mListenFd, mServerAddr, sizeof(struct sockaddr)) == -1 ||
       listen(mListenFd, MAX_EVENTS) == -1 || (mKq = kqueue()) == -1)
@@ -59,7 +62,7 @@ void Server::initServerInfo(char* argv[]) {
   mServerConf.password = argv[2];
   mServerConf.hostName = std::string(hostBuffer);
   mServerConf.version = "ircserv-1.0";
-  mServerConf.serverName = "IRCServer";
+  mServerConf.serverName = "irc.local";
   mServerConf.createdTime = std::string(buffer);
   /**
    * i: 클라이언트가 다른 사용자에게 보이지 않도록 하여 프라이버시를 보호.
@@ -142,13 +145,13 @@ void Server::handleWriteEvent(struct kevent& event) {
 
     mBuffers[event.ident].erase(mBuffers[event.ident].begin(),
                                 itPos + 1);  // CRLF 제거
-    std::cout << parsedMessage << std::endl;
 
+    std::cout << parsedMessage << std::endl;
     std::string replyStr = CommandHandler::getInstance()->handleCommand(
         *mClients[event.ident], parsedMessage);
-    if (replyStr.empty()) continue;
+    if (replyStr == "") continue;
 
-    std::cout << "Reply: " << replyStr << "!" << std::endl;
+    std::cout << "Reply: " << replyStr << std::endl;
     send(event.ident, replyStr.c_str(), replyStr.size(), 0);
     if (replyStr == ReplyUtility::makeErrorReply(*mClients[event.ident]))
       Client::deleteClient(event.ident);
@@ -170,7 +173,6 @@ void Server::run() {
       else if (mEvents[i].filter == EVFILT_WRITE)
         handleWriteEvent(mEvents[i]);
     }
-    std::cout << "run" << std::endl;
   }
 }
 

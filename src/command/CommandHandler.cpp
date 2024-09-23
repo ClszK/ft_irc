@@ -9,13 +9,15 @@ CommandHandler::CommandHandler() {
   mCommands["privmsg"] = new PrivmsgCommand();
   mCommands["part"] = new PartCommand();
   mCommands["ping"] = new PingCommand();
+  mCommands["who"] = new WhoCommand();
+  mCommands["invite"] = new InviteCommand();
 }
 
 std::string CommandHandler::handleCommand(Client& client, Message& message) {
   if (mCommands.find(message.command) != mCommands.end()) {
     return mCommands[message.command]->execute(client, message);
   }
-  return "";
+  return ReplyUtility::makeErrUnknownCommandReply(client, message.command);
 }
 
 CommandHandler::~CommandHandler() {

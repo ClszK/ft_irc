@@ -177,7 +177,7 @@ std::string ReplyUtility::makeChannelModeIsReply(Client& client,
     else
       ss << channel.getMaxUser() << "\r\n";
   } else
-    ss << " :+" << channelMode << "\r\n ";
+    ss << " :+" << channelMode << "\r\n";
 
   return ss.str();
 }
@@ -297,11 +297,11 @@ std::string ReplyUtility::makeErrNotExistReply(Client& client,
      << NumericReply::getReply(ERR_NOTEXIST);
 
   if (mode == 'k')
-    ss << "Syntax: <key>.\r\n";
+    ss << "key mode. Syntax: <key>.\r\n";
   else if (mode == 'o')
-    ss << "Syntax: <nick>.\r\n";
+    ss << "op mode. Syntax: <nick>.\r\n";
   else if (mode == 'l')
-    ss << "Syntax: <limit>.\r\n";
+    ss << "limit mode. Syntax: <limit>.\r\n";
 
   return ss.str();
 }
@@ -459,6 +459,83 @@ std::string ReplyUtility::makePongReply(Client& client,
 
   ss << ":" << client.getServerName() << " PONG " << client.getServerName()
      << " :" << message << "\r\n";
+
+  return ss.str();
+}
+
+std::string ReplyUtility::makeErrUnknownCommandReply(
+    Client& client, const std::string& command) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_UNKNOWNCOMMAND << " "
+     << client.getNickName() << " " << command << " "
+     << NumericReply::getReply(ERR_UNKNOWNCOMMAND) << "\r\n";
+
+  return ss.str();
+}
+
+/**
+ * :irc.local 352 t5 #123 alice host1 irc.local alice H :0 Alice
+ */
+std::string ReplyUtility::makeWhoReply(Client& client, const Client* target,
+                                       const std::string& channelName) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << RPL_WHOREPLY << " "
+     << client.getNickName() << " " << channelName << " "
+     << target->getUserName() << " " << target->getClientIp() << " "
+     << client.getServerName() << " " << target->getNickName() << " H :0 "
+     << target->getRealName() << "\r\n";
+
+  return ss.str();
+}
+
+/**
+ * :irc.local 352 t5 #123 bob host2 irc.local bob H :0 Bob
+ */
+
+std::string ReplyUtility::makeWhoEndReply(Client& client,
+                                          const std::string& channelName) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << RPL_ENDOFWHO << " "
+     << channelName << " " << NumericReply::getReply(RPL_ENDOFWHO) << "\r\n";
+
+  return ss.str();
+}
+
+/**
+ * :irc.local 329 t4 #test123 :1726976453
+ */
+std::string ReplyUtility::makeChannelTimeStampReply(Client& client,
+                                                    Channel& channel) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << RPL_CHANNELTIMESTAMP << " "
+     << client.getNickName() << " " << channel.getChannelName() << " :"
+     << channel.getTimeStamp() << "\r\n";
+
+  return ss.str();
+}
+
+std::string ReplyUtility::makeErrChanOPrivsNeededReply(
+    Client& client, const std::string& channelName, char mode) {
+  static std::map<char, std::string> replyMap;
+  if (replyMap.empty()) {
+    replyMap['i'] = "i (inviteonly).";
+    replyMap['t'] = "t (topiclock).";
+    replyMap['k'] = "k (key).";
+    replyMap['o'] = "o (op).";
+    replyMap['l'] = "l (limit).";
+    replyMap['n'] = "n (noextmsg).";
+  }
+
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_CHANOPRIVSNEEDED << " "
+     << client.getNickName() << " " << channelName << " "
+     << NumericReply::getReply(ERR_CHANOPRIVSNEEDED) << replyMap[mode]
+     << "\r\n";
 
   return ss.str();
 }

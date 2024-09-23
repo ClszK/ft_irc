@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <ctime>
 #include <map>
 #include <string>
 
@@ -17,6 +18,7 @@ class Channel {
   std::string mTopic;
   std::string mChannelMode;
   std::string mChannelKey;
+  std::string mTimeStamp;
   bool mTopicLocked;
   size_t mMaxUser;
   std::vector<Client*> mUserlist;
@@ -39,7 +41,6 @@ class Channel {
   }
   void setChannelModeAdd(const char c);
   void setChannelModeSub(const char c);
-  int setChannelUserLimit(Client& client, int userLimit);
   int setChannelTopic(Client& client, const std::string& topic);
   void setInvitedList(Client& client) { mInvitedList.push_back(&client); }
   void setGMListAdd(Client& client) { mGMList.push_back(&client); }
@@ -56,6 +57,7 @@ class Channel {
   const std::vector<Client*>& getInvitedList() { return mInvitedList; }
   const std::vector<Client*>& getGMList() { return mGMList; }
   const std::string& getChannelKey() const { return mChannelKey; }
+  const std::string& getTimeStamp() const { return mTimeStamp; }
 
   static Channel* findChannel(const std::string& channelName);
   static Channel* createChannel(Client& client, const std::string& channelName);

@@ -18,20 +18,24 @@ std::string ModeCommand::execute(Client& client, Message& message) {
     return ReplyUtility::makeErrNeedMoreParamsReply(client, "MODE");
 
   std::string channelName = message.params[0];
+  std::string replyStr = "";
 
   Channel* channel = Channel::findChannel(channelName);
   if (channel == NULL)
     return ReplyUtility::makeErrNoSuchChannelReply(client, channelName);
-  if (message.params.size() == 1)
-    return ReplyUtility::makeChannelModeIsReply(client, *channel);
+  if (message.params.size() == 1) {
+    replyStr += ReplyUtility::makeChannelModeIsReply(client, *channel);
+    replyStr += ReplyUtility::makeChannelTimeStampReply(client, *channel);
+    return replyStr;
+  }
 
   size_t paramIdx = 2, addMode = 1;
   std::string channelSetMode = message.params[1];
-  std::string replyStr = "", nickName;
+  std::string nickName = "", plusMode = "", removeMode = "";
   Client* target = NULL;
-  std::string plusMode = "";
-  std::string removeMode = "";
   std::vector<std::string> params;
+  std::vector<Client*> GMList = channel->getGMList();
+  int paramSize = message.params.size() - 2;
 
   for (size_t i = 0; i < channelSetMode.size(); i++) {
     if (channelSetMode[i] == '+') {
@@ -43,10 +47,21 @@ std::string ModeCommand::execute(Client& client, Message& message) {
     }
     char mode = channelSetMode[i];
 
-    if (mode != 'o' && ((addMode && channel->getChannelMode().find(mode) !=
-                                        std::string::npos) ||
-                        (!addMode && channel->getChannelMode().find(mode) ==
-                                         std::string::npos)))
+    if (std::find(GMList.begin(), GMList.end(), &client) == GMList.end()) {
+      if ((mode == 'o' || mode == 'k' || mode == 'l') && paramSize-- <= 0)
+        replyStr +=
+            ReplyUtility::makeErrNotExistReply(client, channelName, mode);
+      else
+        replyStr += ReplyUtility::makeErrChanOPrivsNeededReply(
+            client, channelName, mode);
+      continue;
+    }
+
+    if ((mode != 'o' || mode != 'l' || mode != 'k') &&
+        ((addMode &&
+          channel->getChannelMode().find(mode) != std::string::npos) ||
+         (!addMode &&
+          channel->getChannelMode().find(mode) == std::string::npos)))
       continue;
     switch (mode) {
       case 'n':
@@ -114,8 +129,15 @@ std::string ModeCommand::execute(Client& client, Message& message) {
           }
           params.push_back(message.params[paramIdx]);
           channel->setChannelModeAdd(mode);
-          channel->setMaxUser(
-              std::strtol(message.params[paramIdx++].c_str(), NULL, 10));
+          errno = 0;
+          long limit =
+              std::strtol(message.params[paramIdx++].c_str(), NULL, 10);
+          if (errno == ERANGE || limit < 0) {
+            replyStr +=
+                ReplyUtility::makeErrNotExistReply(client, channelName, mode);
+            continue;
+          }
+          channel->setMaxUser(limit);
           plusMode += mode;
         } else {
           channel->setChannelModeSub(mode);

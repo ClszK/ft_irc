@@ -26,6 +26,12 @@ class ReplyUtility {
                                       const std::string& command,
                                       const std::vector<std::string>& params);
   static std::string makePongReply(Client& client, const std::string& message);
+  static std::string makeWhoReply(Client& client, const Client* target,
+                                  const std::string& channelName);
+  static std::string makeWhoEndReply(Client& client,
+                                     const std::string& channelName);
+  static std::string makeChannelTimeStampReply(Client& client,
+                                               Channel& channel);
   static std::string makePartReply(Client& client,
                                    const std::string& channelName,
                                    const std::string& partMessage);
@@ -69,4 +75,8 @@ class ReplyUtility {
                                                 const std::string& nickName);
   static std::string makeErrErroneusNickNameReply(Client& client,
                                                   const std::string& nickName);
+  static std::string makeErrUnknownCommandReply(Client& client,
+                                                const std::string& command);
+  static std::string makeErrChanOPrivsNeededReply(
+      Client& client, const std::string& channelName, char mode);
 };

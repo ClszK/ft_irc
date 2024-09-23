@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "command/InviteCommand.hpp"
 #include "command/JoinCommand.hpp"
 #include "command/ModeCommand.hpp"
 #include "command/NickCommand.hpp"
@@ -12,6 +13,7 @@
 #include "command/PingCommand.hpp"
 #include "command/PrivmsgCommand.hpp"
 #include "command/UserCommand.hpp"
+#include "command/WhoCommand.hpp"
 
 class CommandHandler {
  public:
