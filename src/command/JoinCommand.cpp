@@ -3,16 +3,14 @@
 std::string JoinCommand::joinKeyMode(Client& client, Channel& channel,
                                      const std::string& channelName,
                                      Message& message) {
-  std::string replyStr = "";
-
-  // if (message.params.size() < 2)
-  //   replyStr += ReplyUtility::makeErrNeedMoreParamsReply(client, "JOIN");
+  if (message.params.size() < 2)
+    return ReplyUtility::makeErrBadChannelKeyReply(client, channelName);
 
   std::string key = StringUtility::parseComma(message.params[1]);
 
   if (key != channel.getChannelKey())
-    replyStr += ReplyUtility::makeErrBadChannelKeyReply(client, channelName);
-  return replyStr;
+    return ReplyUtility::makeErrBadChannelKeyReply(client, channelName);
+  return "";
 }
 
 /**
