@@ -105,3 +105,7 @@ Channel::Channel(const std::string& channelName)
 }
 
 Channel::~Channel() {}
+
+bool Channel::isOperator(Client& client) {
+  return std::find(mGMList.begin(), mGMList.end(), &client) != mGMList.end();
+}

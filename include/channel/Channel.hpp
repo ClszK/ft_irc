@@ -69,4 +69,5 @@ class Channel {
   void removeUser(Client& client);
   bool isEmpty();
   bool hasChannel(Client& client);
+  bool isOperator(Client& client);
 };
