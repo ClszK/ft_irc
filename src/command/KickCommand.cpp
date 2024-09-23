@@ -26,10 +26,9 @@ std::string KickCommand::execute(Client& client, Message& message) {
       continue;
     }
 
-    // 운영자인지 아닌지 확인
-    if (!channel->isOperator(client.getNickName())) {
-      replyStr +=
-          ReplyUtility::makeErrChanOPrivsNeededReply(client, channelName);
+    if (!channel->isOperator(client)) {
+      replyStr += ReplyUtility::makeErrChanOPrivsNeededReply(
+          client, channelName, "kick");
       continue;
     }
 
@@ -56,13 +55,12 @@ std::string KickCommand::execute(Client& client, Message& message) {
 
     std::string response =
         ReplyUtility::makeKickReply(client, channelName, kickNick, kickMessage);
-    channel->sendKick(client, response, kickNick);
-    channel->removeUser(target->getNickName());
+
+    channel->sendPart(*target, response);
+    channel->removeUser(*target);
     target->removeChannel(channelName);
 
-    if (channel->isEmpty()) {
-      Server::getInstance()->removeChannel(channelName);
-    }
+    if (channel->isEmpty()) Server::getInstance()->removeChannel(channelName);
   }
 
   return replyStr;

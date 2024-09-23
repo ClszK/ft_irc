@@ -31,8 +31,8 @@ void NumericReply::initializeReplies() {
   mReplies[ERR_UNKNOWNMODE] = ":is not a recognised channel mode.";
   mReplies[ERR_KEYSET] = ":Channel key already set";
   mReplies[ERR_UNKNOWNCOMMAND] = ":Unknown command";
-  mReplies[ERR_CHANOPRIVSNEEDED] =
-      ":You must be a channel op or higher to set channel mode ";
+  mReplies[ERR_CHANOPRIVSNEEDED] = ":You must be a channel op or ";
+  mReplies[ERR_USERNOTINCHANNEL] = ":They are not on that channel";
 }
 
 NumericReply::NumericReply() {}

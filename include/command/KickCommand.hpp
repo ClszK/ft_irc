@@ -2,7 +2,7 @@
 
 #include "command/ICommand.hpp"
 
-class PartCommand : public ICommand {
+class KickCommand : public ICommand {
  public:
   virtual std::string execute(Client& client, Message& message);
 };

@@ -518,6 +518,9 @@ std::string ReplyUtility::makeChannelTimeStampReply(Client& client,
   return ss.str();
 }
 
+/*:irc.local 482 a #123 :You must be a channel op or higher to kick a more
+privileged user. kick일때 mode 일 때":You must be a channel op or higher to set
+channel mode */
 std::string ReplyUtility::makeErrChanOPrivsNeededReply(
     Client& client, const std::string& channelName, char mode) {
   static std::map<char, std::string> replyMap;
@@ -534,8 +537,21 @@ std::string ReplyUtility::makeErrChanOPrivsNeededReply(
 
   ss << ":" << client.getServerName() << " " << ERR_CHANOPRIVSNEEDED << " "
      << client.getNickName() << " " << channelName << " "
-     << NumericReply::getReply(ERR_CHANOPRIVSNEEDED) << replyMap[mode]
-     << "\r\n";
+     << NumericReply::getReply(ERR_CHANOPRIVSNEEDED)
+     << "higher to set channel mode " << replyMap[mode] << "\r\n";
+
+  return ss.str();
+}
+
+std::string ReplyUtility::makeErrChanOPrivsNeededReply(
+    Client& client, const std::string& channelName,
+    const std::string& command) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_CHANOPRIVSNEEDED << " "
+     << client.getNickName() << " " << channelName << " "
+     << NumericReply::getReply(ERR_CHANOPRIVSNEEDED) << "higher to " << command
+     << " a more privileged user." << "\r\n";
 
   return ss.str();
 }
@@ -555,6 +571,21 @@ std::string ReplyUtility::makeKickReply(Client& client,
        << client.getClientIp() << " KICK " << channelName << " " << kickNick
        << " :" << kickMessage << "\r\n";
   }
+
+  return ss.str();
+}
+
+/*
+  : irc.local 441 test a #123 : They are not on that channel
+*/
+std::string ReplyUtility::makeErrUserNotInChannelReply(
+    Client& client, const std::string& nickName,
+    const std::string& channelName) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_USERNOTINCHANNEL << " "
+     << client.getNickName() << " " << nickName << " " << channelName << " "
+     << NumericReply::getReply(ERR_USERNOTINCHANNEL) << "\r\n";
 
   return ss.str();
 }

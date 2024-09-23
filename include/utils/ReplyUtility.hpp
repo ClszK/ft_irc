@@ -79,4 +79,10 @@ class ReplyUtility {
                                                 const std::string& command);
   static std::string makeErrChanOPrivsNeededReply(
       Client& client, const std::string& channelName, char mode);
+  static std::string makeErrChanOPrivsNeededReply(
+      Client& client, const std::string& channelName,
+      const std::string& command);
+  static std::string makeErrUserNotInChannelReply(
+      Client& client, const std::string& nickName,
+      const std::string& channelName);
 };

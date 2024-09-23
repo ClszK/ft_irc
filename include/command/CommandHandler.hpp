@@ -6,6 +6,7 @@
 
 #include "command/InviteCommand.hpp"
 #include "command/JoinCommand.hpp"
+#include "command/KickCommand.hpp"
 #include "command/ModeCommand.hpp"
 #include "command/NickCommand.hpp"
 #include "command/PartCommand.hpp"

@@ -40,9 +40,7 @@ std::string PartCommand::execute(Client& client, Message& message) {
     channel->removeUser(client);
     client.removeChannel(channelName);
 
-    if (channel->isEmpty()) {
-      Server::getInstance()->removeChannel(channelName);
-    }
+    if (channel->isEmpty()) Server::getInstance()->removeChannel(channelName);
   }
 
   return replyStr;
