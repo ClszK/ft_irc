@@ -10,6 +10,7 @@ CommandHandler::CommandHandler() {
   mCommands["part"] = new PartCommand();
   mCommands["ping"] = new PingCommand();
   mCommands["who"] = new WhoCommand();
+  mCommands["invite"] = new InviteCommand();
 }
 
 std::string CommandHandler::handleCommand(Client& client, Message& message) {
