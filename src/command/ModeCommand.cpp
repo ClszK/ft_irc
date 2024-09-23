@@ -47,7 +47,7 @@ std::string ModeCommand::execute(Client& client, Message& message) {
     }
     char mode = channelSetMode[i];
 
-    if (std::find(GMList.begin(), GMList.end(), &client) == GMList.end()) {
+    if (channel->isOperator(client) == false) {
       if ((mode == 'o' || mode == 'k' || mode == 'l') && paramSize-- <= 0)
         replyStr +=
             ReplyUtility::makeErrNotExistReply(client, channelName, mode);
