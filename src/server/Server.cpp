@@ -145,13 +145,13 @@ void Server::handleWriteEvent(struct kevent& event) {
 
     mBuffers[event.ident].erase(mBuffers[event.ident].begin(),
                                 itPos + 1);  // CRLF 제거
-    std::cout << parsedMessage << std::endl;
 
+    std::cout << parsedMessage << std::endl;
     std::string replyStr = CommandHandler::getInstance()->handleCommand(
         *mClients[event.ident], parsedMessage);
     if (replyStr == "") continue;
 
-    std::cout << "Reply: " << replyStr << "!" << std::endl;
+    std::cout << "Reply: " << replyStr << std::endl;
     send(event.ident, replyStr.c_str(), replyStr.size(), 0);
     if (replyStr == ReplyUtility::makeErrorReply(*mClients[event.ident]))
       Client::deleteClient(event.ident);
@@ -173,7 +173,6 @@ void Server::run() {
       else if (mEvents[i].filter == EVFILT_WRITE)
         handleWriteEvent(mEvents[i]);
     }
-    std::cout << "run" << std::endl;
   }
 }
 

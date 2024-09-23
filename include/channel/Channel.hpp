@@ -41,7 +41,6 @@ class Channel {
   }
   void setChannelModeAdd(const char c);
   void setChannelModeSub(const char c);
-  int setChannelUserLimit(Client& client, int userLimit);
   int setChannelTopic(Client& client, const std::string& topic);
   void setInvitedList(Client& client) { mInvitedList.push_back(&client); }
   void setGMListAdd(Client& client) { mGMList.push_back(&client); }

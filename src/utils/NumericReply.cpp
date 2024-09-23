@@ -1,6 +1,6 @@
 #include "utils/NumericReply.hpp"
 
-std::vector<std::string> NumericReply::mReplies(500);
+std::vector<std::string> NumericReply::mReplies(1000);
 
 void NumericReply::initializeReplies() {
   mReplies[RPL_WELCOME] = ":Welcome to the Internet Relay Network";
