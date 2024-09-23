@@ -537,8 +537,8 @@ std::string ReplyUtility::makeErrChanOPrivsNeededReply(
 
   ss << ":" << client.getServerName() << " " << ERR_CHANOPRIVSNEEDED << " "
      << client.getNickName() << " " << channelName << " "
-     << NumericReply::getReply(ERR_CHANOPRIVSNEEDED)
-     << "higher to set channel mode " << replyMap[mode] << "\r\n";
+     << NumericReply::getReply(ERR_CHANOPRIVSNEEDED) << "set channel mode "
+     << replyMap[mode] << "\r\n";
 
   return ss.str();
 }
@@ -550,7 +550,7 @@ std::string ReplyUtility::makeErrChanOPrivsNeededReply(
 
   ss << ":" << client.getServerName() << " " << ERR_CHANOPRIVSNEEDED << " "
      << client.getNickName() << " " << channelName << " "
-     << NumericReply::getReply(ERR_CHANOPRIVSNEEDED) << "higher to " << command
+     << NumericReply::getReply(ERR_CHANOPRIVSNEEDED) << command
      << " a more privileged user." << "\r\n";
 
   return ss.str();
@@ -586,6 +586,69 @@ std::string ReplyUtility::makeErrUserNotInChannelReply(
   ss << ":" << client.getServerName() << " " << ERR_USERNOTINCHANNEL << " "
      << client.getNickName() << " " << nickName << " " << channelName << " "
      << NumericReply::getReply(ERR_USERNOTINCHANNEL) << "\r\n";
+
+  return ss.str();
+}
+
+/*:irc.local 337 c :End of INVITE list*/
+std::string ReplyUtility::makeEndofInvitelstReply(Client& client,
+                                                  const std::string& command) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << RPL_ENDOFINVITELIST << " "
+     << client.getNickName() << " "
+     << NumericReply::getReply(RPL_ENDOFINVITELIST) << "\r\n";
+
+  return ss.str();
+}
+
+/*:irc.local 442 b #1 :You're not on that channel!*/
+std::string ReplyUtility::makeErrUserNotOnChannelReply(
+    Client& client, const std::string& channelName) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_NOTONCHANNEL << " "
+     << client.getNickName() << " " << channelName << " "
+     << NumericReply::getReply(ERR_NOTONCHANNEL) << "\r\n";
+
+  return ss.str();
+}
+
+/*:irc.local 443 c c #123 :is already on channel*/
+std::string ReplyUtility::makeErrUserOnChannelReply(
+    Client& client, const std::string& nickName,
+    const std::string& channelName) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_USERONCHANNEL << " "
+     << client.getNickName() << " " << nickName << " " << channelName << " "
+     << NumericReply::getReply(ERR_USERONCHANNEL) << "\r\n";
+
+  return ss.str();
+}
+
+/*:irc.local 482 b #1 :You must be a channel op or higher to send an invite.*/
+std::string ReplyUtility::makeErrInviteOPrivsNeededReply(
+    Client& client, const std::string& channelName) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_CHANOPRIVSNEEDED << " "
+     << client.getNickName() << " " << channelName << " "
+     << NumericReply::getReply(ERR_CHANOPRIVSNEEDED) << "send an invite.\r\n";
+
+  return ss.str();
+}
+
+/**
+ * :irc.local 341 a b :#12
+ */
+std::string ReplyUtility::makeInvitingReply(Client& client,
+                                            const std::string& target,
+                                            const std::string& channelName) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << RPL_INVITING << " "
+     << client.getNickName() << " " << target << " :" << channelName << "\r\n";
 
   return ss.str();
 }

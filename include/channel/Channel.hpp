@@ -42,7 +42,12 @@ class Channel {
   void setChannelModeAdd(const char c);
   void setChannelModeSub(const char c);
   int setChannelTopic(Client& client, const std::string& topic);
-  void setInvitedList(Client& client) { mInvitedList.push_back(&client); }
+  void setInvitedListAdd(Client& client) { mInvitedList.push_back(&client); }
+  void setInvitedListSub(Client& client) {
+    mInvitedList.erase(
+        std::remove(mInvitedList.begin(), mInvitedList.end(), &client),
+        mInvitedList.end());
+  }
   void setGMListAdd(Client& client) { mGMList.push_back(&client); }
   void setGMListSub(Client& client) {
     mGMList.erase(std::remove(mGMList.begin(), mGMList.end(), &client),

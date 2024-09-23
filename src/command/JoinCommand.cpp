@@ -58,6 +58,7 @@ std::string JoinCommand::execute(Client& client, Message& message) {
               ReplyUtility::makeErrInviteOnlyChanReply(client, channelName);
           continue;
         }
+        channel->setInvitedListSub(client);
       }
       channel->setUserListAdd(client);
     }

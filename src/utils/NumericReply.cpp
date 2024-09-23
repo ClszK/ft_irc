@@ -31,8 +31,11 @@ void NumericReply::initializeReplies() {
   mReplies[ERR_UNKNOWNMODE] = ":is not a recognised channel mode.";
   mReplies[ERR_KEYSET] = ":Channel key already set";
   mReplies[ERR_UNKNOWNCOMMAND] = ":Unknown command";
-  mReplies[ERR_CHANOPRIVSNEEDED] = ":You must be a channel op or ";
+  mReplies[ERR_CHANOPRIVSNEEDED] = ":You must be a channel op or higher to ";
   mReplies[ERR_USERNOTINCHANNEL] = ":They are not on that channel";
+  mReplies[RPL_ENDOFINVITELIST] = ":End of INVITE list";
+  mReplies[ERR_NOTONCHANNEL] = ":You're not on that channel";
+  mReplies[ERR_USERONCHANNEL] = ":is already on channel";
 }
 
 NumericReply::NumericReply() {}

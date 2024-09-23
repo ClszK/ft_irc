@@ -39,6 +39,11 @@ class ReplyUtility {
                                    const std::string& channelName,
                                    const std::string& kickNick,
                                    const std::string& kickMessage);
+  static std::string makeEndofInvitelstReply(Client& client,
+                                             const std::string& command);
+  static std::string makeInvitingReply(Client& client,
+                                       const std::string& target,
+                                       const std::string& channelName);
 
   static std::string makeErrNeedMoreParamsReply(Client& client,
                                                 const std::string& command);
@@ -85,4 +90,11 @@ class ReplyUtility {
   static std::string makeErrUserNotInChannelReply(
       Client& client, const std::string& nickName,
       const std::string& channelName);
+  static std::string makeErrUserNotOnChannelReply(
+      Client& client, const std::string& channelName);
+  static std::string makeErrUserOnChannelReply(Client& client,
+                                               const std::string& nickName,
+                                               const std::string& channelName);
+  static std::string makeErrInviteOPrivsNeededReply(
+      Client& client, const std::string& channelName);
 };
