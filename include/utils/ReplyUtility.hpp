@@ -26,6 +26,13 @@ class ReplyUtility {
                                       const std::string& command,
                                       const std::vector<std::string>& params);
   static std::string makePongReply(Client& client, const std::string& message);
+  static std::string makePartReply(Client& client,
+                                   const std::string& channelName,
+                                   const std::string& partMessage);
+  static std::string makeKickReply(Client& client,
+                                   const std::string& channelName,
+                                   const std::string& kickNick,
+                                   const std::string& kickMessage);
 
   static std::string makeErrNeedMoreParamsReply(Client& client,
                                                 const std::string& command);
@@ -55,9 +62,6 @@ class ReplyUtility {
       Client& client, const std::string& channelName);
   static std::string makeErrNotInChannelReply(Client& client,
                                               const std::string& channelName);
-  static std::string makePartReply(Client& client,
-                                   const std::string& channelName,
-                                   const std::string& partMessage);
   static std::string makeErrUnknownModeReply(Client& client, char mode);
   static std::string makeErrKeyAlreadySetReply(Client& client,
                                                const std::string& channelName);

@@ -462,3 +462,22 @@ std::string ReplyUtility::makePongReply(Client& client,
 
   return ss.str();
 }
+
+std::string ReplyUtility::makeKickReply(Client& client,
+                                        const std::string& channelName,
+                                        const std::string& kickNick,
+                                        const std::string& kickMessage) {
+  std::stringstream ss;
+
+  if (kickMessage == "") {
+    ss << ":" << client.getNickName() << "!" << client.getUserName() << "@"
+       << client.getClientIp() << " KICK " << channelName << " " << kickNick
+       << "\r\n";
+  } else {
+    ss << ":" << client.getNickName() << "!" << client.getUserName() << "@"
+       << client.getClientIp() << " KICK " << channelName << " " << kickNick
+       << " :" << kickMessage << "\r\n";
+  }
+
+  return ss.str();
+}
