@@ -652,3 +652,14 @@ std::string ReplyUtility::makeInvitingReply(Client& client,
 
   return ss.str();
 }
+
+std::string ReplyUtility::makeNoTopicReply(Client& client,
+                                           const std::string& channelName) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << RPL_NOTOPIC << " "
+     << client.getNickName() << " " << channelName << " "
+     << NumericReply::getReply(RPL_NOTOPIC) << "\r\n";
+
+  return ss.str();
+}

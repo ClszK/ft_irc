@@ -86,6 +86,8 @@
 		"CHANOPRIVSNEEDED",
 		"CHANTYPES",
 		"Clientlist",
+		"Endof",
+		"ENDOFINVITELIST",
 		"ENDOFNAMES",
 		"ENDOFWHO",
 		"Erroneus",
@@ -113,6 +115,8 @@
 		"NOTEXIST",
 		"NOTEXISTKEY",
 		"NOTINCHANNEL",
+		"NOTONCHANNEL",
+		"NOTOPIC",
 		"NOTREGISTERED",
 		"Privmsg",
 		"reregister",
@@ -124,6 +128,8 @@
 		"UNKNOWNMODE",
 		"Userlist",
 		"USERMODES",
+		"USERNOTINCHANNEL",
+		"USERONCHANNEL",
 		"WHOREPLY",
 		"YOURHOST"
 	]

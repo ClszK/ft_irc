@@ -153,8 +153,10 @@ void Server::handleWriteEvent(struct kevent& event) {
 
     std::cout << "Reply: " << replyStr << std::endl;
     send(event.ident, replyStr.c_str(), replyStr.size(), 0);
-    if (replyStr == ReplyUtility::makeErrorReply(*mClients[event.ident]))
+    if (replyStr == ReplyUtility::makeErrorReply(*mClients[event.ident])) {
+      close(event.ident);
       Client::deleteClient(event.ident);
+    }
   }
 }
 

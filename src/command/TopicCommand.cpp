@@ -8,8 +8,11 @@ std::string TopicCommand::execute(Client& client, Message& message) {
   if (message.params.size() == 1) {
     Channel* channel = Channel::findChannel(channelName);
     if (channel == NULL)
-      return ReplyUtility::makeErrNoSuchChannelReply(client, message.params[0]);
-    return ReplyUtility::makeRplNoTopicReply(client, channel->name);
+      return ReplyUtility::makeErrNoSuchChannelReply(client, channelName);
+
+    std::string topic = channel->getTopic();
+    if (topic.empty())
+      return ReplyUtility::makeNoTopicReply(client, channelName);
   }
 
   return "";

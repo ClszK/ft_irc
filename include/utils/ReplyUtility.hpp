@@ -44,6 +44,8 @@ class ReplyUtility {
   static std::string makeInvitingReply(Client& client,
                                        const std::string& target,
                                        const std::string& channelName);
+  static std::string makeNoTopicReply(Client& client,
+                                      const std::string& channelName);
 
   static std::string makeErrNeedMoreParamsReply(Client& client,
                                                 const std::string& command);
