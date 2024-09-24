@@ -15,6 +15,7 @@ SRCS        = main.cpp \
 							WhoCommand.cpp \
 							InviteCommand.cpp \
 							KickCommand.cpp \
+							TopicCommand.cpp \
 							CommandHandler.cpp \
 							NumericReply.cpp \
 							ReplyUtility.cpp \

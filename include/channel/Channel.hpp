@@ -41,7 +41,6 @@ class Channel {
   }
   void setChannelModeAdd(const char c);
   void setChannelModeSub(const char c);
-  int setChannelTopic(Client& client, const std::string& topic);
   void setInvitedListAdd(Client& client) { mInvitedList.push_back(&client); }
   void setInvitedListSub(Client& client) {
     mInvitedList.erase(
