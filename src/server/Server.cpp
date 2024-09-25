@@ -217,3 +217,12 @@ void Server::removeChannel(const std::string& channelName) {
     mChannels.erase(it);  // 채널 목록에서 제거
   }
 }
+
+/**
+ * signal
+ */
+bool Server::signal = false;
+void Server::signalHandler(int signum) {
+  (void)signum;
+  Server::signal = true;
+}

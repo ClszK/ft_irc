@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <cerrno>
+#include <csignal>
 #include <ctime>
 #include <iostream>
 #include <map>
@@ -48,6 +49,9 @@ class Server {
   void setClient(const int sockFd, Client* client);
 
   void removeChannel(const std::string& channelName);
+  // removefd?
+
+  static void signalHandler(int signum);
 
  private:
   int mListenFd, mKq;
@@ -57,6 +61,7 @@ class Server {
   std::map<int, std::string> mBuffers;
   std::map<int, Client*> mClients;
   std::map<std::string, Channel*> mChannels;
+  static bool signal;
 
   void init();
   void initServerInfo(char* argv[]);
