@@ -19,7 +19,8 @@ std::string PrivmsgCommand::execute(Client& client, Message& message) {
     Channel* target = Channel::findChannel(msgTarget);
     if (target == NULL)
       return ReplyUtility::makeErrNoSuchChannelReply(client, msgTarget);
-    if (!target->isUserInChannel(client.getNickName()))
+    if (target->getChannelMode().find('n') != std::string::npos &&
+        !target->isUserInChannel(client.getNickName()))
       return ReplyUtility::makeErrCannotSendToChanReply(client, msgTarget);
     std::string response =
         ReplyUtility::makePrivmsgReply(client, msgTarget, messageContent);

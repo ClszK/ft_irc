@@ -40,18 +40,10 @@ void Client::createClient(const int sockFd, char* clientIp) {
 }
 
 void Client::deleteClient(const int sockFd) {
-  Server* server = Server::getInstance();
   Client* client = findClient(sockFd);
   if (client == NULL) return;
 
-  std::map<std::string, Channel*> channels = server->getChannels();
-
-  for (std::map<std::string, Channel*>::const_iterator it = channels.cbegin();
-       it != channels.cend(); ++it) {
-    it->second->removeUser(*client);
-    if (it->second->isEmpty()) server->removeChannel(it->first);
-  }
-  server->setClient(sockFd, NULL);
+  Server::getInstance()->setClient(sockFd, NULL);
 }
 
 Client* Client::findClient(const std::string& nickName) {
