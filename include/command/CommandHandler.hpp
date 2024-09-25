@@ -13,6 +13,7 @@
 #include "command/PassCommand.hpp"
 #include "command/PingCommand.hpp"
 #include "command/PrivmsgCommand.hpp"
+#include "command/QuitCommand.hpp"
 #include "command/TopicCommand.hpp"
 #include "command/UserCommand.hpp"
 #include "command/WhoCommand.hpp"

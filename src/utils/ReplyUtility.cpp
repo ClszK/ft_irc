@@ -221,8 +221,12 @@ std::string ReplyUtility::makeErrNonicknameGivenReply(Client& client,
 
 std::string ReplyUtility::makeErrorReply(Client& client,
                                          const std::string& str) {
-  return "ERROR :Closing link: (" + client.getNickName() + "@" +
-         client.getClientIp() + ") [" + str + "]\r\n";
+  std::string nickName = client.getNickName();
+
+  if (nickName == "") nickName = "811AAAAAB";
+
+  return "ERROR :Closing link: (" + nickName + "@" + client.getClientIp() +
+         ") [" + str + "]\r\n";
 }
 
 std::string ReplyUtility::makeErrNotRegisteredReply(

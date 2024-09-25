@@ -16,6 +16,7 @@ SRCS        = main.cpp \
 							InviteCommand.cpp \
 							KickCommand.cpp \
 							TopicCommand.cpp \
+							QuitCommand.cpp \
 							CommandHandler.cpp \
 							NumericReply.cpp \
 							ReplyUtility.cpp \
@@ -31,7 +32,7 @@ DEPS        = $(patsubst %.cpp, $(OBJDIR)/%.d, $(SRCS))
 VPATH       = $(SRCDIR):$(SRCDIR)/server:$(SRCDIR)/client:$(SRCDIR)/channel:$(SRCDIR)/command:$(SRCDIR)/utils
 
 CXX         = c++
-CXXFLAGS    = -Iinclude -std=c++98 -MMD -MP -g -fsanitize=address
+CXXFLAGS    = -Iinclude -std=c++98 -MMD -MP -g 
 
 INTERFACE	= en0
 IRC_SERVER	= $(shell ifconfig $(INTERFACE) | grep 'inet ' | grep -v 'inet6' | awk '{print $$2}')

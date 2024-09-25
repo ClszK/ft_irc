@@ -69,7 +69,8 @@
 		"execution": "cpp",
 		"variant": "cpp",
 		"set": "cpp",
-		"iomanip": "cpp"
+		"iomanip": "cpp",
+		"csignal": "cpp"
 	},
 	"cSpell.words": [
 		"ALREADYREGISTRED",
