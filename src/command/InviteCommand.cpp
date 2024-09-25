@@ -1,16 +1,16 @@
 #include "command/InviteCommand.hpp"
 
-std::string InviteCommand::execute(Client& client, Message& message) {
+std::string InviteCommand::execute(Client &client, Message &message) {
   if (message.params.size() < 2)
-    return ReplyUtility::makeEndofInvitelstReply(client, "INVITE");
+    return ReplyUtility::makeEndofInvitelstReply(client);
 
   std::string channelName = StringUtility::parseComma(message.params[1]);
-  Channel* channel = Channel::findChannel(channelName);
+  Channel *channel = Channel::findChannel(channelName);
   if (!StringUtility::isValidChannelName(channelName) || channel == NULL)
     return ReplyUtility::makeErrNoSuchChannelReply(client, channelName);
 
   std::string nickName = StringUtility::parseComma(message.params[0]);
-  Client* target = Client::findClient(nickName);
+  Client *target = Client::findClient(nickName);
   if (target == NULL)
     return ReplyUtility::makeErrNoSuchNickReply(client, nickName);
 
