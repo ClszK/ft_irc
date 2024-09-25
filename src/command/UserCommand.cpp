@@ -1,8 +1,11 @@
 #include "command/UserCommand.hpp"
 
 std::string UserCommand::execute(Client& client, Message& message) {
+  std::string nickName = client.getNickName();
+
+  if (nickName == "") nickName = "*";
   if (message.params.size() < 4)
-    return ReplyUtility::makeErrNeedMoreParamsReply(client, "USER");
+    return ReplyUtility::makeErrNeedMoreParamsReply(client, "USER", nickName);
 
   std::string userName = message.params[0];
   std::string realName = message.params[3];
