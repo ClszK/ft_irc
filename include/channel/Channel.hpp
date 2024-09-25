@@ -19,7 +19,6 @@ class Channel {
   std::string mChannelMode;
   std::string mChannelKey;
   std::string mTimeStamp;
-  bool mTopicLocked;
   size_t mMaxUser;
   std::vector<Client*> mUserlist;
   std::vector<Client*> mInvitedList;
@@ -30,8 +29,7 @@ class Channel {
   Channel(const std::string& channelName);
   ~Channel();
 
-  int setTopic(const std::string& topic);
-  void setTopicLocked(bool lock);
+  void setTopic(const std::string& topic);
   void setChannelKey(const std::string& key);
   void setMaxUser(int maxUser) { mMaxUser = maxUser; }
   void setUserListAdd(Client& client) { mUserlist.push_back(&client); }

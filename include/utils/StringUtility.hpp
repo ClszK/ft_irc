@@ -11,7 +11,7 @@ class StringUtility {
 
  public:
   static bool isValidNickName(const std::string& nickName);
-  static bool isValidUserName(const std::string& userName);
+  static bool isValidUserName(std::string& userName);
   static bool isValidChannelName(const std::string& channelName);
   static bool isValidChannelKey(const std::string& key);
   static std::string removeDuplicateChars(const std::string& input);

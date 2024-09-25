@@ -4,15 +4,12 @@
 
 void Channel::setChannelKey(const std::string& key) { mChannelKey = key; }
 
-int Channel::setTopic(const std::string& topic) {
-  if (mTopicLocked) return ERR_CHANOPRIVSNEEDED;
-
-  if (topic.size() > TOPICLEN) return ERR_TOPICTOOLONG;
-  mTopic = topic;
-  return 0;
+void Channel::setTopic(const std::string& topic) {
+  if (topic.size() > TOPICLEN)
+    mTopic = topic.substr(0, TOPICLEN);
+  else
+    mTopic = topic;
 }
-
-void Channel::setTopicLocked(bool lock) { mTopicLocked = lock; }
 
 void Channel::setChannelModeAdd(const char c) {
   if (mChannelMode.find(c) == std::string::npos) mChannelMode += c;
@@ -88,14 +85,12 @@ bool Channel::hasChannel(Client& client) {
          mUserlist.end();
 }
 
-Channel::Channel()
-    : mTopic(""), mChannelMode("tn"), mTopicLocked(true), mMaxUser(5000) {}
+Channel::Channel() : mTopic(""), mChannelMode("tn"), mMaxUser(5000) {}
 
 Channel::Channel(const std::string& channelName)
     : mChannelName(channelName),
       mTopic(""),
       mChannelMode("tn"),
-      mTopicLocked(true),
       mMaxUser(5000) {
   mTimeStamp = std::time(NULL);
   std::time_t now = std::time(NULL);

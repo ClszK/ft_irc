@@ -102,6 +102,7 @@ std::string ReplyUtility::makeServerSupportedReply(Client& client) {
 
 /**
  * "<channel> :<topic>"
+ * :irc.local 332 a #123 :12
  */
 std::string ReplyUtility::makeTopicReply(Client& client, Channel& channel) {
   std::stringstream ss;
@@ -182,13 +183,29 @@ std::string ReplyUtility::makeChannelModeIsReply(Client& client,
   return ss.str();
 }
 
-std::string ReplyUtility::makeErrNeedMoreParamsReply(
-    Client& client, const std::string& command) {
+/**
+ * :irc.local 333 a #123 t5!root@192.168.65.1 :1727197400
+ */
+std::string ReplyUtility::makeCreationTimeReply(Client& client,
+                                                Channel& channel) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << RPL_CREATIONTIME << " "
+     << client.getNickName() << " " << channel.getChannelName() << " "
+     << client.getNickName() << "!" << client.getUserName() << "@"
+     << client.getClientIp() << " :" << channel.getTimeStamp() << "\r\n";
+
+  return ss.str();
+}
+
+std::string ReplyUtility::makeErrNeedMoreParamsReply(Client& client,
+                                                     const std::string& command,
+                                                     const std::string& str) {
   std::stringstream ss;
 
   ss << ":" << client.getServerName() << " " << std::setw(3)
-     << std::setfill('0') << ERR_NEEDMOREPARAMS << " * " << command << " "
-     << NumericReply::getReply(ERR_NEEDMOREPARAMS) << "\r\n";
+     << std::setfill('0') << ERR_NEEDMOREPARAMS << " " << str << " " << command
+     << " " << NumericReply::getReply(ERR_NEEDMOREPARAMS) << "\r\n";
   return ss.str();
 }
 
@@ -202,9 +219,10 @@ std::string ReplyUtility::makeErrNonicknameGivenReply(Client& client,
   return ss.str();
 }
 
-std::string ReplyUtility::makeErrorReply(Client& client) {
+std::string ReplyUtility::makeErrorReply(Client& client,
+                                         const std::string& str) {
   return "ERROR :Closing link: (" + client.getNickName() + "@" +
-         client.getClientIp() + ") [Access denied by configuration]";
+         client.getClientIp() + ") [" + str + "]\r\n";
 }
 
 std::string ReplyUtility::makeErrNotRegisteredReply(
@@ -221,11 +239,13 @@ std::string ReplyUtility::makeErrNotRegisteredReply(
 std::string ReplyUtility::makeErrInvalidUserNameReply(
     Client& client, const std::string& command) {
   std::stringstream ss;
+  std::string nickName = client.getNickName();
 
-  ss << ":" << client.getServerName() << " " << std::setw(3)
-     << std::setfill('0') << ERR_INVALIDUSERNAME << " " << client.getNickName()
-     << " " << command << " " << NumericReply::getReply(ERR_INVALIDUSERNAME)
-     << "\r\n";
+  if (nickName == "") nickName = "*";
+
+  ss << ":" << client.getServerName() << " " << ERR_INVALIDUSERNAME << " "
+     << nickName << " " << command << " "
+     << NumericReply::getReply(ERR_INVALIDUSERNAME) << "\r\n";
 
   return ss.str();
 }
@@ -243,7 +263,6 @@ std::string ReplyUtility::makeErrBadChannelKeyReply(
 std::string ReplyUtility::makeErrInvalidChannelNameReply(
     Client& client, const std::string& str) {
   std::stringstream ss;
-
   ss << ":" << client.getServerName() << " " << ERR_INVALIDCHANNELNAME << " "
      << client.getNickName() << " " << str << " "
      << NumericReply::getReply(ERR_INVALIDCHANNELNAME) << "\r\n";
@@ -550,8 +569,11 @@ std::string ReplyUtility::makeErrChanOPrivsNeededReply(
 
   ss << ":" << client.getServerName() << " " << ERR_CHANOPRIVSNEEDED << " "
      << client.getNickName() << " " << channelName << " "
-     << NumericReply::getReply(ERR_CHANOPRIVSNEEDED) << command
-     << " a more privileged user." << "\r\n";
+     << NumericReply::getReply(ERR_CHANOPRIVSNEEDED);
+  if (command == "kick")
+    ss << "kick a more privileged user." << "\r\n";
+  else if (command == "topic")
+    ss << "change the topic." << "\r\n";
 
   return ss.str();
 }
@@ -607,9 +629,9 @@ std::string ReplyUtility::makeErrUserNotOnChannelReply(
     Client& client, const std::string& channelName) {
   std::stringstream ss;
 
-  ss << ":" << client.getServerName() << " " << ERR_NOTONCHANNEL << " "
+  ss << ":" << client.getServerName() << " " << ERR_NOTINCHANNEL << " "
      << client.getNickName() << " " << channelName << " "
-     << NumericReply::getReply(ERR_NOTONCHANNEL) << "\r\n";
+     << NumericReply::getReply(ERR_NOTINCHANNEL) << "\r\n";
 
   return ss.str();
 }
@@ -653,6 +675,9 @@ std::string ReplyUtility::makeInvitingReply(Client& client,
   return ss.str();
 }
 
+/**
+ * :irc.local 331 a #123 :No topic is set
+ */
 std::string ReplyUtility::makeNoTopicReply(Client& client,
                                            const std::string& channelName) {
   std::stringstream ss;
@@ -660,6 +685,22 @@ std::string ReplyUtility::makeNoTopicReply(Client& client,
   ss << ":" << client.getServerName() << " " << RPL_NOTOPIC << " "
      << client.getNickName() << " " << channelName << " "
      << NumericReply::getReply(RPL_NOTOPIC) << "\r\n";
+
+  return ss.str();
+}
+
+/**
+ * :irc.local 462 * :You may not reregister
+ */
+std::string ReplyUtility::makeErrAlreadyRegistredReply(Client& client) {
+  std::stringstream ss;
+  std::string nickName = client.getNickName();
+
+  if (nickName == "") nickName = "*";
+
+  ss << ":" << client.getServerName() << " " << ERR_ALREADYREGISTRED << " "
+     << nickName << " " << NumericReply::getReply(ERR_ALREADYREGISTRED)
+     << "\r\n";
 
   return ss.str();
 }

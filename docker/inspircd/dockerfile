@@ -23,4 +23,4 @@ COPY inspircd.conf /etc/inspircd/inspircd.conf
 
 # InspIRCd 실행
 
-CMD ["sh", "-c", "inspircd --runasroot && tcpflow -i eth0 port 6667 -c"]
+CMD ["sh", "-c", "inspircd --runasroot && tcpflow -i eth0 port 6667 -c "]

@@ -20,7 +20,7 @@ class Client {
 
  public:
   void setNickName(const std::string& nickName) { mNickName = nickName; }
-  bool setUserName(const std::string& userName);
+  void setUserName(const std::string& userName) { mUserName = userName; }
   void setRealName(const std::string& realName) { mRealName = realName; }
   void setUserMode(const std::string& userMode) { mUserMode = userMode; }
   void setPassword(const std::string& password) { mPassword = password; }
@@ -44,6 +44,7 @@ class Client {
   static void createClient(const int sockFd, char* clientIp);
   static void deleteClient(const int sockFd);
   static Client* findClient(const std::string& nickName);
+  static Client* findClient(const int sockFd);
 
   void sendPrivmsg(const std::string& message);
   void sendPart(const std::string& message);

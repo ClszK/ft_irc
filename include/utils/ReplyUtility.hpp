@@ -46,12 +46,14 @@ class ReplyUtility {
                                        const std::string& channelName);
   static std::string makeNoTopicReply(Client& client,
                                       const std::string& channelName);
+  static std::string makeCreationTimeReply(Client& client, Channel& channel);
 
   static std::string makeErrNeedMoreParamsReply(Client& client,
-                                                const std::string& command);
+                                                const std::string& command,
+                                                const std::string& str = "*");
   static std::string makeErrNonicknameGivenReply(Client& client,
                                                  const std::string& str);
-  static std::string makeErrorReply(Client& client);
+  static std::string makeErrorReply(Client& client, const std::string& str);
   static std::string makeErrNotRegisteredReply(Client& client,
                                                const std::string& command);
   static std::string makeErrBadChannelKeyReply(Client& client,
@@ -99,4 +101,5 @@ class ReplyUtility {
                                                const std::string& channelName);
   static std::string makeErrInviteOPrivsNeededReply(
       Client& client, const std::string& channelName);
+  static std::string makeErrAlreadyRegistredReply(Client& client);
 };

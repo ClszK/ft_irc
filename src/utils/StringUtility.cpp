@@ -34,11 +34,19 @@ bool StringUtility::isValidNickName(const std::string& nickName) {
  * LF (\n): ASCII 0x0A (라인 피드)
  * Space ( ): ASCII 0x20 (공백 문자)
  * At (@): ASCII 0x40 (앳 기호)
+ * 이 부분은 RFC 2812 기준.
  */
-bool StringUtility::isValidUserName(const std::string& userName) {
-  if (userName.length() < 1 || userName.length() > USERLEN) return false;
-  for (size_t i = 0; i < userName.length(); i++) {
-    if (std::string(" \0\r\n@").find(userName[i]) != std::string::npos)
+bool StringUtility::isValidUserName(std::string& userName) {
+  if (userName.length() > USERLEN) userName = userName.substr(0, USERLEN);
+
+  for (size_t i = 0; i < userName.length(); ++i) {
+    char c = userName[i];
+
+    if (std::isalnum(c))
+      continue;
+    else if (isSpecial(c))
+      continue;
+    else
       return false;
   }
 

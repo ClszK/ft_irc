@@ -12,6 +12,7 @@ CommandHandler::CommandHandler() {
   mCommands["who"] = new WhoCommand();
   mCommands["invite"] = new InviteCommand();
   mCommands["kick"] = new KickCommand();
+  mCommands["topic"] = new TopicCommand();
 }
 
 std::string CommandHandler::handleCommand(Client& client, Message& message) {

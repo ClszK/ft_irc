@@ -113,9 +113,11 @@ std::string ModeCommand::execute(Client& client, Message& message) {
 
         params.push_back(nickName);
         if (addMode) {
+          if (channel->isOperator(*target)) break;
           channel->setGMListAdd(*target);
           plusMode += mode;
         } else {
+          if (!channel->isOperator(*target)) break;
           channel->setGMListSub(*target);
           removeMode += mode;
         }

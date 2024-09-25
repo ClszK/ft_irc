@@ -17,7 +17,8 @@ std::string NickCommand::execute(Client& client, Message& message) {
     if (client.isPasswordValid())
       return ReplyUtility::makeSuccessConnectReply(client);
 
-    return ReplyUtility::makeErrorReply(client);
+    return ReplyUtility::makeErrorReply(client,
+                                        "Access denied by configuration");
   }
   return "";
 }

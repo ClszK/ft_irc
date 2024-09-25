@@ -89,4 +89,8 @@ std::string JoinCommand::execute(Client& client, Message& message) {
                :[ "@" / "+" ] <nick> *( " " [ "@" / "+" ] <nick> )
 
  RPL_NAMREPLY
+
+  topic이 설정되어 있을 때 추가되는 메시지.
+ :irc.local 332 b #123 :a
+ :irc.local 333 b #123 a!1@192.168.65.1 :1727199546
  */
