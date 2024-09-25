@@ -2,7 +2,7 @@
 
 #include "server/Server.hpp"
 
-std::string PartCommand::execute(Client& client, Message& message) {
+std::string PartCommand::execute(Client &client, Message &message) {
   if (message.params.size() < 1)
     return ReplyUtility::makeErrNeedMoreParamsReply(client, "PART");
 
@@ -15,7 +15,7 @@ std::string PartCommand::execute(Client& client, Message& message) {
       continue;
     }
 
-    Channel* channel = Channel::findChannel(channelName);
+    Channel *channel = Channel::findChannel(channelName);
     if (channel == NULL) {
       replyStr += ReplyUtility::makeErrNoSuchChannelReply(client, channelName);
       continue;
@@ -36,11 +36,12 @@ std::string PartCommand::execute(Client& client, Message& message) {
 
     std::string response =
         ReplyUtility::makePartReply(client, channelName, partMessage);
-    channel->sendPart(client, response);
+    channel->sendPart(response);
     channel->removeUser(client);
     client.removeChannel(channelName);
 
-    if (channel->isEmpty()) Server::getInstance()->removeChannel(channelName);
+    if (channel->isEmpty())
+      Server::getInstance()->removeChannel(channelName);
   }
 
   return replyStr;

@@ -2,7 +2,7 @@
 
 #include "server/Server.hpp"
 
-std::string KickCommand::execute(Client& client, Message& message) {
+std::string KickCommand::execute(Client &client, Message &message) {
   if (message.params.size() < 2)
     return ReplyUtility::makeErrNeedMoreParamsReply(client, "KICK");
 
@@ -15,7 +15,7 @@ std::string KickCommand::execute(Client& client, Message& message) {
       continue;
     }
 
-    Channel* channel = Channel::findChannel(channelName);
+    Channel *channel = Channel::findChannel(channelName);
     if (channel == NULL) {
       replyStr += ReplyUtility::makeErrNoSuchChannelReply(client, channelName);
       continue;
@@ -33,7 +33,7 @@ std::string KickCommand::execute(Client& client, Message& message) {
     }
 
     std::string kickNick = StringUtility::parseComma(message.params[1]);
-    Client* target = Client::findClient(kickNick);
+    Client *target = Client::findClient(kickNick);
     if (target == NULL) {
       replyStr += ReplyUtility::makeErrNoSuchNickReply(client, kickNick);
       continue;
@@ -56,11 +56,12 @@ std::string KickCommand::execute(Client& client, Message& message) {
     std::string response =
         ReplyUtility::makeKickReply(client, channelName, kickNick, kickMessage);
 
-    channel->sendPart(*target, response);
+    channel->sendPart(response);
     channel->removeUser(*target);
     target->removeChannel(channelName);
 
-    if (channel->isEmpty()) Server::getInstance()->removeChannel(channelName);
+    if (channel->isEmpty())
+      Server::getInstance()->removeChannel(channelName);
   }
 
   return replyStr;

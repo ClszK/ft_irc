@@ -10,7 +10,7 @@
  * 채널에 참가하지 않은 상태에서 토픽을 변경하려고 할 경우.
  * :irc.local 442 b #123 :You're not on that channel!
  */
-std::string TopicCommand::execute(Client& client, Message& message) {
+std::string TopicCommand::execute(Client &client, Message &message) {
   if (message.params.size() < 1)
     return ReplyUtility::makeErrNeedMoreParamsReply(client, "TOPIC",
                                                     client.getNickName());
@@ -18,7 +18,7 @@ std::string TopicCommand::execute(Client& client, Message& message) {
   std::string channelName = message.params[0];
   std::string replyStr = "", topic;
 
-  Channel* channel = Channel::findChannel(channelName);
+  Channel *channel = Channel::findChannel(channelName);
   if (channel == NULL)
     return ReplyUtility::makeErrNoSuchChannelReply(client, channelName);
 
@@ -31,7 +31,8 @@ std::string TopicCommand::execute(Client& client, Message& message) {
     replyStr += ReplyUtility::makeCreationTimeReply(client, *channel);
   } else {
     for (size_t i = 1; i < message.params.size(); i++) {
-      if (i != 1) topic += " ";
+      if (i != 1)
+        topic += " ";
       topic += message.params[i];
     }
     if (channel->isUserInChannel(client.getNickName()) == false)
@@ -49,7 +50,7 @@ std::string TopicCommand::execute(Client& client, Message& message) {
       params.push_back(channelName);
       params.push_back(channel->getTopic());
       channel->sendPart(
-          client, ReplyUtility::makeCommandReply(client, "TOPIC", params));
+          ReplyUtility::makeCommandReply(client, "TOPIC", params));
     }
   }
 

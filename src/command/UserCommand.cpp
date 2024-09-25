@@ -1,5 +1,8 @@
 #include "command/UserCommand.hpp"
 
+/**
+ * user <username> <hostname> <servername> <realname>
+ */
 std::string UserCommand::execute(Client& client, Message& message) {
   std::string nickName = client.getNickName();
 
