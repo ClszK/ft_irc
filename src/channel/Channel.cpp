@@ -12,8 +12,7 @@ void Channel::setTopic(const std::string &topic) {
 }
 
 void Channel::setChannelModeAdd(const char c) {
-  if (mChannelMode.find(c) == std::string::npos)
-    mChannelMode += c;
+  if (mChannelMode.find(c) == std::string::npos) mChannelMode += c;
 }
 
 void Channel::setChannelModeSub(const char c) {
@@ -27,8 +26,7 @@ Channel *Channel::findChannel(const std::string &channelName) {
 
   std::map<std::string, Channel *>::const_iterator it;
   it = channelList.find(channelName);
-  if (it == channelList.end())
-    return NULL;
+  if (it == channelList.end()) return NULL;
   return it->second;
 }
 
@@ -44,24 +42,21 @@ Channel *Channel::createChannel(Client &client,
 }
 
 void Channel::deleteChannel(const std::string &channelName) {
-  if (!findChannel(channelName))
-    return;
+  if (!findChannel(channelName)) return;
 
   Server::getInstance()->setChannel(channelName, NULL);
 }
 
 bool Channel::isUserInChannel(std::string nickName) {
   for (size_t i = 0; i < mUserlist.size(); i++) {
-    if (mUserlist[i]->getNickName() == nickName)
-      return true;
+    if (mUserlist[i]->getNickName() == nickName) return true;
   }
   return false;
 }
 
 void Channel::sendPrivmsg(Client &client, const std::string &message) {
   for (size_t i = 0; i < mUserlist.size(); i++) {
-    if (mUserlist[i] != &client)
-      mUserlist[i]->sendPrivmsg(message);
+    if (mUserlist[i] != &client) mUserlist[i]->sendPrivmsg(message);
   }
 }
 
@@ -78,8 +73,11 @@ void Channel::removeUser(Client &client) {
     mUserlist.erase(it);
     if (mGMList.size() > 0) {
       it = std::find(mGMList.begin(), mGMList.end(), &client);
-      if (it != mGMList.end())
-        mGMList.erase(it);
+      if (it != mGMList.end()) mGMList.erase(it);
+    }
+    if (mInvitedList.size() > 0) {
+      it = std::find(mInvitedList.begin(), mInvitedList.end(), &client);
+      if (it != mInvitedList.end()) mInvitedList.erase(it);
     }
   }
 }
@@ -94,7 +92,9 @@ bool Channel::hasChannel(Client &client) {
 Channel::Channel() : mTopic(""), mChannelMode("tn"), mMaxUser(5000) {}
 
 Channel::Channel(const std::string &channelName)
-    : mChannelName(channelName), mTopic(""), mChannelMode("tn"),
+    : mChannelName(channelName),
+      mTopic(""),
+      mChannelMode("tn"),
       mMaxUser(5000) {
   mTimeStamp = std::time(NULL);
   std::time_t now = std::time(NULL);

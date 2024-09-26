@@ -209,23 +209,22 @@ std::string ReplyUtility::makeErrNeedMoreParamsReply(Client &client,
   return ss.str();
 }
 
-std::string ReplyUtility::makeErrNonicknameGivenReply(Client &client,
-                                                      const std::string &str) {
+std::string ReplyUtility::makeErrNonicknameGivenReply(Client &client) {
   std::stringstream ss;
 
   ss << ":" << client.getServerName() << " " << std::setw(3)
-     << std::setfill('0') << ERR_NONICKNAMEGIVEN << " * " << str << " "
+     << std::setfill('0') << ERR_NONICKNAMEGIVEN << " * "
      << NumericReply::getReply(ERR_NONICKNAMEGIVEN) << "\r\n";
   return ss.str();
 }
 
 std::string ReplyUtility::makeErrorReply(Client &client,
                                          const std::string &str) {
-  std::string nickName = client.getNickName();
+  std::string userName = client.getUserName();
 
-  if (nickName == "") nickName = "811AAAAAB";
+  if (userName == "") userName = "811AAAAAB";
 
-  return "ERROR :Closing link: (" + nickName + "@" + client.getClientIp() +
+  return "ERROR :Closing link: (" + userName + "@" + client.getClientIp() +
          ") [" + str + "]\r\n";
 }
 
@@ -704,6 +703,20 @@ std::string ReplyUtility::makeErrAlreadyRegistredReply(Client &client) {
   ss << ":" << client.getServerName() << " " << ERR_ALREADYREGISTRED << " "
      << nickName << " " << NumericReply::getReply(ERR_ALREADYREGISTRED)
      << "\r\n";
+
+  return ss.str();
+}
+
+/**
+ * : irc.local 405 test1 #29 :You are on too many channels
+ */
+std::string ReplyUtility::makeErrChannelLimitReply(
+    Client &client, const std::string &channelName) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_CHANNELLIMIT << " "
+     << client.getNickName() << " " << channelName << " "
+     << NumericReply::getReply(ERR_CHANNELLIMIT) << "\r\n";
 
   return ss.str();
 }

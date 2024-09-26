@@ -32,11 +32,17 @@ std::string JoinCommand::execute(Client& client, Message& message) {
           ReplyUtility::makeErrInvalidChannelNameReply(client, channelName);
       continue;
     }
+
+    if (client.getConnectedChannels().size() > CHANLIMIT) {
+      replyStr += ReplyUtility::makeErrChannelLimitReply(client, channelName);
+      continue;
+    }
     Channel* channel = Channel::findChannel(channelName);
 
     if (channel == NULL)
       channel = Channel::createChannel(client, channelName);
     else {
+      if (channel->isUserInChannel(client.getNickName())) continue;
       if (channel->getChannelMode().find('k') != std::string::npos) {
         std::string tempReply =
             joinKeyMode(client, *channel, channelName, message);
@@ -60,6 +66,8 @@ std::string JoinCommand::execute(Client& client, Message& message) {
         }
         channel->setInvitedListSub(client);
       }
+
+      client.setConnectedChannel(channel);
       channel->setUserListAdd(client);
     }
     if (channel->getTopic() != "")

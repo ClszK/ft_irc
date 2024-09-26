@@ -9,6 +9,8 @@
  * client 관리
  * server 동적할당 관리
  */
+// void check_leak(void) { system("leaks ircserv"); }
+
 int main(int argc, char* argv[]) {
   try {
     signal(SIGPIPE, SIG_IGN);  // ignore broken pipe

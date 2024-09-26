@@ -38,10 +38,9 @@ std::string PartCommand::execute(Client &client, Message &message) {
         ReplyUtility::makePartReply(client, channelName, partMessage);
     channel->sendPart(response);
     channel->removeUser(client);
-    client.removeChannel(channelName);
+    client.removeChannel(channel);
 
-    if (channel->isEmpty())
-      Server::getInstance()->removeChannel(channelName);
+    if (channel->isEmpty()) Server::getInstance()->removeChannel(channelName);
   }
 
   return replyStr;

@@ -122,8 +122,22 @@ void Server::handleReadEvent(struct kevent& event) {
 
   } else if (n == 0) {
     std::cout << "Connection closed: " << event.ident << std::endl;
-    if (mClients[event.ident]) close(event.ident);
-    Client::deleteClient(event.ident);
+    if (mClients[event.ident]) {
+      Client* client = mClients[event.ident];
+      for (std::map<std::string, Channel*>::const_iterator it =
+               mChannels.cbegin();
+           it != mChannels.cend();) {
+        it->second->removeUser(*client);
+        client->removeChannel(it->second);
+        if (it->second->isEmpty()) {
+          delete it->second;
+          it = mChannels.erase(it);
+        } else
+          ++it;
+      }
+      close(event.ident);
+      Client::deleteClient(event.ident);
+    }
   }
   if (errno) {
     std::cerr << std::strerror(errno) << std::endl;
@@ -163,8 +177,9 @@ void Server::handleWriteEvent(struct kevent& event) {
 void Server::run() {
   int nev;
 
-  while (true) {
-    if ((nev = kevent(mKq, NULL, 0, mEvents, MAX_EVENTS, NULL)) == -1)
+  while (Server::signal == false) {
+    if ((nev = kevent(mKq, NULL, 0, mEvents, MAX_EVENTS, NULL)) == -1 ||
+        Server::signal)
       throw std::runtime_error(std::strerror(errno));
 
     for (int i = 0; i < nev; i++) {
@@ -176,6 +191,7 @@ void Server::run() {
         handleWriteEvent(mEvents[i]);
     }
   }
+  // 종료 시그널이 발생하면 서버 종료 처리
 }
 
 Server::Server(int argc, char* argv[]) {

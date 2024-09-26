@@ -27,6 +27,10 @@ const std::string& Client::getAvailableChannelMode() const {
   return Server::getInstance()->getServerConf().availableChannelMode;
 }
 
+const std::vector<Channel*>& Client::getConnectedChannels() const {
+  return mConnectedChannels;
+}
+
 int Client::getPort() const {
   return Server::getInstance()->getServerConf().port;
 }
@@ -71,6 +75,8 @@ void Client::sendPart(const std::string& message) {
   send(mSockFd, message.c_str(), message.size(), 0);
 }
 
-void Client::removeChannel(const std::string& channelName) {
-  mConnectedChannels.erase(channelName);
+void Client::removeChannel(Channel* channel) {
+  mConnectedChannels.erase(std::remove(mConnectedChannels.begin(),
+                                       mConnectedChannels.end(), channel),
+                           mConnectedChannels.end());
 }

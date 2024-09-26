@@ -11,7 +11,6 @@ void NumericReply::initializeReplies() {
   mReplies[RPL_ENDOFWHO] = ":End of /WHO list";
   mReplies[RPL_ENDOFINVITELIST] = ":End of INVITE list";
   mReplies[RPL_NOTOPIC] = ":No topic is set.";
-
   mReplies[ERR_NONICKNAMEGIVEN] = ":No nickname given";
   mReplies[ERR_ERRONEUSNICKNAME] = ":Erroneus nickname";
   mReplies[ERR_NICKNAMEINUSE] = ":Nickname is already in use";
@@ -38,6 +37,7 @@ void NumericReply::initializeReplies() {
   mReplies[ERR_USERNOTINCHANNEL] = ":They are not on that channel";
   mReplies[ERR_USERONCHANNEL] = ":is already on channel";
   mReplies[ERR_INVALIDUSERNAME] = ":Your username is invalid";
+  mReplies[ERR_CHANNELLIMIT] = ":You are on too many channels";
 }
 
 NumericReply::NumericReply() {}

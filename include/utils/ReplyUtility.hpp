@@ -9,7 +9,7 @@
 #include "utils/NumericReply.hpp"
 
 class ReplyUtility {
-public:
+ public:
   static std::string makeSuccessConnectReply(Client &client);
   static std::string makeWelcomeReply(Client &client);
   static std::string makeYourHostReply(Client &client);
@@ -50,8 +50,7 @@ public:
   static std::string makeErrNeedMoreParamsReply(Client &client,
                                                 const std::string &command,
                                                 const std::string &str = "*");
-  static std::string makeErrNonicknameGivenReply(Client &client,
-                                                 const std::string &str);
+  static std::string makeErrNonicknameGivenReply(Client &client);
   static std::string makeErrorReply(Client &client, const std::string &str);
   static std::string makeErrNotRegisteredReply(Client &client,
                                                const std::string &command);
@@ -72,8 +71,8 @@ public:
                                           char mode);
   static std::string makeErrNoSuchNickReply(Client &client,
                                             const std::string &nickName);
-  static std::string
-  makeErrCannotSendToChanReply(Client &client, const std::string &channelName);
+  static std::string makeErrCannotSendToChanReply(
+      Client &client, const std::string &channelName);
   static std::string makeErrNotInChannelReply(Client &client,
                                               const std::string &channelName);
   static std::string makeErrUnknownModeReply(Client &client, char mode);
@@ -85,22 +84,22 @@ public:
                                                   const std::string &nickName);
   static std::string makeErrUnknownCommandReply(Client &client,
                                                 const std::string &command);
-  static std::string
-  makeErrChanOPrivsNeededReply(Client &client, const std::string &channelName,
-                               char mode);
-  static std::string
-  makeErrChanOPrivsNeededReply(Client &client, const std::string &channelName,
-                               const std::string &command);
-  static std::string
-  makeErrUserNotInChannelReply(Client &client, const std::string &nickName,
-                               const std::string &channelName);
-  static std::string
-  makeErrUserNotOnChannelReply(Client &client, const std::string &channelName);
+  static std::string makeErrChanOPrivsNeededReply(
+      Client &client, const std::string &channelName, char mode);
+  static std::string makeErrChanOPrivsNeededReply(
+      Client &client, const std::string &channelName,
+      const std::string &command);
+  static std::string makeErrUserNotInChannelReply(
+      Client &client, const std::string &nickName,
+      const std::string &channelName);
+  static std::string makeErrUserNotOnChannelReply(
+      Client &client, const std::string &channelName);
   static std::string makeErrUserOnChannelReply(Client &client,
                                                const std::string &nickName,
                                                const std::string &channelName);
-  static std::string
-  makeErrInviteOPrivsNeededReply(Client &client,
-                                 const std::string &channelName);
+  static std::string makeErrInviteOPrivsNeededReply(
+      Client &client, const std::string &channelName);
   static std::string makeErrAlreadyRegistredReply(Client &client);
+  static std::string makeErrChannelLimitReply(Client &client,
+                                              const std::string &channelName);
 };

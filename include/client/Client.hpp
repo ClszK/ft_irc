@@ -1,30 +1,36 @@
 #pragma once
 
-#include <map>
 #include <string>
+#include <vector>
 
 #include "utils/StringUtility.hpp"
 
 class Channel;
 
 class Client {
-private:
+ private:
   int mSockFd;
+  bool mIsRegistered;
   std::string mNickName;
   std::string mUserName;
   std::string mRealName;
   std::string mUserMode;
   std::string mPassword;
   std::string mClientIp;
-  std::map<std::string, Channel *> mConnectedChannels;
+  std::vector<Channel *> mConnectedChannels;
 
-public:
+ public:
+  void setRegistered(bool isRegistered) { mIsRegistered = isRegistered; }
   void setNickName(const std::string &nickName) { mNickName = nickName; }
   void setUserName(const std::string &userName) { mUserName = userName; }
   void setRealName(const std::string &realName) { mRealName = realName; }
   void setUserMode(const std::string &userMode) { mUserMode = userMode; }
   void setPassword(const std::string &password) { mPassword = password; }
+  void setConnectedChannel(Channel *channel) {
+    mConnectedChannels.push_back(channel);
+  }
   int getSockFd() const { return mSockFd; }
+  int getRegistered() const { return mIsRegistered; }
   const std::string &getNickName() const { return mNickName; }
   const std::string &getUserName() const { return mUserName; }
   const std::string &getRealName() const { return mRealName; }
@@ -37,6 +43,7 @@ public:
   const std::string &getCreatedTime() const;
   const std::string &getAvailableUserMode() const;
   const std::string &getAvailableChannelMode() const;
+  const std::vector<Channel *> &getConnectedChannels() const;
   int getPort() const;
 
   bool isPasswordValid() const;
@@ -48,10 +55,10 @@ public:
 
   void sendPrivmsg(const std::string &message);
   void sendPart(const std::string &message);
-  void removeChannel(const std::string &channelName);
+  void removeChannel(Channel *channel);
 
   Client() {};
   Client(const int sockFd, char *clientIp)
-      : mSockFd(sockFd), mClientIp(clientIp) {};
+      : mSockFd(sockFd), mIsRegistered(false), mClientIp(clientIp) {};
   ~Client() {};
 };

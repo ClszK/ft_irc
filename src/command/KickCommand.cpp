@@ -58,10 +58,9 @@ std::string KickCommand::execute(Client &client, Message &message) {
 
     channel->sendPart(response);
     channel->removeUser(*target);
-    target->removeChannel(channelName);
+    client.removeChannel(channel);
 
-    if (channel->isEmpty())
-      Server::getInstance()->removeChannel(channelName);
+    if (channel->isEmpty()) Server::getInstance()->removeChannel(channelName);
   }
 
   return replyStr;

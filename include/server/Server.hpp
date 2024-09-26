@@ -49,7 +49,6 @@ class Server {
   void setClient(const int sockFd, Client* client);
 
   void removeChannel(const std::string& channelName);
-  // removefd?
 
   static void signalHandler(int signum);
 
