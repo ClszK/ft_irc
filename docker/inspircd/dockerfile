@@ -1,7 +1,7 @@
 # Ubuntu 이미지를 기반으로 시작
 FROM ubuntu:latest
 
-EXPOSE 6667
+EXPOSE 6669
 
 # 필요한 패키지 설치
 RUN apt-get update && apt-get install -y \
@@ -23,4 +23,4 @@ COPY inspircd.conf /etc/inspircd/inspircd.conf
 
 # InspIRCd 실행
 
-CMD ["sh", "-c", "inspircd --runasroot && tcpflow -i eth0 port 6667 -c "]
+CMD ["sh", "-c", "inspircd --runasroot && tcpflow -i eth0 port 6669 -c "]

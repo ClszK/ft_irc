@@ -41,9 +41,11 @@ std::string NickCommand::execute(Client& client, Message& message) {
     if (client.getUserName() != "") {
       if (client.isPasswordValid())
         replyStr = ReplyUtility::makeSuccessConnectReply(client);
-      else
+      else {
+        Client::deleteClient(client.getSockFd());
         replyStr = ReplyUtility::makeErrorReply(
             client, "Access denied by configuration");
+      }
     }
   }
 
