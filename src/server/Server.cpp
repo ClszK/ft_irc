@@ -103,11 +103,11 @@ void Server::handleListenEvent() {
  * 나중에 고쳐야함.
  */
 void Server::handleReadEvent(struct kevent& event) {
-  char buffer[LINELEN];
+  char buffer[20000];
 
   int n = recv(event.ident, buffer, sizeof(buffer) - 1, 0);
-  buffer[n] = '\0';
   if (n > 0) {
+    buffer[n] = '\0';
     mBuffers[event.ident] += buffer;
 
     if (std::find(mBuffers[event.ident].begin(), mBuffers[event.ident].end(),
@@ -120,9 +120,19 @@ void Server::handleReadEvent(struct kevent& event) {
       }
     }
 
-  } else if (n == 0) {
+  } else {
     std::cout << "Connection closed: " << event.ident << std::endl;
-    if (mClients[event.ident]) {
+    struct kevent deleteEvent;
+    EV_SET(&deleteEvent, event.ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+    if (kevent(mKq, &deleteEvent, 1, NULL, 0, NULL) == -1)
+      throw std::runtime_error(std::strerror(errno));
+    struct kevent deleteWriteEvent;
+    EV_SET(&deleteWriteEvent, event.ident, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
+    if (kevent(mKq, &deleteWriteEvent, 1, NULL, 0, NULL) == -1) {
+      perror("kevent - EV_DELETE WRITE");
+    }
+
+    if (mClients.find(event.ident) != mClients.end()) {
       Client* client = mClients[event.ident];
       for (std::map<std::string, Channel*>::const_iterator it =
                mChannels.cbegin();
@@ -135,21 +145,24 @@ void Server::handleReadEvent(struct kevent& event) {
         } else
           ++it;
       }
-      close(event.ident);
       Client::deleteClient(event.ident);
     }
-  }
-  if (errno) {
-    std::cerr << std::strerror(errno) << std::endl;
-    errno = 0;
     close(event.ident);
+    errno = 0;
   }
+  // if (errno) {
+  //   std::cerr << std::strerror(errno) << std::endl;
+  //   errno = 0;
+  //   close(event.ident);
+  // }
 }
 
 void Server::handleWriteEvent(struct kevent& event) {
   EV_SET(&mChangeEvent, event.ident, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
-  if (kevent(mKq, &mChangeEvent, 1, NULL, 0, NULL) == -1)
+  if (kevent(mKq, &mChangeEvent, 1, NULL, 0, NULL) == -1) {
+    std::cout << mKq << std::endl;
     throw std::runtime_error(std::strerror(errno));
+  }
   std::string::iterator itPos;
   while ((itPos = std::find(mBuffers[event.ident].begin(),
                             mBuffers[event.ident].end(), '\n')) !=
@@ -178,17 +191,35 @@ void Server::run() {
   int nev;
 
   while (Server::signal == false) {
-    if ((nev = kevent(mKq, NULL, 0, mEvents, MAX_EVENTS, NULL)) == -1 ||
-        Server::signal)
-      throw std::runtime_error(std::strerror(errno));
+    try {
+      if ((nev = kevent(mKq, NULL, 0, mEvents, MAX_EVENTS, NULL)) == -1 ||
+          Server::signal)
+        throw std::runtime_error(std::strerror(errno));
 
-    for (int i = 0; i < nev; i++) {
-      if (static_cast<int>(mEvents[i].ident) == mListenFd)
-        handleListenEvent();
-      else if (mEvents[i].filter == EVFILT_READ)
-        handleReadEvent(mEvents[i]);
-      else if (mEvents[i].filter == EVFILT_WRITE)
-        handleWriteEvent(mEvents[i]);
+      for (int i = 0; i < nev; i++) {
+        if (mEvents[i].flags & EV_ERROR) {
+          if (static_cast<int>(mEvents[i].ident) == mListenFd) {
+            fprintf(stderr, "Error on listening socket: %s\n",
+                    strerror(mEvents[i].data));
+            continue;
+          } else {
+            fprintf(stderr, "Error on socket %llu: %s\n",
+                    (unsigned long long)mEvents[i].ident,
+                    strerror(mEvents[i].data));
+            close(mEvents[i].ident);
+            continue;
+          }
+        }
+        if (static_cast<int>(mEvents[i].ident) == mListenFd)
+          handleListenEvent();
+        else if (mEvents[i].filter == EVFILT_READ)
+          handleReadEvent(mEvents[i]);
+        else if (mEvents[i].filter == EVFILT_WRITE)
+          handleWriteEvent(mEvents[i]);
+      }
+    } catch (const std::exception& e) {
+      std::cerr << "Error: " << e.what() << std::endl;
+      std::cerr << "Thrown from: " << __FILE__ << ":" << __LINE__ << std::endl;
     }
   }
   // 종료 시그널이 발생하면 서버 종료 처리
