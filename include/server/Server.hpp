@@ -50,12 +50,16 @@ class Server {
 
   void removeChannel(const std::string& channelName);
 
+  void removeKqueueWriteEvents(int sockFd);
+  void removeKqueueReadEvents(int sockFd);
+  void removeBuffer(int sockFd) { mBuffers.erase(sockFd); }
+
   static void signalHandler(int signum);
 
  private:
   int mListenFd, mKq;
   SocketAddr mServerAddr;
-  struct kevent mChangeEvent, mEvents[MAX_EVENTS];
+  struct kevent mEvents[MAX_EVENTS];
   ServerConf mServerConf;
   std::map<int, std::string> mBuffers;
   std::map<int, Client*> mClients;

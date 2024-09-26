@@ -34,8 +34,9 @@ void Server::init() {
       listen(mListenFd, MAX_EVENTS) == -1 || (mKq = kqueue()) == -1)
     throw std::runtime_error(std::strerror(errno));
 
-  EV_SET(&mChangeEvent, mListenFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
-  if (kevent(mKq, &mChangeEvent, 1, NULL, 0, NULL) == -1)
+  struct kevent servEvent;
+  EV_SET(&servEvent, mListenFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
+  if (kevent(mKq, &servEvent, 1, NULL, 0, NULL) == -1)
     throw std::runtime_error(std::strerror(errno));
 }
 
@@ -90,8 +91,9 @@ void Server::handleListenEvent() {
       fcntl(connFd, F_SETFL, O_NONBLOCK) == -1)
     throw std::runtime_error(std::strerror(errno));
 
-  EV_SET(&mChangeEvent, connFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
-  if (kevent(mKq, &mChangeEvent, 1, NULL, 0, NULL) == -1)
+  struct kevent listenEvent;
+  EV_SET(&listenEvent, connFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
+  if (kevent(mKq, &listenEvent, 1, NULL, 0, NULL) == -1)
     throw std::runtime_error(std::strerror(errno));
   Client::createClient(connFd, inet_ntoa(clientAddr.getAddr()->sin_addr));
 
@@ -112,9 +114,10 @@ void Server::handleReadEvent(struct kevent& event) {
 
     if (std::find(mBuffers[event.ident].begin(), mBuffers[event.ident].end(),
                   '\n') != mBuffers[event.ident].end()) {
-      EV_SET(&mChangeEvent, event.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0,
+      struct kevent writeEvent;
+      EV_SET(&writeEvent, event.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0,
              NULL);
-      if (kevent(mKq, &mChangeEvent, 1, NULL, 0, NULL) == -1) {
+      if (kevent(mKq, &writeEvent, 1, NULL, 0, NULL) == -1) {
         std::cerr << std::strerror(errno) << std::endl;
         errno = 0;
       }
@@ -122,47 +125,21 @@ void Server::handleReadEvent(struct kevent& event) {
 
   } else {
     std::cout << "Connection closed: " << event.ident << std::endl;
-    struct kevent deleteEvent;
-    EV_SET(&deleteEvent, event.ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-    if (kevent(mKq, &deleteEvent, 1, NULL, 0, NULL) == -1)
-      throw std::runtime_error(std::strerror(errno));
-    struct kevent deleteWriteEvent;
-    EV_SET(&deleteWriteEvent, event.ident, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
-    if (kevent(mKq, &deleteWriteEvent, 1, NULL, 0, NULL) == -1) {
-      perror("kevent - EV_DELETE WRITE");
-    }
-
     if (mClients.find(event.ident) != mClients.end()) {
-      Client* client = mClients[event.ident];
-      for (std::map<std::string, Channel*>::const_iterator it =
-               mChannels.cbegin();
-           it != mChannels.cend();) {
-        it->second->removeUser(*client);
-        client->removeChannel(it->second);
-        if (it->second->isEmpty()) {
-          delete it->second;
-          it = mChannels.erase(it);
-        } else
-          ++it;
-      }
+      removeKqueueReadEvents(event.ident);
+      removeKqueueWriteEvents(event.ident);
       Client::deleteClient(event.ident);
     }
-    close(event.ident);
-    errno = 0;
   }
-  // if (errno) {
-  //   std::cerr << std::strerror(errno) << std::endl;
-  //   errno = 0;
-  //   close(event.ident);
-  // }
+  if (errno) {
+    std::cerr << std::strerror(errno) << std::endl;
+    errno = 0;
+    close(event.ident);
+  }
 }
 
 void Server::handleWriteEvent(struct kevent& event) {
-  EV_SET(&mChangeEvent, event.ident, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
-  if (kevent(mKq, &mChangeEvent, 1, NULL, 0, NULL) == -1) {
-    std::cout << mKq << std::endl;
-    throw std::runtime_error(std::strerror(errno));
-  }
+  removeKqueueWriteEvents(event.ident);
   std::string::iterator itPos;
   while ((itPos = std::find(mBuffers[event.ident].begin(),
                             mBuffers[event.ident].end(), '\n')) !=
@@ -180,10 +157,6 @@ void Server::handleWriteEvent(struct kevent& event) {
 
     std::cout << "Reply: " << replyStr << std::endl;
     send(event.ident, replyStr.c_str(), replyStr.size(), 0);
-    if (replyStr.find("ERROR :Closing link:") != std::string::npos) {
-      close(event.ident);
-      Client::deleteClient(event.ident);
-    }
   }
 }
 
@@ -197,29 +170,26 @@ void Server::run() {
         throw std::runtime_error(std::strerror(errno));
 
       for (int i = 0; i < nev; i++) {
-        if (mEvents[i].flags & EV_ERROR) {
-          if (static_cast<int>(mEvents[i].ident) == mListenFd) {
-            fprintf(stderr, "Error on listening socket: %s\n",
-                    strerror(mEvents[i].data));
-            continue;
-          } else {
-            fprintf(stderr, "Error on socket %llu: %s\n",
-                    (unsigned long long)mEvents[i].ident,
-                    strerror(mEvents[i].data));
-            close(mEvents[i].ident);
-            continue;
-          }
+        if (mEvents[i].flags & EV_EOF) {
+          Client::deleteClient(mEvents[i].ident);
+          continue;
         }
-        if (static_cast<int>(mEvents[i].ident) == mListenFd)
-          handleListenEvent();
-        else if (mEvents[i].filter == EVFILT_READ)
+        if (static_cast<int>(mEvents[i].ident) == mListenFd) {
+          try {
+            /* code */
+            handleListenEvent();
+          } catch (const std::exception& e) {
+            std::cerr << "Listen " << e.what() << '\n';
+          }
+
+        } else if (mEvents[i].filter == EVFILT_READ)
           handleReadEvent(mEvents[i]);
         else if (mEvents[i].filter == EVFILT_WRITE)
           handleWriteEvent(mEvents[i]);
       }
-    } catch (const std::exception& e) {
-      std::cerr << "Error: " << e.what() << std::endl;
-      std::cerr << "Thrown from: " << __FILE__ << ":" << __LINE__ << std::endl;
+    } catch (std::runtime_error& e) {
+      std::cerr << e.what() << std::endl;
+      errno = 0;
     }
   }
   // 종료 시그널이 발생하면 서버 종료 처리
@@ -272,4 +242,22 @@ bool Server::signal = false;
 void Server::signalHandler(int signum) {
   (void)signum;
   Server::signal = true;
+}
+void Server::removeKqueueWriteEvents(int fd) {
+  // 쓰기 이벤트 제거
+  struct kevent writeEvent;
+  EV_SET(&writeEvent, fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
+  if (kevent(mKq, &writeEvent, 1, NULL, 0, NULL) == -1) {
+    std::cerr << "Failed to remove EVFILT_WRITE for fd " << fd << ": "
+              << std::strerror(errno) << std::endl;
+  }
+}
+
+void Server::removeKqueueReadEvents(int sockFd) {
+  struct kevent readEvent;
+  EV_SET(&readEvent, sockFd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+  if (kevent(mKq, &readEvent, 1, NULL, 0, NULL) == -1) {
+    std::cerr << "Failed to remove EVFILT_READ for fd " << sockFd << ": "
+              << std::strerror(errno) << std::endl;
+  }
 }

@@ -13,7 +13,7 @@
 #define MODES 20
 #define NAMELEN 128
 #define NETWORK "Localnet"
-#define NICKLEN 30
+#define NICKLEN 9
 #define PREFIX "(o)@"
 #define TOPICLEN 307
 #define USERLEN 10

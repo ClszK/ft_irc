@@ -23,9 +23,8 @@ std::string QuitCommand::execute(Client& client, Message& message) {
        it != channels.cend(); ++it) {
     it->second->sendPrivmsg(
         client, ReplyUtility::makeCommandReply(client, "QUIT", params));
-    it->second->removeUser(client);
-    client.removeChannel(it->second);
-    if (it->second->isEmpty()) server->removeChannel(it->first);
   }
-  return reply;
+  client.sendPart(reply);
+  Client::deleteClient(client.getSockFd());
+  return "";
 }

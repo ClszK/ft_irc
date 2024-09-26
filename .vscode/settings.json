@@ -74,10 +74,14 @@
 		"csetjmp": "cpp",
 		"deque": "cpp",
 		"fstream": "cpp",
+<<<<<<< HEAD
 		"numeric": "cpp",
 		"queue": "cpp",
 		"random": "cpp",
 		"stack": "cpp"
+=======
+		"queue": "cpp"
+>>>>>>> 514886660cd4efab3eb5f8269f61cd85502748e4
 	},
 	"cSpell.words": [
 		"ALREADYREGISTRED",

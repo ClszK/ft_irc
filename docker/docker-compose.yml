@@ -3,4 +3,4 @@ services:
     build: ./inspircd
     image: inspircd_image
     ports:
-      - "6667:6667"
+      - "6669:6669"

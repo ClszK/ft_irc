@@ -24,6 +24,7 @@ std::string UserCommand::execute(Client& client, Message& message) {
     if (client.isPasswordValid())
       return ReplyUtility::makeSuccessConnectReply(client);
 
+    Client::deleteClient(client.getSockFd());
     return ReplyUtility::makeErrorReply(client,
                                         "Access denied by configuration");
   }

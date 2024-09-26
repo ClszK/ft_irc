@@ -45,9 +45,28 @@ void Client::createClient(const int sockFd, char* clientIp) {
 
 void Client::deleteClient(const int sockFd) {
   Client* client = findClient(sockFd);
+  Server* server = Server::getInstance();
+  std::map<std::string, Channel*> channels = server->getChannels();
   if (client == NULL) return;
 
-  Server::getInstance()->setClient(sockFd, NULL);
+  if (channels.size()) {
+    for (std::map<std::string, Channel*>::iterator it = channels.begin();
+         it != channels.end();) {
+      Channel* channel = it->second;
+      channel->removeUser(*client);
+      client->removeChannel(channel);
+      if (channel->isEmpty()) {
+        delete channel;
+        it = channels.erase(it);
+      } else
+        ++it;
+    }
+  }
+  server->setClient(sockFd, NULL);
+  server->removeBuffer(sockFd);
+  std::cout << "Connection closed: " << sockFd << std::endl;
+  server->removeKqueueReadEvents(sockFd);
+  close(sockFd);
 }
 
 Client* Client::findClient(const std::string& nickName) {
