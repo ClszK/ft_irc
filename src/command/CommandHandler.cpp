@@ -17,9 +17,11 @@ CommandHandler::CommandHandler() {
 }
 
 std::string CommandHandler::handleCommand(Client& client, Message& message) {
+  if (message.command.empty()) return "";
   if (mCommands.find(message.command) != mCommands.end()) {
     return mCommands[message.command]->execute(client, message);
   }
+
   return ReplyUtility::makeErrUnknownCommandReply(client, message.command);
 }
 

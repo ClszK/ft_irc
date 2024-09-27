@@ -11,10 +11,11 @@ std::string NickCommand::execute(Client& client, Message& message) {
     return ReplyUtility::makeErrErroneusNickNameReply(client,
                                                       message.params[0]);
 
+  if (client.getNickName() == message.params[0]) return "";
+
   if (Client::findClient(message.params[0]) != NULL)
     return ReplyUtility::makeErrAlreadyNickUseReply(client, message.params[0]);
 
-  if (client.getNickName() == message.params[0]) return "";
   std::string replyStr = "";
 
   if (client.getRegistered()) {
@@ -36,15 +37,17 @@ std::string NickCommand::execute(Client& client, Message& message) {
     client.setNickName(message.params[0]);
     return "";
   } else {
-    client.setRegistered(true);
     client.setNickName(message.params[0]);
     if (client.getUserName() != "") {
-      if (client.isPasswordValid())
+      if (client.isPasswordValid()) {
+        client.setRegistered(true);
+        std::cout << "???" << std::endl;
         replyStr = ReplyUtility::makeSuccessConnectReply(client);
-      else {
+      } else {
+        client.sendPrivmsg(ReplyUtility::makeErrorReply(
+            client, "Access denied by configuration"));
         Client::deleteClient(client.getSockFd());
-        replyStr = ReplyUtility::makeErrorReply(
-            client, "Access denied by configuration");
+        return "";
       }
     }
   }
