@@ -21,12 +21,15 @@ std::string UserCommand::execute(Client& client, Message& message) {
   client.setUserName(message.params[0]);
   client.setRealName(message.params[3]);
   if (client.getNickName() != "") {
-    if (client.isPasswordValid())
+    if (client.isPasswordValid()) {
+      client.setRegistered(true);
       return ReplyUtility::makeSuccessConnectReply(client);
+    }
 
+    client.sendPrivmsg(
+        ReplyUtility::makeErrorReply(client, "Access denied by configuration"));
     Client::deleteClient(client.getSockFd());
-    return ReplyUtility::makeErrorReply(client,
-                                        "Access denied by configuration");
+    return "";
   }
   return "";
 }
