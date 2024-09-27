@@ -11,30 +11,44 @@ std::string PrivmsgCommand::execute(Client& client, Message& message) {
   if (!client.getRegistered())
     return ReplyUtility::makeErrNotRegisteredReply(client, "PRIVMSG");
 
-  std::string msgTarget = message.params[0];
   std::string messageContent = message.params[1];
+  std::string replyStr = "";
 
   for (size_t i = 2; i < message.params.size(); i++) {
     messageContent += " " + message.params[i];
   }
 
-  if (StringUtility::isValidChannelName(msgTarget)) {
-    Channel* target = Channel::findChannel(msgTarget);
-    if (target == NULL)
-      return ReplyUtility::makeErrNoSuchChannelReply(client, msgTarget);
-    if (target->getChannelMode().find('n') != std::string::npos &&
-        !target->isUserInChannel(client.getNickName()))
-      return ReplyUtility::makeErrCannotSendToChanReply(client, msgTarget);
-    std::string response =
-        ReplyUtility::makePrivmsgReply(client, msgTarget, messageContent);
-    target->sendPrivmsg(client, response);
-  } else {
-    Client* target = Client::findClient(msgTarget);
-    if (target == NULL)
-      return ReplyUtility::makeErrNoSuchNickReply(client, msgTarget);
-    std::string response =
-        ReplyUtility::makePrivmsgReply(client, msgTarget, messageContent);
-    target->sendPrivmsg(response);
+  while (message.params[0].size()) {
+    std::string msgTarget = StringUtility::parseComma(msgTarget);
+
+    if (messageContent == "")
+      return ReplyUtility::makeErrNoTextToSendReply(client);
+
+    if (StringUtility::isValidChannelName(msgTarget)) {
+      Channel* target = Channel::findChannel(msgTarget);
+      if (target == NULL) {
+        replyStr += ReplyUtility::makeErrNoSuchChannelReply(client, msgTarget);
+        continue;
+      }
+      if (target->getChannelMode().find('n') != std::string::npos &&
+          !target->isUserInChannel(client.getNickName())) {
+        replyStr +=
+            ReplyUtility::makeErrCannotSendToChanReply(client, msgTarget);
+        continue;
+      }
+      std::string response =
+          ReplyUtility::makePrivmsgReply(client, msgTarget, messageContent);
+      target->sendPrivmsg(client, response);
+    } else {
+      Client* target = Client::findClient(msgTarget);
+      if (target == NULL) {
+        replyStr += ReplyUtility::makeErrNoSuchNickReply(client, msgTarget);
+        continue;
+      }
+      std::string response =
+          ReplyUtility::makePrivmsgReply(client, msgTarget, messageContent);
+      target->sendPrivmsg(response);
+    }
   }
 
   return "";

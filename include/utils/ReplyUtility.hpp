@@ -101,4 +101,5 @@ class ReplyUtility {
   static std::string makeErrAlreadyRegistredReply(Client &client);
   static std::string makeErrChannelLimitReply(Client &client,
                                               const std::string &channelName);
+  static std::string makeErrNoTextToSendReply(Client &client);
 };

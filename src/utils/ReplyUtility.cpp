@@ -724,3 +724,13 @@ std::string ReplyUtility::makeErrChannelLimitReply(
 
   return ss.str();
 }
+
+std::string ReplyUtility::makeErrNoTextToSendReply(Client &client) {
+  std::stringstream ss;
+
+  ss << ":" << client.getServerName() << " " << ERR_NOTEXTTOSEND << " "
+     << client.getNickName() << " " << NumericReply::getReply(ERR_NOTEXTTOSEND)
+     << "\r\n";
+
+  return ss.str();
+}

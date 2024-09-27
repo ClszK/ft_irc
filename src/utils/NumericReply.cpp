@@ -38,6 +38,7 @@ void NumericReply::initializeReplies() {
   mReplies[ERR_USERONCHANNEL] = ":is already on channel";
   mReplies[ERR_INVALIDUSERNAME] = ":Your username is invalid";
   mReplies[ERR_CHANNELLIMIT] = ":You are on too many channels";
+  mReplies[ERR_NOTEXTTOSEND] = ":No text to send";
 }
 
 NumericReply::NumericReply() {}
