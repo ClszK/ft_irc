@@ -4,6 +4,9 @@ std::string InviteCommand::execute(Client &client, Message &message) {
   if (message.params.size() < 2)
     return ReplyUtility::makeEndofInvitelstReply(client);
 
+  if (!client.getRegistered())
+    return ReplyUtility::makeErrNotRegisteredReply(client, "INVITE");
+
   std::string channelName = StringUtility::parseComma(message.params[1]);
   Channel *channel = Channel::findChannel(channelName);
   if (!StringUtility::isValidChannelName(channelName) || channel == NULL)

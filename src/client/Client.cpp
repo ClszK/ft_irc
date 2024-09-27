@@ -52,7 +52,8 @@ void Client::deleteClient(const int sockFd) {
   server->removeClientChannel(*client);
   server->setClient(sockFd, NULL);
   server->removeBuffer(sockFd);
-  std::cout << "Connection closed: " << sockFd << std::endl;
+  std::cout << "Client Connection closed: " << sockFd << std::endl;
+  server->removeKqueueWriteEvents(sockFd);
   server->removeKqueueReadEvents(sockFd);
   close(sockFd);
 }

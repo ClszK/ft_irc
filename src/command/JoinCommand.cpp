@@ -27,6 +27,7 @@ std::string JoinCommand::execute(Client& client, Message& message) {
   while (message.params[0].size()) {
     std::string channelName = StringUtility::parseComma(message.params[0]);
 
+    std::cout << channelName << std::endl;
     if (!StringUtility::isValidChannelName(channelName)) {
       replyStr +=
           ReplyUtility::makeErrInvalidChannelNameReply(client, channelName);
@@ -70,8 +71,6 @@ std::string JoinCommand::execute(Client& client, Message& message) {
       client.setConnectedChannel(channel);
       channel->setUserListAdd(client);
     }
-    if (channel->getTopic() != "")
-      replyStr += ReplyUtility::makeTopicReply(client, *channel);
     std::vector<std::string> params;
 
     params.push_back(channelName);
@@ -79,6 +78,10 @@ std::string JoinCommand::execute(Client& client, Message& message) {
         ReplyUtility::makeCommandReply(client, "JOIN", params);
     channel->sendPrivmsg(client, successJoinReply);
     replyStr += successJoinReply;
+    if (channel->getTopic() != "") {
+      replyStr += ReplyUtility::makeTopicReply(client, *channel);
+      replyStr += ReplyUtility::makeCreationTimeReply(client, *channel);
+    }
     replyStr += ReplyUtility::makeNamReply(client, *channel);
     replyStr += ReplyUtility::makeEndOfNamesReply(client, *channel);
   }

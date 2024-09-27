@@ -12,8 +12,10 @@
  */
 std::string TopicCommand::execute(Client &client, Message &message) {
   if (message.params.size() < 1)
-    return ReplyUtility::makeErrNeedMoreParamsReply(client, "TOPIC",
-                                                    client.getNickName());
+    return ReplyUtility::makeErrNeedMoreParamsReply(client, "TOPIC");
+
+  if (!client.getRegistered())
+    return ReplyUtility::makeErrNotRegisteredReply(client, "TOPIC");
 
   std::string channelName = message.params[0];
   std::string replyStr = "", topic;
@@ -31,8 +33,7 @@ std::string TopicCommand::execute(Client &client, Message &message) {
     replyStr += ReplyUtility::makeCreationTimeReply(client, *channel);
   } else {
     for (size_t i = 1; i < message.params.size(); i++) {
-      if (i != 1)
-        topic += " ";
+      if (i != 1) topic += " ";
       topic += message.params[i];
     }
     if (channel->isUserInChannel(client.getNickName()) == false)

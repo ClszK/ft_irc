@@ -8,6 +8,9 @@ std::string PrivmsgCommand::execute(Client& client, Message& message) {
   if (message.params.size() < 2)
     return ReplyUtility::makeErrNeedMoreParamsReply(client, "PRIVMSG");
 
+  if (!client.getRegistered())
+    return ReplyUtility::makeErrNotRegisteredReply(client, "PRIVMSG");
+
   std::string msgTarget = message.params[0];
   std::string messageContent = message.params[1];
 

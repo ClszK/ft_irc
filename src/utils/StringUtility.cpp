@@ -65,7 +65,7 @@ bool StringUtility::isValidUserName(std::string& userName) {
  * [:chanstring]은 고급 IRC 서버 기능으로 구현 안함.
  */
 bool StringUtility::isValidChannelName(const std::string& channelName) {
-  if (channelName.length() < 2 || channelName.length() > CHANNELLEN)
+  if (channelName.length() < 1 || channelName.length() > CHANNELLEN)
     return false;
 
   if (channelName[0] != '#') return false;
@@ -105,6 +105,8 @@ std::string StringUtility::removeDuplicateChars(const std::string& input) {
   }
   return result;
 }
+
+#include <iostream>
 
 std::string StringUtility::parseComma(std::string& str) {
   std::string result = "";

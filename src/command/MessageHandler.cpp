@@ -26,7 +26,7 @@ Message MessageHandler::parseMessage(const std::string& message) {
       param.erase(0, 1);  // 콜론 제거
       std::string trailing;
       if (std::getline(iss, trailing)) {
-        param += " " + trailing;  // 나머지 텍스트를 공백 포함하여 추가
+        param += trailing;  // 나머지 텍스트를 공백 포함하여 추가
       }
       parsedMessage.params.push_back(param);
       break;  // 나머지 텍스트를 모두 읽었으므로 루프 종료

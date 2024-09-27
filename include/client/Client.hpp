@@ -59,6 +59,11 @@ class Client {
 
   Client() {};
   Client(const int sockFd, char *clientIp)
-      : mSockFd(sockFd), mIsRegistered(false), mClientIp(clientIp) {};
+      : mSockFd(sockFd), mIsRegistered(false) {
+    if (strcmp(clientIp, "0.0.0.0") == 0) {
+      mClientIp = "127.0.0.1";
+    } else
+      mClientIp = clientIp;
+  };
   ~Client() {};
 };

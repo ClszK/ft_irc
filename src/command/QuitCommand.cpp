@@ -21,8 +21,9 @@ std::string QuitCommand::execute(Client& client, Message& message) {
   params.push_back(paramStr);
   for (std::map<std::string, Channel*>::const_iterator it = channels.cbegin();
        it != channels.cend(); ++it) {
-    it->second->sendPrivmsg(
-        client, ReplyUtility::makeCommandReply(client, "QUIT", params));
+    if (it->second->isUserInChannel(client.getNickName()))
+      it->second->sendPrivmsg(
+          client, ReplyUtility::makeCommandReply(client, "QUIT", params));
   }
   client.sendPart(reply);
   Client::deleteClient(client.getSockFd());

@@ -198,14 +198,18 @@ std::string ReplyUtility::makeCreationTimeReply(Client &client,
   return ss.str();
 }
 
-std::string ReplyUtility::makeErrNeedMoreParamsReply(Client &client,
-                                                     const std::string &command,
-                                                     const std::string &str) {
+/**
+ * :ft_ircd 461 * JOIN :Not enough parameters
+ */
+std::string ReplyUtility::makeErrNeedMoreParamsReply(
+    Client &client, const std::string &command) {
   std::stringstream ss;
+  std::string nickName = client.getNickName();
 
-  ss << ":" << client.getServerName() << " " << std::setw(3)
-     << std::setfill('0') << ERR_NEEDMOREPARAMS << " " << str << " " << command
-     << " " << NumericReply::getReply(ERR_NEEDMOREPARAMS) << "\r\n";
+  if (nickName == "") nickName = "*";
+  ss << ":" << client.getServerName() << " " << ERR_NEEDMOREPARAMS << " "
+     << nickName << " " << command << " "
+     << NumericReply::getReply(ERR_NEEDMOREPARAMS) << "\r\n";
   return ss.str();
 }
 

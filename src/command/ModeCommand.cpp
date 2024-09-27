@@ -17,6 +17,9 @@ std::string ModeCommand::execute(Client &client, Message &message) {
   if (message.params.size() < 1)
     return ReplyUtility::makeErrNeedMoreParamsReply(client, "MODE");
 
+  if (!client.getRegistered())
+    return ReplyUtility::makeErrNotRegisteredReply(client, "MODE");
+
   std::string channelName = message.params[0];
   std::string replyStr = "";
 
@@ -64,100 +67,97 @@ std::string ModeCommand::execute(Client &client, Message &message) {
           channel->getChannelMode().find(mode) == std::string::npos)))
       continue;
     switch (mode) {
-    case 'n':
-    case 'i':
-    case 't':
-      if (addMode) {
-        channel->setChannelModeAdd(mode);
-        plusMode += mode;
-      } else {
-        channel->setChannelModeSub(mode);
-        removeMode += mode;
-      }
-      break;
-    case 'k':
-      if (addMode) {
+      case 'n':
+      case 'i':
+      case 't':
+        if (addMode) {
+          channel->setChannelModeAdd(mode);
+          plusMode += mode;
+        } else {
+          channel->setChannelModeSub(mode);
+          removeMode += mode;
+        }
+        break;
+      case 'k':
+        if (addMode) {
+          if (message.params.size() <= paramIdx) {
+            replyStr +=
+                ReplyUtility::makeErrNotExistReply(client, channelName, mode);
+            break;
+          }
+          params.push_back(message.params[paramIdx]);
+          channel->setChannelKey(message.params[paramIdx++]);
+          channel->setChannelModeAdd(mode);
+          plusMode += mode;
+        } else {
+          if (channel->getChannelKey() != message.params[paramIdx]) {
+            replyStr +=
+                ReplyUtility::makeErrKeyAlreadySetReply(client, channelName);
+            break;
+          }
+          params.push_back(message.params[paramIdx]);
+          channel->setChannelKey("");
+          channel->setChannelModeSub(mode);
+          removeMode += mode;
+        }
+        break;
+      case 'o':
         if (message.params.size() <= paramIdx) {
           replyStr +=
               ReplyUtility::makeErrNotExistReply(client, channelName, mode);
           break;
         }
-        params.push_back(message.params[paramIdx]);
-        channel->setChannelKey(message.params[paramIdx++]);
-        channel->setChannelModeAdd(mode);
-        plusMode += mode;
-      } else {
-        if (channel->getChannelKey() != message.params[paramIdx]) {
-          replyStr +=
-              ReplyUtility::makeErrKeyAlreadySetReply(client, channelName);
+        nickName = message.params[paramIdx++];
+        target = Client::findClient(nickName);
+        if (target == NULL) {
+          replyStr += ReplyUtility::makeErrNoSuchNickReply(client, nickName);
           break;
         }
-        params.push_back(message.params[paramIdx]);
-        channel->setChannelKey("");
-        channel->setChannelModeSub(mode);
-        removeMode += mode;
-      }
-      break;
-    case 'o':
-      if (message.params.size() <= paramIdx) {
-        replyStr +=
-            ReplyUtility::makeErrNotExistReply(client, channelName, mode);
-        break;
-      }
-      nickName = message.params[paramIdx++];
-      target = Client::findClient(nickName);
-      if (target == NULL) {
-        replyStr += ReplyUtility::makeErrNoSuchNickReply(client, nickName);
-        break;
-      }
 
-      params.push_back(nickName);
-      if (addMode) {
-        if (channel->isOperator(*target))
-          break;
-        channel->setGMListAdd(*target);
-        plusMode += mode;
-      } else {
-        if (!channel->isOperator(*target))
-          break;
-        channel->setGMListSub(*target);
-        removeMode += mode;
-      }
-      break;
-    case 'l':
-      if (addMode) {
-        if (message.params.size() <= paramIdx) {
-          replyStr +=
-              ReplyUtility::makeErrNotExistReply(client, channelName, mode);
-          break;
+        params.push_back(nickName);
+        if (addMode) {
+          if (channel->isOperator(*target)) break;
+          channel->setGMListAdd(*target);
+          plusMode += mode;
+        } else {
+          if (!channel->isOperator(*target)) break;
+          channel->setGMListSub(*target);
+          removeMode += mode;
         }
-        params.push_back(message.params[paramIdx]);
-        channel->setChannelModeAdd(mode);
-        errno = 0;
-        long limit = std::strtol(message.params[paramIdx++].c_str(), NULL, 10);
-        if (errno == ERANGE || limit < 0) {
-          replyStr +=
-              ReplyUtility::makeErrNotExistReply(client, channelName, mode);
-          continue;
+        break;
+      case 'l':
+        if (addMode) {
+          if (message.params.size() <= paramIdx) {
+            replyStr +=
+                ReplyUtility::makeErrNotExistReply(client, channelName, mode);
+            break;
+          }
+          params.push_back(message.params[paramIdx]);
+          channel->setChannelModeAdd(mode);
+          errno = 0;
+          long limit =
+              std::strtol(message.params[paramIdx++].c_str(), NULL, 10);
+          if (errno == ERANGE || limit < 0) {
+            replyStr +=
+                ReplyUtility::makeErrNotExistReply(client, channelName, mode);
+            continue;
+          }
+          channel->setMaxUser(limit);
+          plusMode += mode;
+        } else {
+          channel->setChannelModeSub(mode);
+          channel->setMaxUser(0);
+          removeMode += mode;
         }
-        channel->setMaxUser(limit);
-        plusMode += mode;
-      } else {
-        channel->setChannelModeSub(mode);
-        channel->setMaxUser(0);
-        removeMode += mode;
-      }
-      break;
-    default:
-      replyStr += ReplyUtility::makeErrUnknownModeReply(client, mode);
+        break;
+      default:
+        replyStr += ReplyUtility::makeErrUnknownModeReply(client, mode);
     }
   }
   if (plusMode.size() > 0 || removeMode.size() > 0) {
     std::string responseMode;
-    if (plusMode.size() > 0)
-      responseMode += "+" + plusMode;
-    if (removeMode.size() > 0)
-      responseMode += "-" + removeMode;
+    if (plusMode.size() > 0) responseMode += "+" + plusMode;
+    if (removeMode.size() > 0) responseMode += "-" + removeMode;
 
     params.insert(params.begin(), responseMode);
     params.insert(params.begin(), channelName);

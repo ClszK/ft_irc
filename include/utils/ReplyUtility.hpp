@@ -48,8 +48,7 @@ class ReplyUtility {
   static std::string makeCreationTimeReply(Client &client, Channel &channel);
 
   static std::string makeErrNeedMoreParamsReply(Client &client,
-                                                const std::string &command,
-                                                const std::string &str = "*");
+                                                const std::string &command);
   static std::string makeErrNonicknameGivenReply(Client &client);
   static std::string makeErrorReply(Client &client, const std::string &str);
   static std::string makeErrNotRegisteredReply(Client &client,

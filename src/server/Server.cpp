@@ -36,8 +36,7 @@ void Server::init() {
 
   struct kevent servEvent;
   EV_SET(&servEvent, mListenFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
-  if (kevent(mKq, &servEvent, 1, NULL, 0, NULL) == -1)
-    throw std::runtime_error(std::strerror(errno));
+  kevent(mKq, &servEvent, 1, NULL, 0, NULL);
 }
 
 void Server::initServerInfo(char* argv[]) {
@@ -93,11 +92,9 @@ void Server::handleListenEvent() {
 
   struct kevent listenEvent;
   EV_SET(&listenEvent, connFd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
-  if (kevent(mKq, &listenEvent, 1, NULL, 0, NULL) == -1)
-    throw std::runtime_error(std::strerror(errno));
-  Client::createClient(connFd, inet_ntoa(clientAddr.getAddr()->sin_addr));
+  kevent(mKq, &listenEvent, 1, NULL, 0, NULL);
 
-  if (errno) throw std::runtime_error(std::strerror(errno));
+  Client::createClient(connFd, inet_ntoa(clientAddr.getAddr()->sin_addr));
 }
 
 /**
@@ -117,10 +114,7 @@ void Server::handleReadEvent(struct kevent& event) {
       struct kevent writeEvent;
       EV_SET(&writeEvent, event.ident, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0,
              NULL);
-      if (kevent(mKq, &writeEvent, 1, NULL, 0, NULL) == -1) {
-        std::cerr << std::strerror(errno) << std::endl;
-        errno = 0;
-      }
+      kevent(mKq, &writeEvent, 1, NULL, 0, NULL);
     }
 
   } else {
@@ -130,11 +124,6 @@ void Server::handleReadEvent(struct kevent& event) {
       removeKqueueWriteEvents(event.ident);
       Client::deleteClient(event.ident);
     }
-  }
-  if (errno) {
-    std::cerr << std::strerror(errno) << std::endl;
-    errno = 0;
-    close(event.ident);
   }
 }
 
@@ -261,17 +250,11 @@ void Server::removeKqueueWriteEvents(int fd) {
   // 쓰기 이벤트 제거
   struct kevent writeEvent;
   EV_SET(&writeEvent, fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
-  if (kevent(mKq, &writeEvent, 1, NULL, 0, NULL) == -1) {
-    std::cerr << "Failed to remove EVFILT_WRITE for fd " << fd << ": "
-              << std::strerror(errno) << std::endl;
-  }
+  kevent(mKq, &writeEvent, 1, NULL, 0, NULL);
 }
 
 void Server::removeKqueueReadEvents(int sockFd) {
   struct kevent readEvent;
   EV_SET(&readEvent, sockFd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-  if (kevent(mKq, &readEvent, 1, NULL, 0, NULL) == -1) {
-    std::cerr << "Failed to remove EVFILT_READ for fd " << sockFd << ": "
-              << std::strerror(errno) << std::endl;
-  }
+  kevent(mKq, &readEvent, 1, NULL, 0, NULL);
 }

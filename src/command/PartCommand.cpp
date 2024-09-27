@@ -6,6 +6,9 @@ std::string PartCommand::execute(Client &client, Message &message) {
   if (message.params.size() < 1)
     return ReplyUtility::makeErrNeedMoreParamsReply(client, "PART");
 
+  if (!client.getRegistered())
+    return ReplyUtility::makeErrNotRegisteredReply(client, "PART");
+
   std::string replyStr = "";
   while (message.params[0].size()) {
     std::string channelName = StringUtility::parseComma(message.params[0]);

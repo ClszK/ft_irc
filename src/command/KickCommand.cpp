@@ -6,6 +6,9 @@ std::string KickCommand::execute(Client &client, Message &message) {
   if (message.params.size() < 2)
     return ReplyUtility::makeErrNeedMoreParamsReply(client, "KICK");
 
+  if (!client.getRegistered())
+    return ReplyUtility::makeErrNotRegisteredReply(client, "KICK");
+
   std::string replyStr = "";
   while (message.params[0].size()) {
     std::string channelName = StringUtility::parseComma(message.params[0]);

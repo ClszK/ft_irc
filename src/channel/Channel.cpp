@@ -94,7 +94,8 @@ Channel::Channel() : mTopic(""), mChannelMode("tn"), mMaxUser(5000) {}
 Channel::Channel(const std::string &channelName)
     : mChannelName(channelName),
       mTopic(""),
-      mChannelMode("tn"),
+      // mChannelMode("tn"),
+      mChannelMode("n"),
       mMaxUser(5000) {
   mTimeStamp = std::time(NULL);
   std::time_t now = std::time(NULL);
