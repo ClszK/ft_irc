@@ -1,5 +1,4 @@
 #pragma once
-
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <netinet/in.h>
@@ -53,6 +52,7 @@ class Server {
   void removeKqueueWriteEvents(int sockFd);
   void removeKqueueReadEvents(int sockFd);
   void removeBuffer(int sockFd) { mBuffers.erase(sockFd); }
+  void removeClientChannel(Client& client);
 
   static void signalHandler(int signum);
 

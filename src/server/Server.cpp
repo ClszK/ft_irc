@@ -63,7 +63,7 @@ void Server::initServerInfo(char* argv[]) {
   mServerConf.password = argv[2];
   mServerConf.hostName = std::string(hostBuffer);
   mServerConf.version = "ircserv-1.0";
-  mServerConf.serverName = "irc.local";
+  mServerConf.serverName = "ft_ircd";
   mServerConf.createdTime = std::string(buffer);
   /**
    * i: 클라이언트가 다른 사용자에게 보이지 않도록 하여 프라이버시를 보호.
@@ -232,6 +232,20 @@ void Server::removeChannel(const std::string& channelName) {
   if (it != mChannels.end()) {
     delete it->second;    // 동적 할당된 채널 삭제
     mChannels.erase(it);  // 채널 목록에서 제거
+  }
+}
+
+void Server::removeClientChannel(Client& client) {
+  for (std::map<std::string, Channel*>::iterator it = mChannels.begin();
+       it != mChannels.end();) {
+    Channel* channel = it->second;
+    channel->removeUser(client);
+    client.removeChannel(channel);
+    if (channel->isEmpty()) {
+      delete channel;
+      it = mChannels.erase(it);
+    } else
+      ++it;
   }
 }
 
