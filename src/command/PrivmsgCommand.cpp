@@ -51,5 +51,5 @@ std::string PrivmsgCommand::execute(Client& client, Message& message) {
     }
   }
 
-  return "";
+  return replyStr;
 }
