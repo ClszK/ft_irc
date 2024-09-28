@@ -38,6 +38,7 @@ INTERFACE	= en0
 IRC_SERVER	= $(shell ifconfig $(INTERFACE) | grep 'inet ' | grep -v 'inet6' | awk '{print $$2}')
 NICK		= test
 PORT		= 6667
+PASS		= 6667
 
 all:    $(NAME)
 
@@ -77,5 +78,9 @@ irssi:
 		docker run -it irssi irssi -c $(IRC_SERVER) -w $(PASS) -n $(NICK) -p $(PORT); \
 	fi
 
-.PHONY: all clean fclean re
+test:
+	(printf "pass $(PASS)\nnick $(NICK)\nuser $(NICK) 0 * :$(NICK)\n"; cat)| nc localhost $(PORT)
+
+.PHONY: all clean fclean re up down irssi test
+
 
