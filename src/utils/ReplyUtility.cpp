@@ -492,9 +492,12 @@ std::string ReplyUtility::makePongReply(Client &client,
 std::string ReplyUtility::makeErrUnknownCommandReply(
     Client &client, const std::string &command) {
   std::stringstream ss;
+  std::string nickName = client.getNickName();
+
+  if (nickName == "") nickName = "*";
 
   ss << ":" << client.getServerName() << " " << ERR_UNKNOWNCOMMAND << " "
-     << client.getNickName() << " " << command << " "
+     << nickName << " " << command << " "
      << NumericReply::getReply(ERR_UNKNOWNCOMMAND) << "\r\n";
 
   return ss.str();
@@ -622,10 +625,13 @@ std::string ReplyUtility::makeErrUserNotInChannelReply(
 /*:irc.local 337 c :End of INVITE list*/
 std::string ReplyUtility::makeEndofInvitelstReply(Client &client) {
   std::stringstream ss;
+  std::string nickName = client.getNickName();
+
+  if (nickName == "") nickName = "*";
 
   ss << ":" << client.getServerName() << " " << RPL_ENDOFINVITELIST << " "
-     << client.getNickName() << " "
-     << NumericReply::getReply(RPL_ENDOFINVITELIST) << "\r\n";
+     << nickName << " " << NumericReply::getReply(RPL_ENDOFINVITELIST)
+     << "\r\n";
 
   return ss.str();
 }

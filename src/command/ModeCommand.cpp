@@ -54,9 +54,12 @@ std::string ModeCommand::execute(Client &client, Message &message) {
       if ((mode == 'o' || mode == 'k' || mode == 'l') && paramSize-- <= 0)
         replyStr +=
             ReplyUtility::makeErrNotExistReply(client, channelName, mode);
-      else
+      else if (mode == 'o' || mode == 'k' || mode == 'l' || mode == 't' ||
+               mode == 'i' || mode == 'n')
         replyStr += ReplyUtility::makeErrChanOPrivsNeededReply(
             client, channelName, mode);
+      else
+        replyStr += ReplyUtility::makeErrUnknownModeReply(client, mode);
       continue;
     }
 
@@ -116,7 +119,9 @@ std::string ModeCommand::execute(Client &client, Message &message) {
 
         params.push_back(nickName);
         if (addMode) {
-          if (channel->isOperator(*target)) break;
+          if (channel->isOperator(*target) ||
+              channel->isUserInChannel(nickName))
+            break;
           channel->setGMListAdd(*target);
           plusMode += mode;
         } else {
@@ -132,16 +137,17 @@ std::string ModeCommand::execute(Client &client, Message &message) {
                 ReplyUtility::makeErrNotExistReply(client, channelName, mode);
             break;
           }
-          params.push_back(message.params[paramIdx]);
-          channel->setChannelModeAdd(mode);
           errno = 0;
           long limit =
               std::strtol(message.params[paramIdx++].c_str(), NULL, 10);
           if (errno == ERANGE || limit < 0) {
             replyStr +=
                 ReplyUtility::makeErrNotExistReply(client, channelName, mode);
+            errno = 0;
             continue;
           }
+          params.push_back(message.params[paramIdx]);
+          channel->setChannelModeAdd(mode);
           channel->setMaxUser(limit);
           plusMode += mode;
         } else {
@@ -163,7 +169,6 @@ std::string ModeCommand::execute(Client &client, Message &message) {
     params.insert(params.begin(), channelName);
     std::string response =
         ReplyUtility::makeCommandReply(client, "MODE", params);
-    std::cout << response << "!" << std::endl;
     channel->sendPart(response);
   }
   return replyStr;
