@@ -19,7 +19,7 @@ std::string PrivmsgCommand::execute(Client& client, Message& message) {
   }
 
   while (message.params[0].size()) {
-    std::string msgTarget = StringUtility::parseComma(msgTarget);
+    std::string msgTarget = StringUtility::parseComma(message.params[0]);
 
     if (messageContent == "")
       return ReplyUtility::makeErrNoTextToSendReply(client);
