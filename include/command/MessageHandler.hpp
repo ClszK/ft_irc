@@ -1,6 +1,7 @@
 #pragma once
 
 #include <sstream>
+#include <algorithm>
 #include <vector>
 
 struct ToLower {
