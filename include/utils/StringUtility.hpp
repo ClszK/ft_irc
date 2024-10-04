@@ -1,6 +1,7 @@
 #pragma once
 
 #include <set>
+#include <sstream>
 #include <string>
 
 #include "server/IRCConstants.hpp"
@@ -16,4 +17,5 @@ class StringUtility {
   static bool isValidChannelKey(const std::string& key);
   static std::string removeDuplicateChars(const std::string& input);
   static std::string parseComma(std::string& str);
+  static std::string numberToString(long number);
 };

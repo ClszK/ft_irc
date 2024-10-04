@@ -13,7 +13,7 @@
 class Client;
 
 class Channel {
-private:
+ private:
   std::string mChannelName;
   std::string mTopic;
   std::string mChannelMode;
@@ -24,7 +24,7 @@ private:
   std::vector<Client *> mInvitedList;
   std::vector<Client *> mGMList;
 
-public:
+ public:
   Channel();
   Channel(const std::string &channelName);
   ~Channel();

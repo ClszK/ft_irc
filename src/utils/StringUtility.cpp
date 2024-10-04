@@ -106,8 +106,6 @@ std::string StringUtility::removeDuplicateChars(const std::string& input) {
   return result;
 }
 
-#include <iostream>
-
 std::string StringUtility::parseComma(std::string& str) {
   std::string result = "";
 
@@ -116,4 +114,11 @@ std::string StringUtility::parseComma(std::string& str) {
   result = str.substr(0, pos);
   str.erase(0, pos + (pos != str.size()));
   return result;
+}
+
+std::string StringUtility::numberToString(long number) {
+  std::stringstream ss;
+
+  ss << number;
+  return ss.str();
 }

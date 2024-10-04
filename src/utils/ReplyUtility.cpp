@@ -157,28 +157,59 @@ std::string ReplyUtility::makeEndOfNamesReply(Client &client,
  * :irc.local 324 t #123 +iklst test :10
  * :irc.local 324 t #123 :+t
  */
+// std::string ReplyUtility::makeChannelModeIsReply(Client &client,
+//                                                  Channel &channel) {
+//   std::stringstream ss;
+//   const std::string &channelMode = channel.getChannelMode();
+//   size_t kPos = channelMode.find('k');
+//   size_t lPos = channelMode.find('l');
+//   size_t paramCnt = (kPos != std::string::npos) + (lPos !=
+//   std::string::npos);
+
+//   ss << ":" << client.getServerName() << " " << RPL_CHANNELMODEIS << " "
+//      << client.getNickName() << " " << channel.getChannelName();
+
+//   std::vector<std::string> params;
+
+//   if (paramCnt == 2) {
+//     ss << " +" << channelMode << " " << channel.getChannelKey() << " :"
+//        << channel.getMaxUser() << "\r\n";
+//   } else if (paramCnt == 1) {
+//     ss << " +" << channelMode << " :";
+//     if (kPos != std::string::npos)
+//       ss << channel.getChannelKey() << "\r\n";
+//     else
+//       ss << channel.getMaxUser() << "\r\n";
+//   } else
+//     ss << " :+" << channelMode << "\r\n";
+
+//   return ss.str();
+// }
 std::string ReplyUtility::makeChannelModeIsReply(Client &client,
                                                  Channel &channel) {
   std::stringstream ss;
   const std::string &channelMode = channel.getChannelMode();
-  size_t kPos = channelMode.find('k');
-  size_t lPos = channelMode.find('l');
-  size_t paramCnt = (kPos != std::string::npos) + (lPos != std::string::npos);
+  std::vector<std::string> params;
 
   ss << ":" << client.getServerName() << " " << RPL_CHANNELMODEIS << " "
      << client.getNickName() << " " << channel.getChannelName();
 
-  if (paramCnt == 2) {
-    ss << " +" << channelMode << " " << channel.getChannelKey() << " :"
-       << channel.getMaxUser() << "\r\n";
-  } else if (paramCnt == 1) {
-    ss << " +" << channelMode << " :";
-    if (kPos != std::string::npos)
-      ss << channel.getChannelKey() << "\r\n";
+  params.push_back("+" + channelMode);
+  for (std::string::const_iterator it = channelMode.begin();
+       it != channelMode.end(); ++it) {
+    if (*it == 'k')
+      params.push_back(channel.getChannelKey());
+    else if (*it == 'l')
+      params.push_back(StringUtility::numberToString(channel.getMaxUser()));
+  }
+
+  for (std::vector<std::string>::iterator it = params.begin();
+       it != params.end(); ++it) {
+    if (it == params.end() - 1)
+      ss << " :" << *it << "\r\n";
     else
-      ss << channel.getMaxUser() << "\r\n";
-  } else
-    ss << " :+" << channelMode << "\r\n";
+      ss << " " << *it;
+  }
 
   return ss.str();
 }

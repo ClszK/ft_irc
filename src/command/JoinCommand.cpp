@@ -27,7 +27,6 @@ std::string JoinCommand::execute(Client& client, Message& message) {
   while (message.params[0].size()) {
     std::string channelName = StringUtility::parseComma(message.params[0]);
 
-    std::cout << channelName << std::endl;
     if (!StringUtility::isValidChannelName(channelName)) {
       replyStr +=
           ReplyUtility::makeErrInvalidChannelNameReply(client, channelName);

@@ -109,6 +109,7 @@ void Server::handleReadEvent(struct kevent& event) {
     buffer[n] = '\0';
     mBuffers[event.ident] += buffer;
 
+    std::cout << "Buffer: " << mBuffers[event.ident] << std::endl;
     if (std::find(mBuffers[event.ident].begin(), mBuffers[event.ident].end(),
                   '\n') != mBuffers[event.ident].end()) {
       struct kevent writeEvent;
