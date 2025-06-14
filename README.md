@@ -26,7 +26,7 @@ ft_irc is a lightweight IRC server implemented in C++98, using BSD `kqueue` for 
 
 ## Prerequisites
 
-- C++17 compiler (e.g., `clang++`, `g++`)
+- C++98 compiler (e.g., `clang++`, `g++`)
 - BSD platform (macOS or FreeBSD) for `kqueue` support
 - POSIX sockets and standard libraries
 
