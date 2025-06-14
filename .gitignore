@@ -4,3 +4,7 @@ ircserv
 report.xml
 ft_irc-tester
 test
+
+.DS_Store
+.clangd
+

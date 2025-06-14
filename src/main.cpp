@@ -11,15 +11,15 @@
  */
 // void check_leak(void) { system("leaks ircserv"); }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   try {
-    signal(SIGPIPE, SIG_IGN);  // ignore broken pipe
+    signal(SIGPIPE, SIG_IGN); // ignore broken pipe
     signal(SIGINT, Server::signalHandler);
     signal(SIGQUIT, Server::signalHandler);
 
-    Server* server = Server::getInstance(argc, argv);
+    Server *server = Server::getInstance(argc, argv);
     server->run();
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << '\n';
   }
 
