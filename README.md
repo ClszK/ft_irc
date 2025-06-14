@@ -22,8 +22,6 @@ https://github.com/user-attachments/assets/77895a41-528e-431c-b915-9df12f090e06
 - 채널 관리: `JOIN`, `PART`, `TOPIC`, `MODE`, `INVITE`, `KICK`
 - 개인 / 채널 메시지 전달: `PRIVMSG`
 - 서버 및 클라이언트 모드 관리
-- Ping/Pong을 이용한 연결 확인
-- `WHO` 명령어로 사용자 목록 조회
 
 ## 호환성 및 테스트
 
@@ -34,7 +32,6 @@ https://github.com/user-attachments/assets/77895a41-528e-431c-b915-9df12f090e06
 
 - C++98 호환 컴파일러 (예: `clang++`, `g++`)
 - macOS 또는 FreeBSD (kqueue 지원 환경)
-- POSIX 소켓 API
 
 ## 빌드 및 실행
 
